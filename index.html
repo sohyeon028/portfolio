@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Intro Page</title>
+    <style>
+        /* 기본 스타일 초기화 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #000; /* 이미지 로딩 중 배경색 */
+        }
+
+        /* 모든 이미지를 담는 컨테이너 */
+        .image-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            cursor: pointer;
+        }
+
+        /* 기본 배경 및 호버 시 나타날 전체 화면 이미지들의 공통 스타일 */
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            transform: scale(1);
+            transform-origin: center center;
+        }
+
+        /* 호버 시 나타날 이미지들 (평소엔 숨김) */
+        .hover-layer {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 호버 시 적용될 클래스 (확대 및 나타남) */
+        .hover-active {
+            opacity: 1;
+            transform: scale(1.03);
+        }
+
+        .interactive-area {
+            position: absolute;
+            text-decoration: none;
+            z-index: 10;
+            border-radius: 15px;
+        }
+
+        /* 각 요소의 위치와 크기 */
+        #avatar-area { top: 29%; left: 45.8%; width: 8.5%; height: 52%; }
+        #laptop-area { top: 54%; left: 45%; width: 10%; height: 12%; }
+        #pad-area { top: 59.5%; left: 38.2%; width: 7.5%; height: 7.5%; }
+        #resume-area { top: 60%; left: 55.5%; width: 7%; height: 6%; }
+        #bear-poster-area { top: 23%; left: 78.5%; width: 14%; height: 35%; }
+
+        /* 호버 시 나타나는 말풍선 스타일 */
+        #tooltip {
+            position: absolute;
+            display: none;
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+            transform: translate(-50%, 25px);
+            transition: opacity 0.2s;
+        }
+
+        #intro-guide {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            z-index: 200;
+            text-align: center;
+            animation: fadeOut 5s forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="intro-guide">
+        각 사물에 마우스를 올려보세요.
+    </div>
+
+    <div class="image-wrapper">
+        <img src="images/융프_인트로.png" class="background-layer" alt="기본 배경 이미지">
+        <img src="images/융프_인트로_아바타 호버.png" class="background-layer hover-layer" id="avatar-hover-layer" alt="웃는 아바타 호버 이미지">
+        <img src="images/융프_인트로_노트북 호버.png" class="background-layer hover-layer" id="laptop-hover-layer" alt="노트북 켜짐 호버 이미지">
+        <img src="images/융프_인트로_패드 호버.png" class="background-layer hover-layer" id="pad-hover-layer" alt="패드 켜짐 호버 이미지">
+        <img src="images/융프_인트로_이력서 호버.png" class="background-layer hover-layer" id="resume-hover-layer" alt="이력서 내용 호버 이미지">
+        <img src="images/융프_인트로_포스터 호버.png" class="background-layer hover-layer" id="poster-hover-layer" alt="웃는 곰 포스터 호버 이미지">
+
+        <a href="home.html#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
+        <a href="home.html#home" class="interactive-area" id="laptop-area" data-hover-target="laptop-hover-layer" data-title="Home"></a>
+        <a href="home.html#web-work" class="interactive-area" id="pad-area" data-hover-target="pad-hover-layer" data-title="Web Work"></a>
+        <a href="home.html#contact" class="interactive-area" id="resume-area" data-hover-target="resume-hover-layer" data-title="Contact"></a>
+        <a href="home.html#graphic-work" class="interactive-area" id="bear-poster-area" data-hover-target="poster-hover-layer" data-title="Graphic Work"></a>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imagesToPreload = [
+                'images/융프_인트로_아바타 호버.png',
+                'images/융프_인트로_노트북 호버.png',
+                'images/융프_인트로_패드 호버.png',
+                'images/융프_인트로_이력서 호버.png',
+                'images/융프_인트로_포스터 호버.png'
+            ];
+            imagesToPreload.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+
+            const interactiveAreas = document.querySelectorAll('.interactive-area');
+            const hoverLayers = document.querySelectorAll('.hover-layer');
+            const tooltip = document.getElementById('tooltip');
+
+            interactiveAreas.forEach(area => {
+                const targetId = area.dataset.hoverTarget;
+                const hoverLayer = document.getElementById(targetId);
+
+                area.addEventListener('mouseenter', (e) => {
+                    hoverLayers.forEach(layer => layer.classList.remove('hover-active'));
+                    if (hoverLayer) hoverLayer.classList.add('hover-active');
+                    
+                    const title = area.dataset.title;
+                    if (title && tooltip) {
+                        tooltip.textContent = title;
+                        tooltip.style.display = 'block';
+                        tooltip.style.left = `${e.pageX}px`;
+                        tooltip.style.top = `${e.pageY}px`;
+                    }
+                });
+
+                area.addEventListener('mouseleave', () => {
+                    if (hoverLayer) hoverLayer.classList.remove('hover-active');
+                    if (tooltip) tooltip.style.display = 'none';
+                });
+
+                area.addEventListener('mousemove', (e) => {
+                    if (tooltip) {
+                        tooltip.style.left = `${e.pageX}px`;
+                        tooltip.style.top = `${e.pageY}px`;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

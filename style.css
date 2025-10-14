@@ -1,0 +1,68 @@
+/* 사용자 정의 스타일 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #F8F9FA;
+    color: #343A40;
+}
+
+/* 페이지 전환 효과 */
+.page-section {
+    display: none;
+    animation: fadeIn 0.8s;
+}
+
+.page-section.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 네비게이션 호버 효과 */
+.nav-link-container {
+    position: relative;
+}
+.nav-move-btn {
+    display: none;
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+.nav-link-container:hover .nav-link {
+    animation: shake 0.5s;
+}
+.nav-link-container:hover .nav-move-btn {
+    display: block;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+/* 그래픽 작업 호버 효과 */
+.graphic-card .overlay {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.graphic-card .work-image {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.graphic-card:hover .overlay {
+    opacity: 0;
+}
+.graphic-card:hover .work-image {
+    opacity: 1;
+}
+
+#three-canvas-container {
+    width: 100%;
+    max-width: 400px;
+    height: 400px;
+}
