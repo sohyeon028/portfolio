@@ -8,10 +8,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /*
+         * 무드보드 컨셉 적용: 파스텔 톤, 둥근 모서리, 부드러운 그림자
+         * 주요 색상 팔레트:
+         * - Primary (강조): #F5A8B2 (파스텔 핑크)
+         * - Secondary (보조): #B2EBF2 (파스텔 민트)
+         * - Background: #FAFAFA (밝은 베이지/화이트)
+         * - Text: #495057 (짙은 회색)
+         */
         body, html {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #F8F9FA;
-            color: #343A40;
+            background-color: #FAFAFA; /* 밝은 배경 */
+            color: #495057; /* 짙은 텍스트 색상 */
             overflow: hidden;
             margin: 0;
             padding: 0;
@@ -29,6 +37,7 @@
             flex-shrink: 0;
         }
         #three-canvas-container {
+            /* 캔버스 크기 유지 */
             width: 100%;
             max-width: 400px;
             height: 400px;
@@ -42,23 +51,21 @@
             opacity: 1;
             transform: translateY(0);
         }
-        .cube-button {
-            transition: all 0.2s ease-in-out;
-        }
-        .cube-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        /* 버튼 및 카드 공통 스타일 */
+        .card-shadow {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05); /* 부드러운 그림자 */
+            border-radius: 2rem; /* 더 둥근 모서리 */
         }
         
-        /* --- 헤더 스타일 시작 --- */
+        /* --- 헤더 스타일 변경 --- */
         .nav-container {
             position: relative;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 9999px; /* Pill shape */
+            padding: 6px;
+            box-shadow: 0 8px 25px rgba(245, 168, 178, 0.2); /* 핑크색 기반 부드러운 그림자 */
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
         .nav-menu {
             display: flex;
@@ -67,8 +74,8 @@
         .nav-link {
             background: none;
             border: none;
-            color: #343A40;
-            padding: 10px 20px;
+            color: #495057;
+            padding: 10px 22px;
             font-size: 1rem;
             font-family: 'Noto Sans KR', sans-serif;
             cursor: pointer;
@@ -79,23 +86,73 @@
         }
         .nav-link.active-nav {
             color: white;
+            font-weight: 700;
         }
         .nav-slider {
             position: absolute;
-            top: 8px;
+            top: 6px;
             left: 0px; /* JavaScript로 제어 */
-            height: calc(100% - 16px);
-            background-color: #3B82F6; /* Tailwind blue-500 */
-            border-radius: 8px;
+            height: calc(100% - 12px);
+            background-color: #F5A8B2; /* Primary 핑크 */
+            border-radius: 9999px; /* Pill shape */
             z-index: 1;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* --- 헤더 스타일 끝 --- */
+        /* --- 홈 섹션 스타일 --- */
+        #home {
+            /* 파스텔 그라데이션 배경 적용 */
+            background: linear-gradient(135deg, #FFDDE1 0%, #B2EBF2 100%);
+        }
+
+        /* --- Web Work 썸네일 높이 제한 및 스크롤바 커스터마이징 (옵션) --- */
+        #web-project-thumbnails {
+            /* JS에서 높이를 동적으로 설정하며, 넘칠 경우 스크롤 허용 */
+            overflow-y: auto;
+        }
+
+        /* **[수정됨]** 맥북 뷰포트 영역의 CSS 재정의 및 패딩 적용 */
+        #laptop-container {
+            /* 맥북 화면 프레임과 화면 영역의 부모 컨테이너 */
+            position: relative;
+            /* 맥북 컨테이너 자체에 overflow: hidden을 적용하여 화면 밖으로 이미지가 넘치지 않도록 강제 */
+            overflow: hidden; 
+        }
+
+        #laptop-screen-viewport {
+            /* 맥북 프레임의 실제 화면 영역에 맞추기 위한 포지셔닝 */
+            position: absolute; 
+            /* 패딩을 style 블록에서 CSS로 가져오고, 넘치는 내용은 스크롤되도록 설정 */
+            padding: 2.3% 10% 12% 9.2%; /* **[수정]** 상단 여백을 줄였습니다. */
+            top: 0; left: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow-y: scroll !important;
+            border-radius: 42px; /* **[수정]** 맥북 프레임의 모서리 곡률과 맞추기 위해 값을 더 올렸습니다. */
+        }
+        
+        /* **[최종 수정]** 맥북 화면에 표시되는 스크린샷 이미지 설정 - 여백 제거 및 꽉 채우기 */
+        #laptop-screen-viewport img {
+            width: 100%;
+            height: auto; /* 이미지의 원본 비율을 유지하면서 꽉 채우기 위해 height: auto 유지 */
+            display: block; 
+            /* 여백을 제거하고 꽉 채우기 위해 cover 사용 */
+            object-fit: cover; 
+            object-position: top;
+        }
+
+        /* 맥북 화면 영역의 스크롤바가 안 보이도록 처리 (선택 사항) */
+        #laptop-screen-viewport::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        #laptop-screen-viewport {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
     </style>
 </head>
 <body class="overflow-hidden">
 
-    <header class="fixed top-5 left-1/2 -translate-x-1/2 z-50">
+    <header class="fixed top-6 left-1/2 -translate-x-1/2 z-50">
         <div class="nav-container">
             <div class="nav-slider"></div>
             <nav class="nav-menu">
@@ -108,91 +165,93 @@
         </div>
     </header>
     <main id="page-container">
-        <section id="home" class="page-section flex-col justify-center items-center text-center p-8 pt-24" style="background: url('images/') no-repeat center center; background-size: cover;">
-            <h1 class="text-5xl font-bold text-white mb-4 animate-on-scroll" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">고민 없이 바로 이해되는 디자인</h1>
-            <p class="text-xl text-white animate-on-scroll" style="text-shadow: 1px 1px 6px rgba(0,0,0,0.7);">중요한 정보에 집중하여 핵심을 전달합니다.</p>
+        <section id="home" class="page-section flex-col justify-center items-center text-center p-8 pt-24">
+            <h1 class="text-6xl font-extrabold text-[#495057] mb-6 animate-on-scroll">고민 없이 바로 이해되는 디자인</h1>
+            <p class="text-xl text-[#6C757D] animate-on-scroll">중요한 정보에 집중하여 핵심을 전달합니다.</p>
         </section>
 
-        <section id="about" class="page-section flex-col justify-center items-center p-8 pt-24 bg-gray-50">
-            <h2 class="text-4xl font-bold mb-8 text-center animate-on-scroll">About Me</h2>
+        <section id="about" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#FAFAFA]">
+            <h2 class="text-4xl font-bold mb-10 text-center animate-on-scroll">About Me</h2>
             <div class="container mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 animate-on-scroll">
-                <div id="three-canvas-container" class="cursor-grab active:cursor-grabbing"></div>
-                <div class="lg:w-1/2 flex flex-col gap-4">
-                    <div id="about-content" class="p-6 bg-white rounded-lg shadow-md min-h-[160px]">
-                        <h3 id="about-title" class="text-2xl font-bold mb-4 text-center text-blue-600">큐브를 돌려보세요!</h3>
+                <div id="three-canvas-container" class="cursor-grab active:cursor-grabbing card-shadow bg-white rounded-2xl p-4"></div>
+                <div class="lg:w-1/2 flex flex-col gap-5">
+                    <div id="about-content" class="p-8 bg-white card-shadow min-h-[160px] rounded-2xl">
+                        <h3 id="about-title" class="text-2xl font-bold mb-4 text-center text-[#F5A8B2]">큐브를 돌려보세요!</h3>
                         <p id="about-text" class="text-gray-700 text-center">큐브의 각 면을 클릭하거나 아래 버튼으로 저에 대한 정보를 확인해보세요.</p>
                     </div>
-                    <div id="cube-controls" class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4 bg-white rounded-lg shadow-md">
+                    <div id="cube-controls" class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4 bg-white card-shadow rounded-2xl">
                         </div>
                 </div>
             </div>
         </section>
 
-        <section id="graphic-work" class="page-section flex-col justify-center items-center p-8 pt-24">
+        <section id="graphic-work" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#FAFAFA]">
             <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Graphic Works</h2>
             <div class="container mx-auto flex flex-col items-center max-w-5xl relative animate-on-scroll">
-                <div id="graphic-slider" class="relative w-full h-[400px] flex justify-center items-center mb-6 group cursor-pointer">
-                     <img id="graphic-image-main" src="" alt="Graphic Work Main" class="max-w-full max-h-full h-auto object-contain absolute transition-opacity duration-500 opacity-0 group-hover:opacity-100">
-                     <img id="graphic-image-placeholder" src="" alt="Graphic Work Placeholder" class="max-w-full max-h-full h-auto object-contain transition-opacity duration-500 opacity-100 group-hover:opacity-0">
+                <div id="graphic-slider" class="relative w-full h-[400px] flex justify-center items-center mb-8 group cursor-pointer card-shadow bg-white p-6 rounded-2xl">
+                     <img id="graphic-image-main" src="" alt="Graphic Work Main" class="max-w-full max-h-full h-auto object-contain absolute transition-opacity duration-500 opacity-0 group-hover:opacity-100 rounded-lg">
+                     <img id="graphic-image-placeholder" src="" alt="Graphic Work Placeholder" class="max-w-full max-h-full h-auto object-contain transition-opacity duration-500 opacity-100 group-hover:opacity-0 rounded-lg">
                 </div>
-                <div id="graphic-description-box" class="w-full max-w-2xl bg-white p-6 rounded-lg shadow-md min-h-[120px] text-center">
-                    <h3 id="graphic-title" class="text-2xl font-bold mb-2">작품명</h3>
+                <div id="graphic-description-box" class="w-full max-w-2xl bg-white p-6 card-shadow min-h-[120px] text-center rounded-2xl">
+                    <h3 id="graphic-title" class="text-2xl font-bold mb-2 text-[#495057]">작품명</h3>
                     <p id="graphic-description" class="text-gray-600">작품 설명</p>
                 </div>
-                <button id="graphic-prev" class="absolute left-0 top-1/2 -translate-y-1/2 transform bg-white/50 hover:bg-white rounded-full p-3 shadow-md transition -mt-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+                <button id="graphic-prev" class="absolute left-0 top-1/2 -translate-y-1/2 transform bg-white card-shadow hover:bg-[#F5A8B2] hover:text-white text-[#495057] rounded-full p-3 transition -mt-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
                 </button>
-                <button id="graphic-next" class="absolute right-0 top-1/2 -translate-y-1/2 transform bg-white/50 hover:bg-white rounded-full p-3 shadow-md transition -mt-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+                <button id="graphic-next" class="absolute right-0 top-1/2 -translate-y-1/2 transform bg-white card-shadow hover:bg-[#F5A8B2] hover:text-white text-[#495057] rounded-full p-3 transition -mt-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
                 </button>
             </div>
         </section>
 
-        <section id="web-work" class="page-section flex-col justify-center items-center p-8 pt-24 bg-gray-50">
+        <section id="web-work" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#F8F9FA]">
              <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Web Works</h2>
             <div class="container mx-auto flex flex-col md:flex-row gap-8 items-start justify-center animate-on-scroll">
-                <div class="w-full md:w-3/4 flex flex-col items-center gap-8">
-                    <div id="laptop-container" class="relative w-full max-w-3xl cursor-pointer">
-                        <div class="absolute w-full h-full top-0 left-0 overflow-hidden" style="padding: 6% 11% 10% 11%;">
-                            <img id="laptop-screen" src="https://placehold.co/800x600/BDC3C7/FFFFFF?text=Select+a+Project" alt="Project Screenshot" class="w-full h-full object-cover">
+                <div id="web-work-left-column" class="w-full md:w-3/4 flex flex-col items-center gap-8">
+                    <!-- **[수정됨]** laptop-container에 overflow: hidden이 없으므로 CSS에서 추가합니다. -->
+                    <div id="laptop-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
+                        <div id="laptop-screen-viewport" class="absolute w-full h-full top-0 left-0">
+                            <img id="laptop-screen" src="https://placehold.co/800x600/B2EBF2/495057?text=Select+a+Project" 
+                                 alt="Project Screenshot" class="w-full">
                         </div>
-                        <img src="images/web/맥북.png" alt="Laptop Frame" class="relative z-10 w-full h-auto pointer-events-none">
+                        <img src="images/web/맥북.png" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E9ECEF/495057?text=Laptop+Frame';" alt="Laptop Frame" class="relative z-10 w-full h-auto pointer-events-none">
                     </div>
-                    <div id="project-description-box" class="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md min-h-[150px]">
-                        <h3 id="project-title" class="text-2xl font-bold mb-2">작품 제목</h3>
+                    <div id="project-description-box" class="w-full max-w-3xl bg-white p-6 card-shadow min-h-[150px] rounded-2xl">
+                        <h3 id="project-title" class="text-2xl font-bold mb-2 text-[#495057]">작품 제목</h3>
                         <p id="project-description" class="text-gray-600">작품 설명이 여기에 표시됩니다.</p>
                     </div>
                 </div>
                 <div class="w-full md:w-1/4">
-                    <div id="web-project-thumbnails" class="bg-white p-4 rounded-lg shadow-md space-y-4 max-h-[600px] overflow-y-auto"></div>
+                    <div id="web-project-thumbnails" class="bg-white p-4 card-shadow space-y-4 overflow-y-auto rounded-2xl"></div>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="page-section flex-col justify-center items-center p-8 pt-24">
+        <section id="contact" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#FAFAFA]">
              <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Contact Me</h2>
-            <div class="container mx-auto bg-white p-8 rounded-xl shadow-2xl flex flex-col md:flex-row gap-8 max-w-4xl animate-on-scroll">
+            <div class="container mx-auto bg-white p-10 rounded-3xl card-shadow flex flex-col md:flex-row gap-10 max-w-5xl animate-on-scroll">
                 <div class="md:w-1/2">
-                    <div class="flex items-center mb-6">
-                         <svg class="w-16 h-16 text-gray-700 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
+                    <div class="flex items-center mb-8">
+                         <svg class="w-16 h-16 text-[#F5A8B2] mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
                         <div>
-                            <h3 class="text-2xl font-bold">박소현</h3>
-                            <p class="text-gray-600">Web Designer</p>
+                            <h3 class="text-3xl font-bold text-[#495057]">박소현</h3>
+                            <p class="text-gray-500">Web Designer</p>
                         </div>
                     </div>
                     <div class="space-y-4 mb-8">
-                        <p class="flex items-center"><svg class="w-5 h-5 mr-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>lisianthso@naver.com</p>
-                        <p class="flex items-center"><svg class="w-5 h-5 mr-3 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.213-.992-.55-1.347l-5.25-5.25a.75.75 0 0 0-1.06 0l-2.25 2.25a.75.75 0 0 0 0 1.061l6 6a.75.75 0 0 0 1.06 0l2.25-2.25a.75.75 0 0 0 0-1.06l-5.25-5.25a.75.75 0 0 0-1.06 0l-2.25 2.25a.75.75 0 0 1-1.06 0Z" /></svg>010-1234-5678</p>
+                        <p class="flex items-center text-lg"><svg class="w-6 h-6 mr-3 text-[#F5A8B2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>lisianthso@naver.com</p>
+                        <p class="flex items-center text-lg"><svg class="w-6 h-6 mr-3 text-[#B2EBF2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.213-.992-.55-1.347l-5.25-5.25a.75.75 0 0 0-1.06 0l-2.25 2.25a.75.75 0 0 0 0 1.061l6 6a.75.75 0 0 0 1.06 0l-2.25-2.25a.75.75 0 0 0 0-1.06l-5.25-5.25a.75.75 0 0 0-1.06 0l-2.25 2.25a.75.75 0 0 1-1.06 0Z" /></svg>010-1234-5678</p>
                     </div>
                     <form id="contact-form" class="space-y-4">
-                        <input type="text" id="contact-name" placeholder="성함" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
-                        <input type="email" id="contact-email" placeholder="이메일" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
-                        <textarea id="contact-message" rows="4" placeholder="메시지" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" required></textarea>
-                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition-colors">메시지 보내기</button>
+                        <input type="text" id="contact-name" placeholder="성함" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F5A8B2] focus:outline-none transition-shadow" required>
+                        <input type="email" id="contact-email" placeholder="이메일" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F5A8B2] focus:outline-none transition-shadow" required>
+                        <textarea id="contact-message" rows="4" placeholder="메시지" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F5A8B2] focus:outline-none transition-shadow" required></textarea>
+                        <button type="submit" class="w-full bg-[#F5A8B2] text-white font-bold py-3 px-4 rounded-xl hover:bg-[#E597A1] transition-colors card-shadow">메시지 보내기</button>
                     </form>
                 </div>
-                <div class="md:w-1/2 bg-gray-100 p-6 rounded-lg flex flex-col">
-                    <h3 class="font-bold text-lg mb-4">전송 내용 확인</h3>
+                <div class="md:w-1/2 bg-[#F8F9FA] p-6 rounded-2xl flex flex-col card-shadow">
+                    <h3 class="font-bold text-lg mb-4 text-[#495057]">전송 내용 확인 (Chat Simulation)</h3>
                     <div id="chat-simulation" class="flex-grow space-y-4 overflow-y-auto">
                         <div class="flex justify-start">
                             <div class="bg-gray-300 text-gray-800 p-3 rounded-lg max-w-xs"> 안녕하세요! 궁금한 점이 있어 연락드립니다. </div>
@@ -244,6 +303,11 @@
                     initThreeJS();
                     isThreeJsInitialized = true;
                 }
+                // Web Work 섹션으로 이동 시 높이 재조정
+                if (currentPageIndex === 3) {
+                    // DOM 업데이트 후 딜레이를 주어 정확한 높이를 계산하도록 함
+                    setTimeout(setThumbnailHeight, 50); 
+                }
             }
             
             function updateNav(activeIndex) {
@@ -262,17 +326,46 @@
                     navSlider.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
                 }
             }
-
+            
             function handleScroll(event) {
-                if (event.target.closest('#web-project-thumbnails') || isScrolling) return;
+                if (isScrolling) {
+                    return; 
+                }
+
                 isScrolling = true;
                 let nextPageIndex = currentPageIndex;
-                if (event.deltaY > 0 && currentPageIndex < totalPages - 1) nextPageIndex++;
-                else if (event.deltaY < 0 && currentPageIndex > 0) nextPageIndex--;
-                moveToPage(nextPageIndex);
-                setTimeout(() => { isScrolling = false; }, 1000);
+                const isScrollingDown = event.deltaY > 0;
+
+                if (isScrollingDown && currentPageIndex < totalPages - 1) {
+                    nextPageIndex++;
+                } else if (!isScrollingDown && currentPageIndex > 0) {
+                    nextPageIndex--;
+                }
+                
+                if (nextPageIndex !== currentPageIndex) {
+                    moveToPage(nextPageIndex);
+                }
+
+                setTimeout(() => { isScrolling = false; }, 1000); 
             }
+
+            // [수정] Web Work 섹션의 내부 스크롤이 페이지 전체 스크롤을 방해하지 않도록 수정
+            document.getElementById('web-work').addEventListener('wheel', function(event) {
+                // 스크롤 이벤트가 발생한 위치가 썸네일 영역이나 맥북 화면 영역 내부인지 확인합니다.
+                const isInsideScrollable = event.target.closest('#web-project-thumbnails') || event.target.closest('#laptop-screen-viewport');
+
+                // 만약 내부 스크롤 영역이라면,
+                if (isInsideScrollable) {
+                    // 이벤트가 상위(window)로 전파되는 것을 막아 전체 페이지가 넘어가는 현상을 방지합니다.
+                    // 이렇게 하면 내부 영역만 스크롤되고, 스크롤이 끝나도 페이지는 그대로 유지됩니다.
+                    event.stopPropagation();
+                }
+                // 내부 스크롤 영역이 아니라면, 이벤트는 정상적으로 window로 전달되어 페이지 전환이 이루어집니다.
+            }, { capture: true });
+
+
             window.addEventListener('wheel', handleScroll);
+
 
             navLinks.forEach(link => {
                 link.addEventListener('click', e => {
@@ -305,10 +398,12 @@
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 canvas.width = 256; canvas.height = 256;
-                context.fillStyle = '#FFFFFF'; context.fillRect(0, 0, 256, 256);
-                context.font = 'bold 20px Noto Sans KR'; context.fillStyle = '#333333';
+                context.fillStyle = '#B2EBF2'; 
+                context.fillRect(0, 0, 256, 256);
+                context.font = 'bold 24px Noto Sans KR'; 
+                context.fillStyle = '#495057';
                 context.textAlign = 'center'; context.textBaseline = 'middle';
-                context.fillText(text, 128, 128);
+                context.fillText(text.split('(')[0].trim(), 128, 128);
                 return new THREE.CanvasTexture(canvas);
             }
 
@@ -317,21 +412,21 @@
                 if (!container || !container.clientWidth) return;
 
                 scene = new THREE.Scene();
-                scene.background = new THREE.Color(0xf1f5f9);
+                scene.background = new THREE.Color(0xffffff); 
                 camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
                 camera.position.z = 5;
-                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 renderer.setSize(container.clientWidth, container.clientHeight);
                 container.innerHTML = '';
                 container.appendChild(renderer.domElement);
                 
                 const materials = [
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'right').title) }),
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'left').title) }),
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'top').title) }),
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'bottom').title) }),
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'front').title) }),
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'back').title) })
+                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'right').title), side: THREE.DoubleSide }),
+                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'left').title), side: THREE.DoubleSide }),
+                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'top').title), side: THREE.DoubleSide }),
+                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'bottom').title), side: THREE.DoubleSide }),
+                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'front').title), side: THREE.DoubleSide }),
+                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'back').title), side: THREE.DoubleSide })
                 ];
                 cube = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), materials);
                 scene.add(cube);
@@ -340,11 +435,18 @@
                     if (currentPageIndex !== 1) return;
                     requestAnimationFrame(animate);
                     if (targetRotation) {
-                        cube.rotation.x += (targetRotation.x - cube.rotation.x) * 0.05;
-                        cube.rotation.y += (targetRotation.y - cube.rotation.y) * 0.05;
+                        cube.rotation.x += (targetRotation.x - cube.rotation.x) * 0.1;
+                        cube.rotation.y += (targetRotation.y - cube.rotation.y) * 0.1;
+
+                        const diffX = Math.abs(targetRotation.x - cube.rotation.x);
+                        const diffY = Math.abs(targetRotation.y - cube.rotation.y);
+                        if (diffX < 0.01 && diffY < 0.01) {
+                            targetRotation = null;
+                        }
+
                     } else if (isAutoRotating && !isDragging) {
-                        cube.rotation.x += 0.005;
-                        cube.rotation.y += 0.005;
+                        cube.rotation.x += 0.003;
+                        cube.rotation.y += 0.003;
                     }
                     renderer.render(scene, camera);
                 }
@@ -353,9 +455,9 @@
                 const controlsContainer = document.getElementById('cube-controls');
                 aboutData.forEach((item, index) => {
                     const button = document.createElement('button');
-                    button.textContent = item.title;
+                    button.textContent = item.title.split('(')[0].trim();
                     button.dataset.index = index;
-                    button.className = 'p-2 bg-gray-100 text-sm text-gray-700 rounded-md hover:bg-blue-500 hover:text-white font-medium cube-button';
+                    button.className = 'p-3 bg-[#B2EBF2]/50 text-sm text-[#495057] rounded-xl hover:bg-[#F5A8B2] hover:text-white font-medium transition-all card-shadow';
                     controlsContainer.appendChild(button);
                 });
 
@@ -430,7 +532,7 @@
             document.getElementById('graphic-next').addEventListener('click', () => { currentGraphicIndex = (currentGraphicIndex + 1) % graphicWorkProjects.length; updateGraphicWork(currentGraphicIndex); });
             
             const thumbnailContainer = document.getElementById('web-project-thumbnails');
-            thumbnailContainer.innerHTML = webWorkProjects.map((p, i) => `<img src="${p.thumbnail}" alt="${p.title}" class="w-full h-auto rounded-md cursor-pointer border-4 ${i===0 ? 'border-blue-500' : 'border-transparent hover:border-blue-300'} transition-all" data-index="${i}">`).join('');
+            thumbnailContainer.innerHTML = webWorkProjects.map((p, i) => `<img src="${p.thumbnail}" alt="${p.title}" class="w-full h-auto rounded-xl cursor-pointer border-4 ${i===0 ? 'border-[#F5A8B2]' : 'border-transparent hover:border-[#B2EBF2]'} transition-all" data-index="${i}">`).join('');
             
             function updateWebProject(index) {
                 const project = webWorkProjects[index]; if (!project) return;
@@ -438,13 +540,35 @@
                 document.getElementById('project-title').textContent = project.title;
                 document.getElementById('project-description').textContent = project.description;
                 currentProjectUrl = project.url;
+                
+                const viewport = document.getElementById('laptop-screen-viewport');
+                if (viewport) {
+                    viewport.scrollTop = 0;
+                }
+
                 thumbnailContainer.querySelectorAll('img').forEach((thumb, i) => {
-                    thumb.classList.toggle('border-blue-500', i === index);
+                    thumb.classList.toggle('border-[#F5A8B2]', i === index);
                     thumb.classList.toggle('border-transparent', i !== index);
                 });
+                
+                // **[수정]** 프로젝트 설명이 바뀌면 높이가 변하므로, 썸네일 높이를 다시 계산합니다.
+                setTimeout(setThumbnailHeight, 50);
             }
             thumbnailContainer.addEventListener('click', e => { if (e.target.tagName === 'IMG') updateWebProject(parseInt(e.target.dataset.index)); });
             document.getElementById('laptop-container').addEventListener('click', () => { if (currentProjectUrl && currentProjectUrl !== '#') window.open(currentProjectUrl, '_blank'); });
+
+            // **[수정]** 썸네일 컨테이너의 높이를 왼쪽 컬럼(맥북 + 설명)의 전체 높이에 맞추도록 수정
+            function setThumbnailHeight() {
+                const leftColumn = document.getElementById('web-work-left-column');
+                const thumbnailsContainer = document.getElementById('web-project-thumbnails');
+                if (leftColumn && thumbnailsContainer) {
+                    const leftColumnHeight = leftColumn.offsetHeight;
+                    if (leftColumnHeight > 0) {
+                        thumbnailsContainer.style.height = `${leftColumnHeight}px`;
+                    }
+                }
+            }
+
 
             function initializeProjects() {
                 updateGraphicWork(0);
@@ -453,7 +577,7 @@
             }
             initializeProjects();
 
-            // --- Contact Page ---
+            // Contact Page
             const contactForm = document.getElementById('contact-form');
             contactForm.addEventListener('submit', e => {
                 e.preventDefault();
@@ -462,7 +586,7 @@
                 if (chatSim.querySelector('p')) chatSim.querySelector('p').remove();
                 const sentMessageDiv = document.createElement('div');
                 sentMessageDiv.className = 'flex justify-end';
-                sentMessageDiv.innerHTML = `<div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs"><p class="font-bold">${name} (${email})</p><p>${message}</p></div>`;
+                sentMessageDiv.innerHTML = `<div class="bg-[#F5A8B2] text-white p-3 rounded-xl max-w-xs shadow-md"><p class="font-bold">${name} (${email})</p><p>${message}</p></div>`;
                 chatSim.appendChild(sentMessageDiv); chatSim.scrollTop = chatSim.scrollHeight;
                 contactForm.reset();
             });
@@ -475,8 +599,12 @@
                 container.style.transition = 'none';
                 moveToPage(targetIndex, true);
                 setTimeout(() => { container.style.transition = 'transform 0.8s cubic-bezier(0.7, 0, 0.3, 1)'; }, 50);
+
+                setThumbnailHeight();
+                window.addEventListener('resize', setThumbnailHeight);
             }, 100);
         });
     </script>
 </body>
 </html>
+

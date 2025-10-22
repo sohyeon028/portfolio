@@ -5,172 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Intro Page</title>
     <style>
-        /* 기본 스타일 초기화 */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #000; /* 이미지 로딩 중 배경색 */
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto;
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
         }
 
-        /* 모든 이미지를 담는 컨테이너 */
-        .image-wrapper {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
+        .image-wrapper { 
+            position: relative; 
+            width: 1920px;
+            height: 1080px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
-        /* 기본 배경 및 호버 시 나타날 전체 화면 이미지들의 공통 스타일 */
-        .background-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
-            transform: scale(1);
-            transform-origin: center center;
-        }
+        #background-main { display: block; width: 100%; height: 100%; }
+        .hover-image { position: absolute; opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; transform-origin: center; }
+        .hover-active { opacity: 1; transform: scale(1.05); }
 
-        /* 호버 시 나타날 이미지들 (평소엔 숨김) */
-        .hover-layer {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* 호버 시 적용될 클래스 (확대 및 나타남) */
-        .hover-active {
-            opacity: 1;
-            transform: scale(1.03);
-        }
+        #avatar-hover-layer { top: 319px; left: 879px; width: 163px; }
+        #laptop-hover-layer { top: 672px; left: 964px; width: 182px; }
+        #phone-hover-layer { top: 784px; left: 765px; width: 131px; }
+        #resume-hover-layer { top: 650px; left: 1066px; width: 125px; }
+        #poster-hover-layer { top: 400px; left: 1600px; width: 259px; }
+        #flower-hover-layer { top: 567px; left: 1411px; width: 48px; }
+        #bear1-hover-layer { top: 598px; left: 1295px; width: 61px; }
+        #bear2-hover-layer { top: 432px; left: 1323px; width: 61px; }
+        #bear3-hover-layer { top: 432px; left: 1382px; width: 61px; }
 
         .interactive-area {
             position: absolute;
-            text-decoration: none;
             z-index: 10;
-            border-radius: 15px;
+            /* [수정됨] 위치 확인을 위한 빨간 테두리 다시 활성화 */
+            border: 1px solid red; 
         }
 
-        /* 각 요소의 위치와 크기 */
-        #avatar-area { top: 29%; left: 45.8%; width: 8.5%; height: 52%; }
-        #laptop-area { top: 54%; left: 45%; width: 10%; height: 12%; }
-        #pad-area { top: 59.5%; left: 38.2%; width: 7.5%; height: 7.5%; }
-        #resume-area { top: 60%; left: 55.5%; width: 7%; height: 6%; }
-        #bear-poster-area { top: 23%; left: 78.5%; width: 14%; height: 35%; }
-
-        /* 호버 시 나타나는 말풍선 스타일 */
-        #tooltip {
-            position: absolute;
-            display: none;
-            background-color: rgba(0, 0, 0, 0.75);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            white-space: nowrap;
-            z-index: 100;
-            pointer-events: none;
-            transform: translate(-50%, 25px);
-            transition: opacity 0.2s;
-        }
-
-        #intro-guide {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-size: 16px;
-            z-index: 200;
-            text-align: center;
-            animation: fadeOut 5s forwards;
-            animation-delay: 1s;
-        }
-
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; pointer-events: none; }
-        }
+        #avatar-area { top: 319px; left: 879px; width: 163px; height: 540px; }
+        #laptop-area { top: 672px; left: 964px; width: 182px; height: 119px; }
+        #phone-area { top: 784px; left: 765px; width: 131px; height: 76px; }
+        #resume-area { top: 650px; left: 1066px; width: 125px; height: 65px; }
+        #bear-poster-area { top: 400px; left: 1600px; width: 259px; height: 378px; }
+        #flower-area { top: 567px; left: 1411px; width: 48px; height: 59px; }
+        #bear1-area { top: 598px; left: 1295px; width: 61px; height: 70px; }
+        #bear2-area { top: 432px; left: 1323px; width: 61px; height: 70px; }
+        #bear3-area { top: 432px; left: 1382px; width: 61px; height: 70px; }
+        
+        #tooltip { position: fixed; display: none; background-color: rgba(0, 0, 0, 0.75); color: white; padding: 8px 12px; border-radius: 6px; font-size: 14px; white-space: nowrap; z-index: 100; pointer-events: none; transform: translate(-50%, 20px); transition: opacity 0.2s; }
+        #intro-guide { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 15px 25px; border-radius: 10px; font-size: 16px; z-index: 200; text-align: center; animation: fadeOut 5s forwards; animation-delay: 1s; }
+        @keyframes fadeOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; pointer-events: none; } }
     </style>
 </head>
 <body>
-    <div id="intro-guide">
-        각 사물에 마우스를 올려보세요.
-    </div>
 
     <div class="image-wrapper">
-        <img src="images/융프_인트로.png" class="background-layer" alt="기본 배경 이미지">
-        <img src="images/융프_인트로_아바타 호버.png" class="background-layer hover-layer" id="avatar-hover-layer" alt="웃는 아바타 호버 이미지">
-        <img src="images/융프_인트로_노트북 호버.png" class="background-layer hover-layer" id="laptop-hover-layer" alt="노트북 켜짐 호버 이미지">
-        <img src="images/융프_인트로_패드 호버.png" class="background-layer hover-layer" id="pad-hover-layer" alt="패드 켜짐 호버 이미지">
-        <img src="images/융프_인트로_이력서 호버.png" class="background-layer hover-layer" id="resume-hover-layer" alt="이력서 내용 호버 이미지">
-        <img src="images/융프_인트로_포스터 호버.png" class="background-layer hover-layer" id="poster-hover-layer" alt="웃는 곰 포스터 호버 이미지">
+        <img src="images/융프_인트로.png" id="background-main" alt="기본 배경 이미지">
+        
+        <img src="images/융프_인트로_아바타 호버.png" class="hover-image" id="avatar-hover-layer" alt="아바타 호버 이미지">
+        <img src="images/융프_인트로_노트북 호버.png" class="hover-image" id="laptop-hover-layer" alt="노트북 호버 이미지">
+        <img src="images/융프_인트로_핸드폰 호버.png" class="hover-image" id="phone-hover-layer" alt="핸드폰 호버 이미지">
+        <img src="images/융프_인트로_이력서 호버.png" class="hover-image" id="resume-hover-layer" alt="이력서 호버 이미지">
+        <img src="images/융프_인트로_포스터 호버.png" class="hover-image" id="poster-hover-layer" alt="포스터 호버 이미지">
+        <img src="images/융프_인트로_선반_꽃.png" class="hover-image" id="flower-hover-layer" alt="꽃 호버 이미지">
+        <img src="images/융프_인트로_선반_곰1.png" class="hover-image" id="bear1-hover-layer" alt="첫번째 곰 호버 이미지">
+        <img src="images/융프_인트로_선반_곰2.png" class="hover-image" id="bear2-hover-layer" alt="두번째 곰 호버 이미지">
+        <img src="images/융프_인트로_선반_곰3.png" class="hover-image" id="bear3-hover-layer" alt="세번째 곰 호버 이미지">
 
-        <a href="home.html#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
-        <a href="home.html#home" class="interactive-area" id="laptop-area" data-hover-target="laptop-hover-layer" data-title="Home"></a>
-        <a href="home.html#web-work" class="interactive-area" id="pad-area" data-hover-target="pad-hover-layer" data-title="Web Work"></a>
-        <a href="home.html#contact" class="interactive-area" id="resume-area" data-hover-target="resume-hover-layer" data-title="Contact"></a>
-        <a href="home.html#graphic-work" class="interactive-area" id="bear-poster-area" data-hover-target="poster-hover-layer" data-title="Graphic Work"></a>
+        <a href="#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
+        <a href="#projects" class="interactive-area" id="laptop-area" data-hover-target="laptop-hover-layer" data-title="Projects"></a>
+        <a href="#github" class="interactive-area" id="phone-area" data-hover-target="phone-hover-layer" data-title="Github"></a>
+        <a href="#contact" class="interactive-area" id="resume-area" data-hover-target="resume-hover-layer" data-title="Contact"></a>
+        <a href="#graphic-work" class="interactive-area" id="bear-poster-area" data-hover-target="poster-hover-layer" data-title="Graphic Work"></a>
+        <a href="#detail-1" class="interactive-area" id="flower-area" data-hover-target="flower-hover-layer" data-title="Flower"></a>
+        <a href="#detail-2" class="interactive-area" id="bear1-area" data-hover-target="bear1-hover-layer" data-title="Bear 1"></a>
+        <a href="#detail-3" class="interactive-area" id="bear2-area" data-hover-target="bear2-hover-layer" data-title="Bear 2"></a>
+        <a href="#detail-4" class="interactive-area" id="bear3-area" data-hover-target="bear3-hover-layer" data-title="Bear 3"></a>
     </div>
 
     <div id="tooltip"></div>
+    <div id="intro-guide">그림의 각 요소를 클릭하여 포트폴리오를 둘러보세요!</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const imagesToPreload = [
-                'images/융프_인트로_아바타 호버.png',
-                'images/융프_인트로_노트북 호버.png',
-                'images/융프_인트로_패드 호버.png',
-                'images/융프_인트로_이력서 호버.png',
-                'images/융프_인트로_포스터 호버.png'
+                'images/융프_인트로_아바타 호버.png','images/융프_인트로_노트북 호버.png','images/융프_인트로_핸드폰 호버.png','images/융프_인트로_이력서 호버.png','images/융프_인트로_포스터 호버.png','images/융프_인트로_선반_꽃.png','images/융프_인트로_선반_곰1.png','images/융프_인트로_선반_곰2.png','images/융프_인트로_선반_곰3.png'
             ];
-            imagesToPreload.forEach(src => {
-                const img = new Image();
-                img.src = src;
-            });
+            imagesToPreload.forEach(src => { (new Image()).src = src; });
 
             const interactiveAreas = document.querySelectorAll('.interactive-area');
-            const hoverLayers = document.querySelectorAll('.hover-layer');
+            const hoverImages = document.querySelectorAll('.hover-image');
             const tooltip = document.getElementById('tooltip');
 
             interactiveAreas.forEach(area => {
                 const targetId = area.dataset.hoverTarget;
-                const hoverLayer = document.getElementById(targetId);
+                const hoverImage = document.getElementById(targetId);
 
                 area.addEventListener('mouseenter', (e) => {
-                    hoverLayers.forEach(layer => layer.classList.remove('hover-active'));
-                    if (hoverLayer) hoverLayer.classList.add('hover-active');
-                    
+                    hoverImages.forEach(img => img.classList.remove('hover-active'));
+                    if (hoverImage) hoverImage.classList.add('hover-active');
                     const title = area.dataset.title;
                     if (title && tooltip) {
                         tooltip.textContent = title;
                         tooltip.style.display = 'block';
-                        tooltip.style.left = `${e.pageX}px`;
-                        tooltip.style.top = `${e.pageY}px`;
                     }
                 });
 
                 area.addEventListener('mouseleave', () => {
-                    if (hoverLayer) hoverLayer.classList.remove('hover-active');
+                    if (hoverImage) hoverImage.classList.remove('hover-active');
                     if (tooltip) tooltip.style.display = 'none';
                 });
-
-                area.addEventListener('mousemove', (e) => {
-                    if (tooltip) {
-                        tooltip.style.left = `${e.pageX}px`;
-                        tooltip.style.top = `${e.pageY}px`;
-                    }
-                });
+            });
+            
+            document.body.addEventListener('mousemove', (e) => {
+                if (tooltip.style.display === 'block') {
+                    tooltip.style.left = `${e.clientX}px`;
+                    tooltip.style.top = `${e.clientY}px`;
+                }
             });
         });
     </script>
