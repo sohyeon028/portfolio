@@ -10,11 +10,7 @@
     <style>
         /*
          * 무드보드 컨셉 적용: 파스텔 톤, 둥근 모서리, 부드러운 그림자
-         * 주요 색상 팔레트:
-         * - Primary (강조): #F5A8B2 (파스텔 핑크)
-         * - Secondary (보조): #B2EBF2 (파스텔 민트)
-         * - Background: #FAFAFA (밝은 베이지/화이트)
-         * - Text: #495057 (짙은 회색)
+         * ... (기존 스타일)
          */
         body, html {
             font-family: 'Noto Sans KR', sans-serif;
@@ -148,6 +144,22 @@
             -ms-overflow-style: none; /* IE and Edge */
             scrollbar-width: none; /* Firefox */
         }
+
+        /* --- [추가] 타이핑 효과 CSS --- */
+        .typing-effect::after {
+            content: '|';
+            margin-left: 0.5rem;
+            animation: blink-caret .75s step-end infinite;
+        }
+        @keyframes blink-caret {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .typing-effect.typing-done::after {
+            animation: none;
+            content: ''; /* 타이핑 완료 후 커서 제거 */
+        }
+        /* --- [추가] 끝 --- */
     </style>
 </head>
 <body class="overflow-hidden">
@@ -166,10 +178,9 @@
     </header>
     <main id="page-container">
         <section id="home" class="page-section flex-col justify-center items-center text-center p-8 pt-24">
-            <h1 class="text-6xl font-extrabold text-[#495057] mb-6 animate-on-scroll">고민 없이 바로 이해되는 디자인</h1>
-            <p class="text-xl text-[#6C757D] animate-on-scroll">중요한 정보에 집중하여 핵심을 전달합니다.</p>
+            <h1 id="home-text-h1" class="text-6xl font-extrabold text-[#495057] mb-6 min-h-[72px] md:min-h-[84px]"></h1>
+            <p id="home-text-p" class="text-xl text-[#6C757D] opacity-0 min-h-[28px]"></p>
         </section>
-
         <section id="about" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#FAFAFA]">
             <h2 class="text-4xl font-bold mb-10 text-center animate-on-scroll">About Me</h2>
             <div class="container mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 animate-on-scroll">
@@ -209,7 +220,6 @@
              <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Web Works</h2>
             <div class="container mx-auto flex flex-col md:flex-row gap-8 items-start justify-center animate-on-scroll">
                 <div id="web-work-left-column" class="w-full md:w-3/4 flex flex-col items-center gap-8">
-                    <!-- **[수정됨]** laptop-container에 overflow: hidden이 없으므로 CSS에서 추가합니다. -->
                     <div id="laptop-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
                         <div id="laptop-screen-viewport" class="absolute w-full h-full top-0 left-0">
                             <img id="laptop-screen" src="https://placehold.co/800x600/B2EBF2/495057?text=Select+a+Project" 
@@ -275,37 +285,172 @@
             let isThreeJsInitialized = false;
             const sectionIds = ['home', 'about', 'graphic-work', 'web-work', 'contact'];
 
-            // --- 페이지 이동 및 애니메이션 ---
+            // --- [추가] 홈 섹션 타이핑 효과 변수 ---
+            const homeH1 = document.getElementById('home-text-h1');
+            const homeP = document.getElementById('home-text-p');
+            const textH1 = "고민 없이 바로 이해되는 디자인";
+            const textP = "중요한 정보에 집중하여 핵심을 전달합니다.";
+
+            // [추가] 범용 타이핑 함수
+            function typeWriter(element, text, speed = 100, callback) {
+                let i = 0;
+                element.innerHTML = ""; // 초기화
+                element.classList.add('typing-effect'); // 커서 추가
+                element.classList.remove('typing-done');
+
+                function typeLoop() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(typeLoop, speed);
+                    } else {
+                        element.classList.add('typing-done'); // 완료
+                        element.classList.remove('typing-effect'); // 커서 제거
+                        if (callback) callback(); // 다음 함수 호출
+                    }
+                }
+                typeLoop();
+            }
+
+            // [추가] 타이핑 시작 함수 (h1 -> p 순차 실행)
+            function startHomeTyping() {
+                if (!homeH1 || !homeP) return;
+
+                // h1, p 초기화
+                homeH1.innerHTML = "";
+                homeP.innerHTML = "";
+                homeP.style.opacity = 0; // p태그 숨김
+                homeH1.classList.remove('typing-done', 'typing-effect');
+                homeP.classList.remove('typing-done', 'typing-effect');
+                
+                // h1 타이핑 시작
+                typeWriter(homeH1, textH1, 100, () => {
+                    // h1 완료 후 0.5초 뒤 p 타이핑 시작
+                    setTimeout(() => {
+                        homeP.style.opacity = 1; // p태그 보이기
+                        typeWriter(homeP, textP, 60); // p는 좀 더 빠르게
+                    }, 500);
+                });
+            }
+
+            // --- [수정] About Me Page: Three.js 변수 ---
+            // initThreeJS 밖(DOMContentLoaded 스코프)으로 이동
+            let scene, camera, renderer, cube, isDragging = false, previousMousePosition = { x: 0, y: 0 }, isAutoRotating = true;
+            let targetRotation = null;
+            const aboutData = [
+                { title: '학력 (Education)', content: '2026. 02. 한국폴리텍1대학 서울정수캠퍼스 시각디자인과 졸업 예정', rotation: { x: 0, y: 0 }, face: 'front' },
+                { title: '기술 (Skills)', content: 'Adobe Photoshop | Adobe Illustrator | Adobe InDesign | Adobe Premiere Pro | Adobe After Effects | Figma | procreate', rotation: { x: 0, y: Math.PI / 2 }, face: 'left' },
+                { title: '경험 (Experience)', content: '.', rotation: { x: -Math.PI / 2, y: 0 }, face: 'bottom' },
+                { title: '자격증 (License)', content: '전산회계2급 | 워드프로세서 | ERP 회계/물류/생산 정보관리사 2급 | 미용사(일반)', rotation: { x: 0, y: -Math.PI / 2 }, face: 'right' },
+                { title: '수상 (Awards)', content: '무한도전뷰티콘테스트 2017 퍼머넌트 장려상', rotation: { x: Math.PI / 2, y: 0 }, face: 'top' },
+                { title: '포부 (Aspiration)', content: '디자인으로 세상과 소통하는 디자이너가 되겠습니다.', rotation: { x: 0, y: Math.PI }, face: 'back' }
+            ];
+
+            // --- [추가] Three.js 애니메이션 루프 ---
+            // initThreeJS 밖으로 이동
+            function animate() {
+                // [수정] 큐브가 없거나, 현재 페이지가 1(About)이 아니면 루프 중단
+                if (!cube || currentPageIndex !== 1) {
+                    return;
+                }
+                
+                // 페이지가 1이면 루프 계속
+                requestAnimationFrame(animate); 
+
+                if (targetRotation) {
+                    cube.rotation.x += (targetRotation.x - cube.rotation.x) * 0.1;
+                    cube.rotation.y += (targetRotation.y - cube.rotation.y) * 0.1;
+                    const diffX = Math.abs(targetRotation.x - cube.rotation.x);
+                    const diffY = Math.abs(targetRotation.y - cube.rotation.y);
+                    if (diffX < 0.01 && diffY < 0.01) {
+                        targetRotation = null;
+                    }
+                } else if (isAutoRotating && !isDragging) {
+                    cube.rotation.x += 0.003;
+                    cube.rotation.y += 0.003;
+                }
+                
+                if (renderer) {
+                    renderer.render(scene, camera);
+                }
+            }
+
+            // --- [추가] Three.js 리셋 함수 ---
+            function resetCubeAnimation() {
+                if (!cube) return; // 아직 초기화 안됐으면 종료
+
+                // 1. 상태 리셋
+                isAutoRotating = true;
+                isDragging = false;
+                targetRotation = null;
+                
+                // 2. 큐브 회전 리셋 (0,0으로)
+                cube.rotation.x = 0;
+                cube.rotation.y = 0;
+
+                // 3. 텍스트 박스 리셋
+                document.getElementById('about-title').textContent = '큐브를 돌려보세요!';
+                document.getElementById('about-text').textContent = '큐브의 각 면을 클릭하거나 아래 버튼으로 저에 대한 정보를 확인해보세요.';
+
+                // 4. 애니메이션 루프 재시작
+                animate();
+            }
+
+
+            // --- 페이지 이동 및 애니메이션 [타이핑 및 큐브 효과 적용됨] ---
             function handleAnimations(newIndex, oldIndex) {
                 if (oldIndex !== undefined && oldIndex !== -1) {
                     const oldSection = document.getElementById(sectionIds[oldIndex]);
                     if (oldSection) oldSection.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.remove('is-visible'));
                 }
+                
                 const newSection = document.getElementById(sectionIds[newIndex]);
                 if (newSection) {
                     setTimeout(() => {
-                        newSection.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible'));
+                        // 'home' 섹션(index 0)의 자식들은 'animate-on-scroll'을 사용하지 않음
+                        if (newIndex !== 0) {
+                            newSection.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible'));
+                        }
+                    }, newIndex === oldIndex ? 0 : 400);
+                }
+                
+                // [수정] newIndex가 0 (Home)일 때, 타이핑 효과 시작
+                if (newIndex === 0) {
+                    setTimeout(startHomeTyping, newIndex === oldIndex ? 0 : 400);
+                }
+
+                // [추가] newIndex가 1 (About)일 때, 큐브 애니메이션 재시작/리셋
+                if (newIndex === 1) {
+                    setTimeout(() => {
+                        if (isThreeJsInitialized) {
+                            // 이미 초기화된 경우, 리셋 및 애니메이션 재시작
+                            resetCubeAnimation();
+                        }
+                        // (첫 초기화는 moveToPage에서 처리)
                     }, newIndex === oldIndex ? 0 : 400);
                 }
             }
+
 
             function moveToPage(index, isInitialLoad = false) {
                 if (index < 0 || index >= totalPages || isNaN(index) || (index === currentPageIndex && !isInitialLoad)) return;
                 
                 const oldPageIndex = currentPageIndex;
                 container.style.transform = `translateX(${-index * 100}vw)`;
-                currentPageIndex = index;
+                currentPageIndex = index; // [중요] currentPageIndex가 handleAnimations보다 먼저 설정되어야 함
                 updateNav(currentPageIndex);
-                handleAnimations(currentPageIndex, oldPageIndex);
+                handleAnimations(currentPageIndex, oldPageIndex); // [수정]된 handleAnimations 함수 호출
 
                 if (window.location.hash !== `#${sectionIds[currentPageIndex]}`) history.replaceState(null, null, `#${sectionIds[currentPageIndex]}`);
+                
+                // [수정] About Me 섹션 첫 초기화
                 if (currentPageIndex === 1 && !isThreeJsInitialized) {
                     initThreeJS();
                     isThreeJsInitialized = true;
                 }
+
                 // Web Work 섹션으로 이동 시 높이 재조정
                 if (currentPageIndex === 3) {
-                    // DOM 업데이트 후 딜레이를 주어 정확한 높이를 계산하도록 함
                     setTimeout(setThumbnailHeight, 50); 
                 }
             }
@@ -351,16 +496,10 @@
 
             // [수정] Web Work 섹션의 내부 스크롤이 페이지 전체 스크롤을 방해하지 않도록 수정
             document.getElementById('web-work').addEventListener('wheel', function(event) {
-                // 스크롤 이벤트가 발생한 위치가 썸네일 영역이나 맥북 화면 영역 내부인지 확인합니다.
                 const isInsideScrollable = event.target.closest('#web-project-thumbnails') || event.target.closest('#laptop-screen-viewport');
-
-                // 만약 내부 스크롤 영역이라면,
                 if (isInsideScrollable) {
-                    // 이벤트가 상위(window)로 전파되는 것을 막아 전체 페이지가 넘어가는 현상을 방지합니다.
-                    // 이렇게 하면 내부 영역만 스크롤되고, 스크롤이 끝나도 페이지는 그대로 유지됩니다.
                     event.stopPropagation();
                 }
-                // 내부 스크롤 영역이 아니라면, 이벤트는 정상적으로 window로 전달되어 페이지 전환이 이루어집니다.
             }, { capture: true });
 
 
@@ -382,17 +521,7 @@
             });
             
             // --- About Me Page: Three.js Cube ---
-            let scene, camera, renderer, cube, isDragging = false, previousMousePosition = { x: 0, y: 0 }, isAutoRotating = true;
-            let targetRotation = null;
-
-            const aboutData = [
-                { title: '학력 (Education)', content: '2026. 02. 한국폴리텍1대학 서울정수캠퍼스 시각디자인과 졸업 예정', rotation: { x: 0, y: 0 }, face: 'front' },
-                { title: '기술 (Skills)', content: 'Adobe Photoshop | Adobe Illustrator | Adobe InDesign | Adobe Premiere Pro | Adobe After Effects | Figma | procreate', rotation: { x: 0, y: Math.PI / 2 }, face: 'left' },
-                { title: '경험 (Experience)', content: '.', rotation: { x: -Math.PI / 2, y: 0 }, face: 'bottom' },
-                { title: '자격증 (License)', content: '전산회계2급 | 워드프로세서 | ERP 회계/물류/생산 정보관리사 2급 | 미용사(일반)', rotation: { x: 0, y: -Math.PI / 2 }, face: 'right' },
-                { title: '수상 (Awards)', content: '무한도전뷰티콘테스트 2017 퍼머넌트 장려상', rotation: { x: Math.PI / 2, y: 0 }, face: 'top' },
-                { title: '포부 (Aspiration)', content: '디자인으로 세상과 소통하는 디자이너가 되겠습니다.', rotation: { x: 0, y: Math.PI }, face: 'back' }
-            ];
+            // (변수와 aboutData 정의는 위로 이동)
 
             function createTextTexture(text) {
                 const canvas = document.createElement('canvas');
@@ -431,25 +560,9 @@
                 cube = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), materials);
                 scene.add(cube);
 
-                function animate() {
-                    if (currentPageIndex !== 1) return;
-                    requestAnimationFrame(animate);
-                    if (targetRotation) {
-                        cube.rotation.x += (targetRotation.x - cube.rotation.x) * 0.1;
-                        cube.rotation.y += (targetRotation.y - cube.rotation.y) * 0.1;
-
-                        const diffX = Math.abs(targetRotation.x - cube.rotation.x);
-                        const diffY = Math.abs(targetRotation.y - cube.rotation.y);
-                        if (diffX < 0.01 && diffY < 0.01) {
-                            targetRotation = null;
-                        }
-
-                    } else if (isAutoRotating && !isDragging) {
-                        cube.rotation.x += 0.003;
-                        cube.rotation.y += 0.003;
-                    }
-                    renderer.render(scene, camera);
-                }
+                // [수정] animate() 함수 정의는 밖으로 이동
+                
+                // [수정] init의 마지막에 animate()를 호출하여 루프 *시작*
                 animate();
 
                 const controlsContainer = document.getElementById('cube-controls');
@@ -607,4 +720,3 @@
     </script>
 </body>
 </html>
-
