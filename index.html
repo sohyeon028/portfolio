@@ -27,7 +27,8 @@
         }
 
         #background-main { display: block; width: 100%; height: 100%; }
-        .hover-image { position: absolute; opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; transform-origin: center; }
+        /* [수정됨] transition 시간을 0.3s -> 0.15s로 변경하여 더 빠르게 반응하도록 함 */
+        .hover-image { position: absolute; opacity: 0; pointer-events: none; transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out; transform-origin: center; }
         .hover-active { opacity: 1; transform: scale(1.3); }
 
         /* [수정됨] 새 통합 이미지에 맞게 위치와 크기 조정 (기존 아바타, 노트북 영역을 감안) */
@@ -36,10 +37,10 @@
         /* 아래로 이동시키려면: top 값을 현재보다 크게, 위로 이동 시키려면 top 값을 현재보다 작게 */
         /* 오른쪽으로 이동시키려면: left 값을 현재보다 크게, 왼쪽으로 이동 시키려면 left 값을 현재보다 작게 */
         #avatar-hover-layer { top: 316px; left: 876px; width: 220px; } 
-        #phone-hover-layer { top: 587px; left: 719px; width: 75px; }
+        #phone-hover-layer { top: 589px; left: 719px; width: 75px; }
         #resume-hover-layer { top: 588px; left: 1130px; width: 153px; }
         #poster-hover-layer { top: 160px; left: 1525px; width: 230px; }
-        #flower-hover-layer { top: 180px; left: 1080px; width: 60px; }
+        #home-hover-layer { top: 185px; left: 1055px; width: 90px; }
         #bear1-hover-layer { top: 145px; left: 1152px; width: 66px; }
         #bear2-hover-layer { top: 145px; left: 1235px; width: 66px; }
         #bear3-hover-layer { top: 145px; left: 1320px; width: 66px; }
@@ -47,16 +48,16 @@
         .interactive-area {
             position: absolute;
             z-index: 10;
-            /* [수정됨] 위치 확인을 위한 빨간 테두리 다시 활성화 */
-            border: 1px solid red; 
+            /* [수정됨] 위치 확인을 위한 빨간 테두리 제거 */
+            /* border: 1px solid red; */
         }
 
         
         #avatar-area { top: 316px; left: 876px; width: 220px; height: 540px; }
-        #phone-area { top: 587px; left: 719px; width: 75px; height: 76px; }
+        #phone-area { top: 589px; left: 719px; width: 75px; height: 76px; }
         #resume-area { top: 580px; left: 1140px; width: 125px; height: 65px; }
         #bear-poster-area { top: 160px; left: 1525px; width: 230px; height: 378px; }
-        #flower-area { top: 200px; left: 1080px; width: 48px; height: 59px; }
+        #home-area { top: 200px; left: 1080px; width: 48px; height: 59px; }
         #bear1-area { top: 145px; left: 1152px; width: 66px; height: 100px; }
         #bear2-area { top: 145px; left: 1230px; width: 66px; height: 100px; }
         #bear3-area { top: 145px; left: 1330px; width: 66px; height: 100px; }
@@ -75,20 +76,28 @@
         <img src="images/융프_인트로_핸드폰 호버.png" class="hover-image" id="phone-hover-layer" alt="핸드폰 호버 이미지">
         <img src="images/융프_인트로_이력서 호버.png" class="hover-image" id="resume-hover-layer" alt="이력서 호버 이미지">
         <img src="images/융프_인트로_포스터 호버.png" class="hover-image" id="poster-hover-layer" alt="포스터 호버 이미지">
-        <img src="images/융프_인트로_선반_꽃.png" class="hover-image" id="flower-hover-layer" alt="꽃 호버 이미지">
+        <img src="images/융프_인트로_선반_집.png" class="hover-image" id="home-hover-layer" alt="집 호버 이미지">
         <img src="images/융프_인트로_선반_곰1.png" class="hover-image" id="bear1-hover-layer" alt="첫번째 곰 호버 이미지">
         <img src="images/융프_인트로_선반_곰2.png" class="hover-image" id="bear2-hover-layer" alt="두번째 곰 호버 이미지">
         <img src="images/융프_인트로_선반_곰3.png" class="hover-image" id="bear3-hover-layer" alt="세번째 곰 호버 이미지">
 
+        <!-- [수정됨] 요청에 맞게 링크(href) 및 data-title 수정 -->
         <a href="home_ver2.html#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
         <a href="home_ver2.html#web-work" class="interactive-area" id="laptop-area" data-title="Projects"></a>
-        <a href="home_ver2.html#contact" class="interactive-area" id="phone-area" data-hover-target="phone-hover-layer" data-title="Github"></a>
+        <!-- phone-hover: 웹 섹션으로 변경 -->
+        <a href="home_ver2.html#web-work" class="interactive-area" id="phone-area" data-hover-target="phone-hover-layer" data-title="Web Work"></a>
+        <!-- resume-hover: 컨텍트 섹션 (기존과 동일) -->
         <a href="home_ver2.html#contact" class="interactive-area" id="resume-area" data-hover-target="resume-hover-layer" data-title="Contact"></a>
+        <!-- poster-hover: 그래픽 섹션 (기존과 동일) -->
         <a href="home_ver2.html#graphic-work" class="interactive-area" id="bear-poster-area" data-hover-target="poster-hover-layer" data-title="Graphic Work"></a>
-        <a href="home_ver2.html#graphic-work" class="interactive-area" id="flower-area" data-hover-target="flower-hover-layer" data-title="Flower"></a>
-        <a href="home_ver2.html#graphic-work" class="interactive-area" id="bear1-area" data-hover-target="bear1-hover-layer" data-title="Bear 1"></a>
-        <a href="home_ver2.html#graphic-work" class="interactive-area" id="bear2-area" data-hover-target="bear2-hover-layer" data-title="Bear 2"></a>
-        <a href="home_ver2.html#graphic-work" class="interactive-area" id="bear3-area" data-hover-target="bear3-hover-layer" data-title="Bear 3"></a>
+        <!-- home-hover: 홈 섹션으로 변경 -->
+        <a href="home_ver2.html#home" class="interactive-area" id="home-area" data-hover-target="home-hover-layer" data-title="Home"></a>
+        
+        <!-- [수정됨] bear: <a> 태그를 <div> 태그로 변경하여 링크 이동 방지, 호버 효과만 유지 -->
+        <!-- [수정됨] bear: data-title 속성 제거하여 툴팁 문구 미표시 -->
+        <div class="interactive-area" id="bear1-area" data-hover-target="bear1-hover-layer"></div>
+        <div class="interactive-area" id="bear2-area" data-hover-target="bear2-hover-layer"></div>
+        <div class="interactive-area" id="bear3-area" data-hover-target="bear3-hover-layer"></div>
     </div>
 
     <div id="tooltip"></div>
@@ -101,7 +110,7 @@
                 'images/융프_인트로_핸드폰 호버.png',
                 'images/융프_인트로_이력서 호버.png',
                 'images/융프_인트로_포스터 호버.png',
-                'images/융프_인트로_선반_꽃.png',
+                'images/융프_인트로_선반_집.png',
                 'images/융프_인트로_선반_곰1.png',
                 'images/융프_인트로_선반_곰2.png',
                 'images/융프_인트로_선반_곰3.png'
@@ -144,3 +153,4 @@
     </script>
 </body>
 </html>
+
