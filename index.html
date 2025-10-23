@@ -28,17 +28,21 @@
 
         #background-main { display: block; width: 100%; height: 100%; }
         .hover-image { position: absolute; opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; transform-origin: center; }
-        .hover-active { opacity: 1; transform: scale(1.05); }
+        .hover-active { opacity: 1; transform: scale(1.3); }
 
-        #avatar-hover-layer { top: 319px; left: 879px; width: 163px; }
-        #laptop-hover-layer { top: 672px; left: 964px; width: 182px; }
-        #phone-hover-layer { top: 784px; left: 765px; width: 131px; }
-        #resume-hover-layer { top: 650px; left: 1066px; width: 125px; }
-        #poster-hover-layer { top: 400px; left: 1600px; width: 259px; }
-        #flower-hover-layer { top: 567px; left: 1411px; width: 48px; }
-        #bear1-hover-layer { top: 598px; left: 1295px; width: 61px; }
-        #bear2-hover-layer { top: 432px; left: 1323px; width: 61px; }
-        #bear3-hover-layer { top: 432px; left: 1382px; width: 61px; }
+        /* [수정됨] 새 통합 이미지에 맞게 위치와 크기 조정 (기존 아바타, 노트북 영역을 감안) */
+
+
+        /* 아래로 이동시키려면: top 값을 현재보다 크게, 위로 이동 시키려면 top 값을 현재보다 작게 */
+        /* 오른쪽으로 이동시키려면: left 값을 현재보다 크게, 왼쪽으로 이동 시키려면 left 값을 현재보다 작게 */
+        #avatar-hover-layer { top: 316px; left: 876px; width: 220px; } 
+        #phone-hover-layer { top: 587px; left: 719px; width: 75px; }
+        #resume-hover-layer { top: 588px; left: 1130px; width: 153px; }
+        #poster-hover-layer { top: 160px; left: 1525px; width: 230px; }
+        #flower-hover-layer { top: 180px; left: 1080px; width: 60px; }
+        #bear1-hover-layer { top: 145px; left: 1152px; width: 66px; }
+        #bear2-hover-layer { top: 145px; left: 1235px; width: 66px; }
+        #bear3-hover-layer { top: 145px; left: 1320px; width: 66px; }
 
         .interactive-area {
             position: absolute;
@@ -47,15 +51,15 @@
             border: 1px solid red; 
         }
 
-        #avatar-area { top: 319px; left: 879px; width: 163px; height: 540px; }
-        #laptop-area { top: 672px; left: 964px; width: 182px; height: 119px; }
-        #phone-area { top: 784px; left: 765px; width: 131px; height: 76px; }
-        #resume-area { top: 650px; left: 1066px; width: 125px; height: 65px; }
-        #bear-poster-area { top: 400px; left: 1600px; width: 259px; height: 378px; }
-        #flower-area { top: 567px; left: 1411px; width: 48px; height: 59px; }
-        #bear1-area { top: 598px; left: 1295px; width: 61px; height: 70px; }
-        #bear2-area { top: 432px; left: 1323px; width: 61px; height: 70px; }
-        #bear3-area { top: 432px; left: 1382px; width: 61px; height: 70px; }
+        
+        #avatar-area { top: 316px; left: 876px; width: 220px; height: 540px; }
+        #phone-area { top: 587px; left: 719px; width: 75px; height: 76px; }
+        #resume-area { top: 580px; left: 1140px; width: 125px; height: 65px; }
+        #bear-poster-area { top: 160px; left: 1525px; width: 230px; height: 378px; }
+        #flower-area { top: 200px; left: 1080px; width: 48px; height: 59px; }
+        #bear1-area { top: 145px; left: 1152px; width: 66px; height: 100px; }
+        #bear2-area { top: 145px; left: 1230px; width: 66px; height: 100px; }
+        #bear3-area { top: 145px; left: 1330px; width: 66px; height: 100px; }
         
         #tooltip { position: fixed; display: none; background-color: rgba(0, 0, 0, 0.75); color: white; padding: 8px 12px; border-radius: 6px; font-size: 14px; white-space: nowrap; z-index: 100; pointer-events: none; transform: translate(-50%, 20px); transition: opacity 0.2s; }
         #intro-guide { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 15px 25px; border-radius: 10px; font-size: 16px; z-index: 200; text-align: center; animation: fadeOut 5s forwards; animation-delay: 1s; }
@@ -66,9 +70,8 @@
 
     <div class="image-wrapper">
         <img src="images/융프_인트로.png" id="background-main" alt="기본 배경 이미지">
-        
-        <img src="images/융프_인트로_아바타 호버.png" class="hover-image" id="avatar-hover-layer" alt="아바타 호버 이미지">
-        <img src="images/융프_인트로_노트북 호버.png" class="hover-image" id="laptop-hover-layer" alt="노트북 호버 이미지">
+    
+        <img src="images/융프_인트로 이미지_아바타노트북.png" class="hover-image" id="avatar-hover-layer" alt="아바타와 노트북 호버 이미지">
         <img src="images/융프_인트로_핸드폰 호버.png" class="hover-image" id="phone-hover-layer" alt="핸드폰 호버 이미지">
         <img src="images/융프_인트로_이력서 호버.png" class="hover-image" id="resume-hover-layer" alt="이력서 호버 이미지">
         <img src="images/융프_인트로_포스터 호버.png" class="hover-image" id="poster-hover-layer" alt="포스터 호버 이미지">
@@ -78,7 +81,7 @@
         <img src="images/융프_인트로_선반_곰3.png" class="hover-image" id="bear3-hover-layer" alt="세번째 곰 호버 이미지">
 
         <a href="home_ver2.html#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
-        <a href="home_ver2.html#web-work" class="interactive-area" id="laptop-area" data-hover-target="laptop-hover-layer" data-title="Projects"></a>
+        <a href="home_ver2.html#web-work" class="interactive-area" id="laptop-area" data-title="Projects"></a>
         <a href="home_ver2.html#contact" class="interactive-area" id="phone-area" data-hover-target="phone-hover-layer" data-title="Github"></a>
         <a href="home_ver2.html#contact" class="interactive-area" id="resume-area" data-hover-target="resume-hover-layer" data-title="Contact"></a>
         <a href="home_ver2.html#graphic-work" class="interactive-area" id="bear-poster-area" data-hover-target="poster-hover-layer" data-title="Graphic Work"></a>
@@ -94,7 +97,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const imagesToPreload = [
-                'images/융프_인트로_아바타 호버.png','images/융프_인트로_노트북 호버.png','images/융프_인트로_핸드폰 호버.png','images/융프_인트로_이력서 호버.png','images/융프_인트로_포스터 호버.png','images/융프_인트로_선반_꽃.png','images/융프_인트로_선반_곰1.png','images/융프_인트로_선반_곰2.png','images/융프_인트로_선반_곰3.png'
+                'images/융프_인트로 이미지_아바타노트북.png',
+                'images/융프_인트로_핸드폰 호버.png',
+                'images/융프_인트로_이력서 호버.png',
+                'images/융프_인트로_포스터 호버.png',
+                'images/융프_인트로_선반_꽃.png',
+                'images/융프_인트로_선반_곰1.png',
+                'images/융프_인트로_선반_곰2.png',
+                'images/융프_인트로_선반_곰3.png'
             ];
             imagesToPreload.forEach(src => { (new Image()).src = src; });
 
@@ -108,6 +118,8 @@
 
                 area.addEventListener('mouseenter', (e) => {
                     hoverImages.forEach(img => img.classList.remove('hover-active'));
+                    // [수정됨] hoverImage가 있는지 확인하는 로직은 그대로 유지됩니다.
+                    // 노트북 영역은 targetId가 없으므로 hoverImage가 null이 되어 if문을 건너뜁니다.
                     if (hoverImage) hoverImage.classList.add('hover-active');
                     const title = area.dataset.title;
                     if (title && tooltip) {
