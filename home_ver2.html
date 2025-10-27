@@ -8,23 +8,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /*
-         * 무드보드 컨셉 적용: 파스텔 톤, 둥근 모서리, 부드러운 그림자
-         * ... (기존 스타일)
-         */
         body, html {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #FAFAFA; /* 밝은 배경 */
-            color: #495057; /* 짙은 텍스트 색상 */
+            background: linear-gradient(135deg, #FFDDE1 0%, #B2EBF2 100%); /* [수정] 배경 그라데이션을 body로 이동 */
+            color: #495057; 
             overflow: hidden;
             margin: 0;
             padding: 0;
+            /* 12 12는 커서의 'hotspot'(클릭 지점)을 의미하며, 이미지의 왼쪽 상단에서 12px, 위쪽에서 12px 떨어진 지점입니다. */
+            cursor: url('images/돋보기\ 커서.webp') 12 12, auto;
         }
         #page-container {
             display: flex;
             width: 500vw;
             height: 100vh;
-            /* [수정] 페이지 이동 애니메이션 복구 */
             transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
         }
         .page-section {
@@ -34,11 +31,9 @@
             flex-shrink: 0;
         }
         #three-canvas-container {
-            /* 캔버스 크기 유지 */
             width: 100%;
             max-width: 400px;
             height: 400px;
-            /* [수정] 캔버스가 부모 div의 둥근 모서리를 따르도록 overflow: hidden 추가 */
             overflow: hidden;
         }
         .animate-on-scroll {
@@ -50,20 +45,19 @@
             opacity: 1;
             transform: translateY(0);
         }
-        /* 버튼 및 카드 공통 스타일 */
+        
         .card-shadow {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05); /* 부드러운 그림자 */
-            border-radius: 2rem; /* 더 둥근 모서리 */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05); 
+            border-radius: 2rem;
         }
         
-        /* --- 헤더 스타일 변경 --- */
         .nav-container {
             position: relative;
             background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-radius: 9999px; /* Pill shape */
             padding: 6px;
-            box-shadow: 0 8px 25px rgba(245, 168, 178, 0.2); /* 핑크색 기반 부드러운 그림자 */
+            box-shadow: 0 8px 25px rgba(245, 168, 178, 0.2); 
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
         .nav-menu {
@@ -90,65 +84,91 @@
         .nav-slider {
             position: absolute;
             top: 6px;
-            left: 0px; /* JavaScript로 제어 */
+            left: 0px; 
             height: calc(100% - 12px);
-            background-color: #F5A8B2; /* Primary 핑크 */
-            border-radius: 9999px; /* Pill shape */
+            background-color: #F5A8B2; 
+            border-radius: 9999px;
             z-index: 1;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* --- 홈 섹션 스타일 --- */
+        
         #home {
-            /* 파스텔 그라데이션 배경 적용 */
-            background: linear-gradient(135deg, #FFDDE1 0%, #B2EBF2 100%);
+             /* [삭제] #home의 개별 배경 스타일 제거 */
         }
 
-        /* --- Web Work 썸네일 높이 제한 및 스크롤바 커스터마이징 (옵션) --- */
         #web-project-thumbnails {
-            /* JS에서 높이를 동적으로 설정하며, 넘칠 경우 스크롤 허용 */
             overflow-y: auto;
         }
 
-        /* **[수정됨]** 맥북 뷰포트 영역의 CSS 재정의 및 패딩 적용 */
         #laptop-container {
-            /* 맥북 화면 프레임과 화면 영역의 부모 컨테이너 */
             position: relative;
-            /* 맥북 컨테이너 자체에 overflow: hidden을 적용하여 화면 밖으로 이미지가 넘치지 않도록 강제 */
             overflow: hidden; 
         }
 
         #laptop-screen-viewport {
-            /* 맥북 프레임의 실제 화면 영역에 맞추기 위한 포지셔닝 */
             position: absolute; 
-            /* 패딩을 style 블록에서 CSS로 가져오고, 넘치는 내용은 스크롤되도록 설정 */
-            padding: 2.3% 10% 12% 9.2%; /* **[수정]** 상단 여백을 줄였습니다. */
+            padding: 2.3% 10% 12% 9.2%; 
             top: 0; left: 0;
             width: 100%; 
             height: 100%; 
             overflow-y: scroll !important;
-            border-radius: 42px; /* **[수정]** 맥북 프레임의 모서리 곡률과 맞추기 위해 값을 더 올렸습니다. */
+            border-radius: 42px; 
         }
         
-        /* **[최종 수정]** 맥북 화면에 표시되는 스크린샷 이미지 설정 - 여백 제거 및 꽉 채우기 */
         #laptop-screen-viewport img {
             width: 100%;
-            height: auto; /* 이미지의 원본 비율을 유지하면서 꽉 채우기 위해 height: auto 유지 */
-            display: block; 
-            /* 여백을 제거하고 꽉 채우기 위해 cover 사용 */
-            object-fit: cover; 
-            object-position: top;
+            height: auto; 
+            display: block;
         }
 
-        /* 맥북 화면 영역의 스크롤바가 안 보이도록 처리 (선택 사항) */
+        /* --- [수정됨] --- */
+        /* 썸네일 이미지 기본 스타일 */
+        .web-thumbnail-img {
+            height: 140px; 
+            object-fit: cover;  
+            object-position: top;
+            filter: grayscale(90%) brightness(0.8);
+            opacity: 0.8;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1); /* 줌 효과를 위한 기본 스케일 */
+        }
+        
+        /* 래퍼에 호버/활성화 시 이미지 스타일 변경 */
+        .thumbnail-wrapper:hover .web-thumbnail-img,
+        .thumbnail-wrapper.active-thumbnail .web-thumbnail-img {
+            filter: grayscale(0%) brightness(1);
+            opacity: 1;
+            transform: scale(1.05); /* 줌 효과 */
+        }
+
+        /* 래퍼 스타일 */
+        .thumbnail-wrapper {
+            transition: border-color 0.3s ease;
+             /* overflow-hidden은 Tailwind 클래스로 JS에서 직접 추가 */
+        }
+        
+        /* 프로젝트 타입 뱃지 스타일 */
+        .project-type-badge {
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* 뱃지가 마우스 이벤트를 가로채지 않도록 함 */
+        }
+
+        /* 래퍼에 호버/활성화 시 뱃지 숨기기 */
+        .thumbnail-wrapper:hover .project-type-badge,
+        .thumbnail-wrapper.active-thumbnail .project-type-badge {
+            opacity: 0;
+        }
+        /* --- [수정 끝] --- */
+
+
         #laptop-screen-viewport::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none; /* 스크롤바 숨기기 */
         }
         #laptop-screen-viewport {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none; 
         }
 
-        /* --- [추가] 타이핑 효과 CSS --- */
         .typing-effect::after {
             content: '|';
             margin-left: 0.5rem;
@@ -160,9 +180,8 @@
         }
         .typing-effect.typing-done::after {
             animation: none;
-            content: ''; /* 타이핑 완료 후 커서 제거 */
+            content: ''; 
         }
-        /* --- [추가] 끝 --- */
     </style>
 </head>
 <body class="overflow-hidden">
@@ -180,31 +199,23 @@
         </div>
     </header>
     <main id="page-container">
-        <!-- [수정] home 섹션에 relative 클래스 추가 및 스크롤 아이콘 div 추가 -->
-        <section id="home" class="page-section relative flex-col justify-center items-center text-center p-8 pt-24">
+        <!-- ... Home 섹션 ... --><section id="home" class="page-section relative flex-col justify-center items-center text-center p-8 pt-24">
             <h1 id="home-text-h1" class="text-6xl font-extrabold text-[#495057] mb-6 min-h-[72px] md:min-h-[84px]"></h1>
             <p id="home-text-p" class="text-xl text-[#6C757D] opacity-0 min-h-[28px]"></p>
 
-            <!-- [수정] 스크롤 유도 아이콘 (문구 추가 및 flex 적용) -->
             <div id="scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-0 transition-opacity duration-500 cursor-pointer flex flex-col items-center">
-                <p class="text-sm text-gray-600 mb-1">SCROLL</p> <!-- [추가] 스크롤 문구 -->
-                <svg class="w-8 h-8 text-gray-600 animate-bounce" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <p class="text-sm text-gray-600 mb-1">SCROLL</p> <svg class="w-8 h-8 text-gray-600 animate-bounce" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
             </div>
         </section>
-        <!-- [수정] 끝 -->
-
-        <section id="about" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#FAFAFA]">
+        <!-- [수정] bg-[#FAFAFA] 클래스 제거 --><section id="about" class="page-section flex-col justify-center items-center p-8 pt-24">
             <h2 class="text-4xl font-bold mb-10 text-center animate-on-scroll">About Me</h2>
             <div class="container mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 animate-on-scroll">
-                <!-- [수정] p-4 (패딩) 클래스 제거 -->
                 <div id="three-canvas-container" class="cursor-grab active:cursor-grabbing card-shadow bg-white rounded-2xl"></div>
                 <div class="lg:w-1/2 flex flex-col gap-5">
                     <div id="about-content" class="p-8 bg-white card-shadow min-h-[160px] rounded-2xl">
                         <h3 id="about-title" class="text-2xl font-bold mb-4 text-center text-[#F5A8B2]">큐브를 돌려보세요!</h3>
-                        <!-- [문구 수정] -->
-                        <!-- [수정] text-center 추가 -->
                         <p id="about-text" class="text-gray-700 text-center">큐브의 각 면 및 버튼 클릭, 큐브를 직접 돌려 저에 대한 정보를 확인해보세요.</p> 
                     </div>
                     <div id="cube-controls" class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4 bg-white card-shadow rounded-2xl">
@@ -213,12 +224,12 @@
             </div>
         </section>
 
-        <section id="graphic-work" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#FAFAFA]">
+        <!-- [수정] bg-[#FAFAFA] 클래스 제거 --><section id="graphic-work" class="page-section flex-col justify-center items-center p-8 pt-24">
             <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Graphic Works</h2>
             <div class="container mx-auto flex flex-col items-center max-w-5xl relative animate-on-scroll">
                 <div id="graphic-slider" class="relative w-full h-[400px] flex justify-center items-center mb-8 group cursor-pointer card-shadow bg-white p-6 rounded-2xl">
-                     <img id="graphic-image-main" src="" alt="Graphic Work Main" class="max-w-full max-h-full h-auto object-contain absolute transition-opacity duration-500 opacity-0 group-hover:opacity-100 rounded-lg">
-                     <img id="graphic-image-placeholder" src="" alt="Graphic Work Placeholder" class="max-w-full max-h-full h-auto object-contain transition-opacity duration-500 opacity-100 group-hover:opacity-0 rounded-lg">
+                    <img id="graphic-image-main" src="" alt="Graphic Work Main" class="max-w-full max-h-full h-auto object-contain absolute transition-opacity duration-500 opacity-0 group-hover:opacity-100 rounded-lg">
+                    <img id="graphic-image-placeholder" src="" alt="Graphic Work Placeholder" class="max-w-full max-h-full h-auto object-contain transition-opacity duration-500 opacity-100 group-hover:opacity-0 rounded-lg">
                 </div>
                 <div id="graphic-description-box" class="w-full max-w-2xl bg-white p-6 card-shadow min-h-[120px] text-center rounded-2xl">
                     <h3 id="graphic-title" class="text-2xl font-bold mb-2 text-[#495057]">작품명</h3>
@@ -233,34 +244,38 @@
             </div>
         </section>
 
-        <section id="web-work" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#F8F9FA]">
-             <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Web Works</h2>
+        <!-- [수정] bg-[#F8F9FA] 클래스 제거 --><section id="web-work" class="page-section flex-col justify-center items-center p-8 pt-24">
+            <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Web Works</h2>
             <div class="container mx-auto flex flex-col md:flex-row gap-8 items-start justify-center animate-on-scroll">
                 <div id="web-work-left-column" class="w-full md:w-3/4 flex flex-col items-center gap-8">
                     <div id="laptop-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
+                        
                         <div id="laptop-screen-viewport" class="absolute w-full h-full top-0 left-0">
-                            <img id="laptop-screen" src="https://placehold.co/800x600/B2EBF2/495057?text=Select+a+Project" 
-                                 alt="Project Screenshot" class="w-full">
+                            <!-- [수정] 프롬프트 div 제거 --><img id="laptop-screen" src="" 
+                                alt="Project Screenshot" class="w-full relative z-10 opacity-100 transition-opacity duration-500">
                         </div>
+
                         <img src="images/web/맥북.webp" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E9ECEF/495057?text=Laptop+Frame';" alt="Laptop Frame" class="relative z-10 w-full h-auto pointer-events-none">
                     </div>
+                    
                     <div id="project-description-box" class="w-full max-w-3xl bg-white p-6 card-shadow min-h-[150px] rounded-2xl">
-                        <h3 id="project-title" class="text-2xl font-bold mb-2 text-[#495057]">작품 제목</h3>
-                        <p id="project-description" class="text-gray-600">작품 설명이 여기에 표시됩니다.</p>
+                        <h3 id="project-title" class="text-2xl font-bold mb-2 text-[#495057]">Web Projects</h3>
+                        <p id="project-description" class="text-gray-600">오른쪽 목록에서 작품을 선택하세요.</p>
                     </div>
                 </div>
                 <div class="w-full md:w-1/4">
-                    <div id="web-project-thumbnails" class="bg-white p-4 card-shadow space-y-4 overflow-y-auto rounded-2xl"></div>
+                    <div id="web-project-thumbnails" class="bg-white p-4 card-shadow space-y-4 overflow-y-auto rounded-2xl">
+                        <!-- 썸네일이 여기에 동적으로 생성됩니다. --></div>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="page-section flex-col justify-center items-center p-8 pt-24 bg-[#FAFAFA]">
-             <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Contact Me</h2>
+        <!-- [수정] bg-[#FAFAFA] 클래스 제거 --><section id="contact" class="page-section flex-col justify-center items-center p-8 pt-24">
+            <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Contact Me</h2>
             <div class="container mx-auto bg-white p-10 rounded-3xl card-shadow flex flex-col md:flex-row gap-10 max-w-5xl animate-on-scroll">
                 <div class="md:w-1/2">
                     <div class="flex items-center mb-8">
-                         <svg class="w-16 h-16 text-[#F5A8B2] mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
+                        <svg class="w-16 h-16 text-[#F5A8B2] mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
                         <div>
                             <h3 class="text-3xl font-bold text-[#495057]">박소현</h3>
                             <p class="text-gray-500">Web Designer</p>
@@ -292,7 +307,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- 전역 변수 및 상수 ---
+            // ... (상단 스크립트 코드는 변경 없음) ...
             const container = document.getElementById('page-container');
             const navLinks = document.querySelectorAll('.nav-link');
             const navSlider = document.querySelector('.nav-slider');
@@ -302,18 +317,16 @@
             let isThreeJsInitialized = false;
             const sectionIds = ['home', 'about', 'graphic-work', 'web-work', 'contact'];
 
-            // --- [수정] 홈 섹션 타이핑 효과 변수 ---
             const homeH1 = document.getElementById('home-text-h1');
             const homeP = document.getElementById('home-text-p');
-            const scrollIndicator = document.getElementById('scroll-indicator'); // [추가]
+            const scrollIndicator = document.getElementById('scroll-indicator');
             const textH1 = "고민 없이 바로 이해되는 디자인";
             const textP = "중요한 정보에 집중하여 핵심을 전달합니다.";
 
-            // [추가] 범용 타이핑 함수
             function typeWriter(element, text, speed = 100, callback) {
                 let i = 0;
-                element.innerHTML = ""; // 초기화
-                element.classList.add('typing-effect'); // 커서 추가
+                element.innerHTML = "";
+                element.classList.add('typing-effect');
                 element.classList.remove('typing-done');
 
                 function typeLoop() {
@@ -322,33 +335,28 @@
                         i++;
                         setTimeout(typeLoop, speed);
                     } else {
-                        element.classList.add('typing-done'); // 완료
-                        element.classList.remove('typing-effect'); // 커서 제거
-                        if (callback) callback(); // 다음 함수 호출
+                        element.classList.add('typing-done');
+                        element.classList.remove('typing-effect'); 
+                        if (callback) callback(); 
                     }
                 }
                 typeLoop();
             }
 
-            // [수정] 타이핑 시작 함수 (h1 -> p -> 스크롤 아이콘 표시)
             function startHomeTyping() {
                 if (!homeH1 || !homeP || !scrollIndicator) return;
 
-                // h1, p, 스크롤 아이콘 초기화
                 homeH1.innerHTML = "";
                 homeP.innerHTML = "";
-                homeP.style.opacity = 0; // p태그 숨김
-                scrollIndicator.style.opacity = 0; // [추가] 스크롤 아이콘 숨김
+                homeP.style.opacity = 0; 
+                scrollIndicator.style.opacity = 0; 
                 homeH1.classList.remove('typing-done', 'typing-effect');
                 homeP.classList.remove('typing-done', 'typing-effect');
                 
-                // h1 타이핑 시작
                 typeWriter(homeH1, textH1, 100, () => {
-                    // h1 완료 후 0.5초 뒤 p 타이핑 시작
                     setTimeout(() => {
-                        homeP.style.opacity = 1; // p태그 보이기
+                        homeP.style.opacity = 1; 
                         typeWriter(homeP, textP, 60, () => {
-                            // [추가] p 타이핑 완료 후 0.3초 뒤 스크롤 아이콘 표시
                             setTimeout(() => {
                                 if (scrollIndicator) scrollIndicator.style.opacity = 1;
                             }, 300);
@@ -357,72 +365,55 @@
                 });
             }
 
-            // --- [추가] 스크롤 아이콘 클릭 시 About 페이지로 이동 ---
             if (scrollIndicator) {
                 scrollIndicator.addEventListener('click', () => {
-                    moveToPage(1); // About Me 섹션 (index 1)
+                    moveToPage(1); 
                 });
             }
 
-            // --- [수정] About Me Page: Three.js 변수 ---
-            // initThreeJS 밖(DOMContentLoaded 스코프)으로 이동
             let scene, camera, renderer, cube, isDragging = false, previousMousePosition = { x: 0, y: 0 }, isAutoRotating = true;
             let targetRotation = null;
-            let snapAndResume = false; // [추가] 스냅 후 자동 재시작 플래그
-            let wasAutoRotatingBeforeMouseDown = true; // [NEW] mousedown 전의 상태 저장
+            let snapAndResume = false; 
+            let wasAutoRotatingBeforeMouseDown = true;
             
-            // --- [코드 수정] ---
-            // '학력' (기존 index 0)과 '경험' (기존 index 2)의 위치를 교체합니다.
-            // [수정] '소개' content 수정 (이름, 생년월일, 가치관 추가)
             const aboutData = [
-                { title: '소개 (Introduction)', content: '박소현<br>2002.02.08<br>사람을 향한 소통 디자인, 따뜻한 감성으로 <br>사용자의 이야기에 귀 기울여 미소 지을 수 있는 결과물을 만듭니다.', rotation: { x: -Math.PI / 2, y: 0 }, face: 'bottom' }, // '경험'이 index 0으로 이동
-                { title: '기술 (Skills)', content: 'Adobe Photoshop | Adobe Illustrator | Adobe InDesign | Adobe Premiere Pro | Adobe After Effects | Figma | procreate', rotation: { x: 0, y: Math.PI / 2 }, face: 'left' },
-                { title: '학력 (Education)', content: '2026. 02. 한국폴리텍1대학 서울정수캠퍼스 시각디자인과 졸업 예정', rotation: { x: 0, y: 0 }, face: 'front' }, // '학력'이 index 2로 이동
-                { title: '자격증 (License)', content: '전산회계2급 | 워드프로세서 | ERP 회계/물류/생산 정보관리사 2급 | 미용사(일반)', rotation: { x: 0, y: -Math.PI / 2 }, face: 'right' },
-                { title: '수상 (Awards)', content: '무한도전뷰티콘테스트 2017 퍼머넌트 장려상', rotation: { x: Math.PI / 2, y: 0 }, face: 'top' },
-                { title: '비전 (Vision)', content: '웹과 그래픽 영역을 아우르며, 어떤 환경에서든 직관적이고 효과적으로 메시지를 전달하는 전문 웹 디자이너로 성장하겠습니다.', rotation: { x: 0, y: Math.PI }, face: 'back' }
+                { title: '소개 (Introduction)', content: '박소현<br>2002.02.08<br>사람을 향한 소통 디자인, 따뜻한 감성으로 <br>사용자의 이야기에 귀 기울여 미소 지을 수 있는 결과물을 만듭니다.', rotation: { x: -Math.PI / 2, y: 0 }, face: 'bottom', img: 'images/web/맥북.webp' }, // [수정] img 경로 추가
+                { title: '기술 (Skills)', content: 'Adobe Photoshop | Adobe Illustrator | Adobe InDesign | Adobe Premiere Pro | Adobe After Effects | Figma | procreate', rotation: { x: 0, y: Math.PI / 2 }, face: 'left', img: 'images/about me/기술.jpg' },
+                { title: '학력 (Education)', content: '2026. 02. 한국폴리텍1대학 서울정수캠퍼스 시각디자인과 졸업 예정', rotation: { x: 0, y: 0 }, face: 'front', img: 'images/about me/학력.jpg' }, // '학력'이 index 2로 이동
+                { title: '자격증 (License)', content: '전산회계2급 | 워드프로세서 | ERP 회계/물류/생산 정보관리사 2급 | 미용사(일반)', rotation: { x: 0, y: -Math.PI / 2 }, face: 'right', img: 'images/about me/자격증.jpg' },
+                { title: '수상 (Awards)', content: '무한도전뷰티콘테스트 2017 퍼머넌트 장려상', rotation: { x: Math.PI / 2, y: 0 }, face: 'top', img: 'images/about me/수상.jpg' },
+                { title: '비전 (Vision)', content: '웹과 그래픽 영역을 아우르며, 어떤 환경에서든 직관적이고 효과적으로 메시지를 전달하는 웹 디자이너로 성장하겠습니다.', rotation: { x: 0, y: Math.PI }, face: 'back', img: 'images/about me/비전.jpg' }
             ];
-            // --- [코드 수정 끝] ---
 
-
-            // --- [수정] Three.js 애니메이션 루프 (큐브 로직) ---
             function animate() {
-                // [수정] 큐브가 없거나, 현재 페이지가 1(About)이 아니면 루프 중단
                 if (!cube || currentPageIndex !== 1) {
                     return;
                 }
                 
-                // 페이지가 1이면 루프 계속
                 requestAnimationFrame(animate); 
 
                 if (targetRotation) {
-                    // [수정] 스냅(착) 애니메이션 중일 때
-                    isAutoRotating = false; // 스냅 중에는 자동 회전 일시 중지
+                    isAutoRotating = false; 
 
-                    // Lerp(선형 보간)를 사용하여 부드럽게 이동
                     cube.rotation.x += (targetRotation.x - cube.rotation.x) * 0.1;
                     cube.rotation.y += (targetRotation.y - cube.rotation.y) * 0.1;
 
-                    // 목표 회전에 거의 도달했는지 확인
                     const diffX = Math.abs(targetRotation.x - cube.rotation.x);
                     const diffY = Math.abs(targetRotation.y - cube.rotation.y);
                     if (diffX < 0.01 && diffY < 0.01) {
-                        // 거의 도달했다면 정확한 위치로 스냅
+
                         cube.rotation.x = targetRotation.x;
                         cube.rotation.y = targetRotation.y;
-                        targetRotation = null; // 스냅 애니메이션 중지
+                        targetRotation = null; 
                         
-                        // [수정] 플래그가 있을 때만 재시작 (페이지 로드/리셋 시)
                         if (snapAndResume) {
                             isAutoRotating = true;
                             snapAndResume = false;
                         }
-                        // 그 외 (클릭, 드래그)에는 멈춘 상태 유지
                     }
                 } else if (isAutoRotating && !isDragging) {
-                    // [수정] 자동 회전
-                    cube.rotation.x += 0.003;
-                    cube.rotation.y += 0.003;
+                    cube.rotation.x += 0.006;
+                    cube.rotation.y += 0.006;
                 }
                 
                 if (renderer) {
@@ -430,44 +421,25 @@
                 }
             }
 
-            // --- [추가] Three.js 리셋 함수 ---
             function resetCubeAnimation() {
-                if (!cube) return; // 아직 초기화 안됐으면 종료
+                if (!cube) return; 
 
-                // 1. 상태 리셋
-                isAutoRotating = false; // [수정] 우선 멈춤
+                isAutoRotating = false; 
                 isDragging = false;
-                // targetRotation = null; // targetRotation을 설정할 것이므로 필요 없음
-                
-                // 2. 큐브 회전 리셋 (0,0으로)
-                // [수정] 부드러운 리셋을 위해 targetRotation 사용
-                // [수정] '학력'이 있던 {x:0, y:0} 대신, '경험'의 { x: -Math.PI / 2, y: 0 }을 기본값으로 할지, 0,0으로 할지 고민.
-                // -> 0,0으로 스냅하는 것이 아니라, index 0 (경험)의 rotation 값으로 스냅해야 함.
-                // -> [수정] 0,0으로 리셋하는 대신, 텍스트만 리셋하고 자동회전 시작
-                targetRotation = null; // 스냅 중지
-                isAutoRotating = true; // 자동 회전 시작
-                snapAndResume = false; // 플래그 리셋
+                targetRotation = null; 
+                isAutoRotating = true; 
+                snapAndResume = false; 
 
-
-                // 3. 텍스트 박스 리셋
                 document.getElementById('about-title').textContent = '큐브를 돌려보세요!';
-                // [문구 수정]
-                document.getElementById('about-text').textContent = '큐브와 아래 버튼을 클릭하거나 돌려, 정보를 확인해보세요.';
-
-                // 4. 애니메이션 루프 재시작 (이미 돌고 있음, animate() 함수가 루프를 관리)
-                // animate() 함수가 currentPageIndex === 1일 때만 실행되도록 수정했으므로,
-                // 여기서 다시 animate()를 호출해줘야 함.
+                document.getElementById('about-text').textContent = '큐브의 각 면 및 버튼 클릭, 큐브를 직접 돌려 저에 대한 정보를 확인해보세요.';
                 animate();
             }
 
-
-            // --- [수정] 페이지 이동 및 애니메이션 [타이핑 및 큐브 효과 적용됨] ---
-            function handleAnimations(newIndex, oldIndex) {
+            function handleAnimations(newIndex, oldIndex, isInitialLoad = false) {
                 if (oldIndex !== undefined && oldIndex !== -1) {
                     const oldSection = document.getElementById(sectionIds[oldIndex]);
                     if (oldSection) oldSection.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.remove('is-visible'));
 
-                    // [추가] 홈 섹션(0)을 떠날 때 스크롤 아이콘 숨기기
                     if (oldIndex === 0 && scrollIndicator) {
                         scrollIndicator.style.opacity = 0;
                     }
@@ -475,29 +447,42 @@
                 
                 const newSection = document.getElementById(sectionIds[newIndex]);
                 if (newSection) {
-                    setTimeout(() => {
-                        // 'home' 섹션(index 0)의 자식들은 'animate-on-scroll'을 사용하지 않음
+                    const delay = (isInitialLoad || newIndex === oldIndex) ? 0 : 400;
+                
+                    const animateContent = () => {
                         if (newIndex !== 0) {
                             newSection.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible'));
                         }
-                    }, newIndex === oldIndex ? 0 : 400);
+                    };
+                    
+                    if (delay === 0) {
+                        animateContent();
+                    } else {
+                        setTimeout(animateContent, delay);
+                    }
                 }
                 
-                // [수정] newIndex가 0 (Home)일 때, 타이핑 효과 시작
-                // startHomeTyping 함수가 스크롤 아이콘 숨김 처리를 포함함
+                const typingDelay = (isInitialLoad || newIndex === oldIndex) ? 0 : 400;
                 if (newIndex === 0) {
-                    setTimeout(startHomeTyping, newIndex === oldIndex ? 0 : 400);
+                    if (typingDelay === 0) {
+                        startHomeTyping();
+                    } else {
+                        setTimeout(startHomeTyping, typingDelay);
+                    }
                 }
-
-                // [수정] newIndex가 1 (About)일 때, 큐브 애니메이션 재시작/리셋
+                const cubeDelay = (isInitialLoad || newIndex === oldIndex) ? 0 : 400;
                 if (newIndex === 1) {
-                    setTimeout(() => {
+                    const startCube = () => {
                         if (isThreeJsInitialized) {
-                            // 이미 초기화된 경우, 리셋 및 애니메이션 재시작
                             resetCubeAnimation();
                         }
-                        // (첫 초기화는 moveToPage에서 처리)
-                    }, newIndex === oldIndex ? 0 : 400);
+                    };
+                    
+                    if (cubeDelay === 0) {
+                        startCube();
+                    } else {
+                        setTimeout(startCube, cubeDelay);
+                    }
                 }
             }
 
@@ -507,19 +492,17 @@
                 
                 const oldPageIndex = currentPageIndex;
                 container.style.transform = `translateX(${-index * 100}vw)`;
-                currentPageIndex = index; // [중요] currentPageIndex가 handleAnimations보다 먼저 설정되어야 함
+                currentPageIndex = index;
                 updateNav(currentPageIndex);
-                handleAnimations(currentPageIndex, oldPageIndex); // [수정]된 handleAnimations 함수 호출
+                handleAnimations(currentPageIndex, oldPageIndex, isInitialLoad);
 
                 if (window.location.hash !== `#${sectionIds[currentPageIndex]}`) history.replaceState(null, null, `#${sectionIds[currentPageIndex]}`);
                 
-                // [수정] About Me 섹션 첫 초기화
                 if (currentPageIndex === 1 && !isThreeJsInitialized) {
                     initThreeJS();
                     isThreeJsInitialized = true;
                 }
 
-                // Web Work 섹션으로 이동 시 높이 재조정
                 if (currentPageIndex === 3) {
                     setTimeout(setThumbnailHeight, 50); 
                 }
@@ -564,7 +547,6 @@
                 setTimeout(() => { isScrolling = false; }, 1000); 
             }
 
-            // [수정] Web Work 섹션의 내부 스크롤이 페이지 전체 스크롤을 방해하지 않도록 수정
             document.getElementById('web-work').addEventListener('wheel', function(event) {
                 const isInsideScrollable = event.target.closest('#web-project-thumbnails') || event.target.closest('#laptop-screen-viewport');
                 if (isInsideScrollable) {
@@ -590,9 +572,6 @@
                 if (newIndex !== -1 && newIndex !== currentPageIndex) moveToPage(newIndex);
             });
             
-            // --- About Me Page: Three.js Cube ---
-            // (변수와 aboutData 정의는 위로 이동)
-
             function createTextTexture(text) {
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
@@ -610,46 +589,57 @@
                 const container = document.getElementById('three-canvas-container');
                 if (!container || !container.clientWidth) return;
 
-                // [추가] Raycaster for click detection
                 const raycaster = new THREE.Raycaster();
                 const mouse = new THREE.Vector2();
 
                 scene = new THREE.Scene();
-                // [수정] 캔버스 배경을 투명하게 만들기 위해 scene.background 라인 삭제 (또는 주석 처리)
-                // scene.background = new THREE.Color(0xffffff); 
                 camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
                 camera.position.z = 5;
-                renderer = new THREE.WebGLRenderer({ antias: true, alpha: true }); // alpha: true가 투명 배경을 위해 필요
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
                 renderer.setSize(container.clientWidth, container.clientHeight);
                 container.innerHTML = '';
                 container.appendChild(renderer.domElement);
                 
-                // [수정] aboutData의 순서가 변경되었으므로, 텍스처 매핑 순서도 이에 맞게 재조정해야 합니다.
-                // aboutData의 face 속성을 기준으로 재질을 매핑합니다.
+                const textureLoader = new THREE.TextureLoader();
+                
                 const materials = [
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'right').title), side: THREE.DoubleSide }), // index 0 (Right)
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'left').title), side: THREE.DoubleSide }),  // index 1 (Left)
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'top').title), side: THREE.DoubleSide }),   // index 2 (Top)
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'bottom').title), side: THREE.DoubleSide }),// index 3 (Bottom)
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'front').title), side: THREE.DoubleSide }), // index 4 (Front)
-                    new THREE.MeshBasicMaterial({ map: createTextTexture(aboutData.find(d => d.face === 'back').title), side: THREE.DoubleSide })  // index 5 (Back)
+                    new THREE.MeshBasicMaterial({ 
+                        map: (aboutData.find(d => d.face === 'right').img ? textureLoader.load(aboutData.find(d => d.face === 'right').img) : createTextTexture(aboutData.find(d => d.face === 'right').title)), 
+                        side: THREE.DoubleSide 
+                    }), 
+                    new THREE.MeshBasicMaterial({ 
+                        map: (aboutData.find(d => d.face === 'left').img ? textureLoader.load(aboutData.find(d => d.face === 'left').img) : createTextTexture(aboutData.find(d => d.face === 'left').title)), 
+                        side: THREE.DoubleSide 
+                    }),  
+                    new THREE.MeshBasicMaterial({ 
+                        map: (aboutData.find(d => d.face === 'top').img ? textureLoader.load(aboutData.find(d => d.face === 'top').img) : createTextTexture(aboutData.find(d => d.face === 'top').title)), 
+                        side: THREE.DoubleSide 
+                    }),   
+                    new THREE.MeshBasicMaterial({ 
+                        map: (aboutData.find(d => d.face === 'bottom').img ? textureLoader.load(aboutData.find(d => d.face === 'bottom').img) : createTextTexture(aboutData.find(d => d.face === 'bottom').title)), 
+                        side: THREE.DoubleSide 
+                    }),
+                    new THREE.MeshBasicMaterial({ 
+                        map: (aboutData.find(d => d.face === 'front').img ? textureLoader.load(aboutData.find(d => d.face === 'front').img) : createTextTexture(aboutData.find(d => d.face === 'front').title)), 
+                        side: THREE.DoubleSide 
+                    }), 
+                    new THREE.MeshBasicMaterial({ 
+                        map: (aboutData.find(d => d.face === 'back').img ? textureLoader.load(aboutData.find(d => d.face === 'back').img) : createTextTexture(aboutData.find(d => d.face === 'back').title)), 
+                        side: THREE.DoubleSide 
+                    }) 
                 ];
+                
                 cube = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), materials);
                 
-                // [수정] 큐브의 초기 회전값을 변경된 aboutData[0] ('경험')의 값으로 설정합니다.
                 const initialRotation = aboutData[0].rotation;
                 cube.rotation.x = initialRotation.x;
                 cube.rotation.y = initialRotation.y;
                 
                 scene.add(cube);
 
-                // [수정] animate() 함수 정의는 밖으로 이동
-                
-                // [수정] init의 마지막에 animate()를 호출하여 루프 *시작*
                 animate();
 
                 const controlsContainer = document.getElementById('cube-controls');
-                // [수정] aboutData의 순서가 변경되었으므로 버튼도 새 순서대로 생성됩니다.
                 aboutData.forEach((item, index) => {
                     const button = document.createElement('button');
                     button.textContent = item.title.split('(')[0].trim();
@@ -658,49 +648,45 @@
                     controlsContainer.appendChild(button);
                 });
 
-                // [수정] 버튼 클릭 시: 스냅 및 텍스트 변경, 멈춤
                 controlsContainer.addEventListener('click', (e) => {
                     if (e.target.tagName === 'BUTTON') {
                         const index = parseInt(e.target.dataset.index, 10);
                         const selectedData = aboutData[index];
                         
-                        targetRotation = selectedData.rotation; // 스냅 타겟 설정
-                        isAutoRotating = false; // [수정] 버튼 클릭 시 멈춤
+                        targetRotation = selectedData.rotation;
+                        isAutoRotating = false;
                         
                         document.getElementById('about-title').textContent = selectedData.title;
-                        document.getElementById('about-text').innerHTML = selectedData.content; // [수정] .textContent -> .innerHTML
-                        // animate() 함수가 자동 회전 중지 -> 스냅 -> 멈춤 상태 유지를 처리
+                        document.getElementById('about-text').innerHTML = selectedData.content;
                     }
                 });
 
                 let mouseMoved = false;
-                // [수정] mousedown: 드래그 시작, 자동 회전 중지
+                
                 container.addEventListener('mousedown', e => { 
                     isDragging = true; 
                     mouseMoved = false; 
                     targetRotation = null;
-                    wasAutoRotatingBeforeMouseDown = isAutoRotating; // [NEW] 현재 상태 저장
-                    isAutoRotating = false; // [수정] 드래그 시작 시 자동 회전 즉시 중지
+                    wasAutoRotatingBeforeMouseDown = isAutoRotating; 
+                    isAutoRotating = false;
                     previousMousePosition = { x: e.clientX, y: e.clientY }; 
                 });
 
                 container.addEventListener('mousemove', e => {
                     if (isDragging) {
-                        mouseMoved = true; // [수정] isAutoRotating = false; -> mouseMoved = true;
+                        mouseMoved = true;
                         const deltaMove = { x: e.clientX - previousMousePosition.x, y: e.clientY - previousMousePosition.y };
                         cube.rotation.x += deltaMove.y * 0.01; cube.rotation.y += deltaMove.x * 0.01;
                         previousMousePosition = { x: e.clientX, y: e.clientY };
                     }
                 });
 
-                // [수정] mouseup: 드래그 종료. 드래그였으면(mouseMoved) 가장 가까운 면으로 스냅 후 멈춤.
                 document.addEventListener('mouseup', () => { 
-                    if (!isDragging) return; // 드래그 중이 아니었다면 무시
+                    if (!isDragging) return; 
                     isDragging = false; 
                     
                     if (mouseMoved) {
-                        // [NEW] 드래그 종료 시, 가장 가까운 면으로 스냅
-                        const viewVector = new THREE.Vector3(0, 0, 1); // 카메라가 +Z에 있다고 가정
+                        const viewVector = new THREE.Vector3(0, 0, 1);
                         let bestFace = null;
                         let maxDot = -Infinity;
 
@@ -725,31 +711,23 @@
                         if (bestFace) {
                             const selectedData = aboutData.find(d => d.face === bestFace);
                             if (selectedData) {
-                                targetRotation = selectedData.rotation; // 스냅 타겟 설정
+                                targetRotation = selectedData.rotation; 
                                 document.getElementById('about-title').textContent = selectedData.title;
-                                document.getElementById('about-text').innerHTML = selectedData.content; // [수정] .textContent -> .innerHTML
-                                // [수정] animate() 함수가 스냅 후 멈춘 상태를 유지
+                                document.getElementById('about-text').innerHTML = selectedData.content;
+                                
                             }
-                            // [수정] 스냅 실패 시 자동 회전 재시작 (else) 제거
+                            
                         }
-                        // [수정] 스냅 실패 시 자동 회전 재시작 (else) 제거
+                        
                     } else {
-                        // 드래그가 아니었음 (클릭)
-                        // 'click' 이벤트 핸들러가 처리하도록 둠
-                        // [수정] 자동 회전 재시작 로직 제거
                     }
                 });
-                
-                // --- [코드 수정 시작] ---
-                // [수정] 큐브 클릭 시: 재생/정지 토글 및 정보 표시
+
                 container.addEventListener('click', event => {
-                    if (mouseMoved) return; // 드래그였다면 무시 (mouseup이 처리)
+                    if (mouseMoved) return; 
 
                     if (wasAutoRotatingBeforeMouseDown) {
-                        // [NEW LOGIC] 회전 중이었음 -> 정지 + 스냅
-                        // isAutoRotating는 mousedown에서 이미 false가 되었으므로 변경 필요 없음
-
-                        // 1. Raycast
+                    
                         const rect = container.getBoundingClientRect();
                         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
                         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -759,14 +737,14 @@
                         let selectedData = null;
 
                         if (intersects.length > 0) {
-                            // 큐브 면을 클릭한 경우
+                        
                             const faceIndex = intersects[0].face.materialIndex;
-                            // [수정] 텍스처 매핑 순서(materials 배열)에 맞게 faceNameMap을 수정합니다.
+                            
                             const faceNameMap = ['right', 'left', 'top', 'bottom', 'front', 'back'];
                             const hitFaceName = faceNameMap[faceIndex];
                             selectedData = aboutData.find(d => d.face === hitFaceName);
                         } else {
-                            // 빈 공간을 클릭한 경우 -> 가장 가까운 면 찾기
+                            
                             const viewVector = new THREE.Vector3(0, 0, 1);
                             let bestFace = null;
                             let maxDot = -Infinity;
@@ -791,24 +769,20 @@
                             }
                         }
 
-                        // 공통 로직: 선택된 데이터로 스냅 및 텍스트 설정
+                        
                         if (selectedData) {
-                            targetRotation = selectedData.rotation; // 스냅 타겟 설정
+                            targetRotation = selectedData.rotation; 
                             document.getElementById('about-title').textContent = selectedData.title;
-                            document.getElementById('about-text').innerHTML = selectedData.content; // [수정] .textContent -> .innerHTML
+                            document.getElementById('about-text').innerHTML = selectedData.content; 
                         }
 
                     } else {
-                        // [NEW LOGIC] 정지 중이었음 -> 재생
                         isAutoRotating = true;
-                        targetRotation = null; // 혹시 모를 스냅 중단
-                        // 텍스트 리셋
+                        targetRotation = null; 
                         document.getElementById('about-title').textContent = '큐브를 돌려보세요!';
-                        // [문구 수정]
                         document.getElementById('about-text').textContent = '큐브의 각 면 및 버튼 클릭, 큐브를 직접 돌려 저에 대한 정보를 확인해보세요.';
                     }
                 });
-                // --- [코드 수정 끝] ---
 
 
                 window.addEventListener('resize', () => {
@@ -820,16 +794,24 @@
                 }, false);
             }
 
-            // --- Graphic & Web Work Pages ---
             const graphicWorkProjects = [
                 { title: '로고 디자인', description: '달걀을 모티브로 한 에그타르트 브랜드의 \'에그랑너\' 캐릭터입니다. 빵빵한 볼과 부스러기, 혀는 \'맛\'을 표현했고, 스포크는 어린이도 섭취할 수 있다는 의미로 \'안전성\'을 표현했습니다.', img_placeholder: 'images/graphic/에그타르트_먹는_아바타.jpg', img_main: 'images/graphic/누2.png' },
                 { title: '포스터 디자인', description: '기업 클룹의 \'ZERO SODA\' 음료 제품 촬영 후, 더운 여름 날씨와 바다 배경에 시원함을 나타내는 얼음으로 포스터 디자인 작업을 했습니다.', img_placeholder: 'images/graphic/파인애플_주스_먹는_아바타.jpg', img_main: 'images/graphic/2401110077 박소현_제로소다.jpg' },
             ];
+            
             const webWorkProjects = [
-                { title: '웹 프로젝트 1: 수원화성', description: '조선의 걸작, 수원화성 공식 관광 웹사이트입니다. 정보를 직관적으로 파악하기 어려웠던 수원화성 관련 명소 안내를 이미지를 통해 역사적 가치와 관광 정보를 현대적인 디자인으로 전달합니다.', img: 'images/web/웹_수원화성 디자인.webp', thumbnail: 'images/web/웹_수원화성 디자인.webp', url: '#' },
-                { title: '웹 프로젝트 2: 카카오프렌즈 리디자인', description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', img: 'images/web/웹_카카오프렌즈 리디자인.webp', thumbnail: 'images/web/웹_카카오프렌즈 리디자인.webp', url: '#' },
-                { title: '웹 프로젝트 3: 몬스터 에너지', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', img: 'images/web/웹_몬스터 에너지.webp', thumbnail: 'images/web/웹_몬스터 에너지.webp', url: '#' }
+                // [MODIFIED] 404 섹션 안내 문구 수정
+                { title: 'Web Work 가이드', type: '안내', description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', img: 'images/web/웹404.jpg', thumbnail: 'images/web/웹404.jpg' }, 
+                // [MODIFIED] 설명에서 Tip 제거
+                { title: '개인 웹 프로젝트 1: 수원화성', type: '개인', description: '조선의 걸작, 수원화성 공식 관광 웹사이트입니다. 정보를 직관적으로 파악하기 어려웠던 수원화성 관련 명소 안내를 이미지를 통해 역사적 가치와 관광 정보를 현대적인 디자인으로 전달합니다.', img: 'images/web/웹_수원화성 디자인.webp', thumbnail: 'images/web/웹_수원화성 디자인.webp', url: 'https://www.naver.com/' },
+                // [MODIFIED] 설명에서 Tip 제거
+                { title: '개인 웹 프로젝트 2: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', img: 'images/web/웹_카카오프렌즈 리디자인.webp', thumbnail: 'images/web/웹_카카오프렌즈 리디자인.webp', url: '#' },
+                // [MODIFIED] 설명에서 Tip 제거
+                { title: '개인 웹 프로젝트 3: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', img: 'images/web/웹_몬스터 에너지.webp', thumbnail: 'images/web/웹_몬스터 에너지.webp', url: '#' },
+                // [MODIFIED] 설명에서 Tip 제거
+                { title: '팀 웹 프로젝트 4: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', img: 'images/web/웹_MOA OTT.webp', thumbnail: 'images/web/웹_MOA OTT.webp', url: '#' } 
             ];
+
             let currentGraphicIndex = 0, currentProjectUrl = '';
             
             function updateGraphicWork(index) {
@@ -843,13 +825,30 @@
             document.getElementById('graphic-next').addEventListener('click', () => { currentGraphicIndex = (currentGraphicIndex + 1) % graphicWorkProjects.length; updateGraphicWork(currentGraphicIndex); });
             
             const thumbnailContainer = document.getElementById('web-project-thumbnails');
-            thumbnailContainer.innerHTML = webWorkProjects.map((p, i) => `<img src="${p.thumbnail}" alt="${p.title}" class="w-full h-auto rounded-xl cursor-pointer border-4 ${i===0 ? 'border-[#F5A8B2]' : 'border-transparent hover:border-[#B2EBF2]'} transition-all" data-index="${i}">`).join('');
+            
+            // 썸네일 생성 로직 변경 (div 래퍼 및 뱃지 추가)
+            // 첫 번째 썸네일이 기본적으로 'active-thumbnail' 클래스를 갖도록 수정됨
+            thumbnailContainer.innerHTML = webWorkProjects.map((p, i) => `
+                <div class="thumbnail-wrapper relative w-full rounded-xl cursor-pointer border-4 overflow-hidden ${i === 0 ? 'border-[#F5A8B2] active-thumbnail' : 'border-transparent hover:border-[#B2EBF2]'}" data-index="${i}">
+                    <img src="${p.thumbnail}" alt="${p.title}" class="w-full transition-all web-thumbnail-img">
+                    <span class="project-type-badge absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs font-bold py-1 px-2 rounded-md transition-opacity duration-300">
+                        ${p.type}
+                    </span>
+                </div>
+            `).join('');
             
             function updateWebProject(index) {
                 const project = webWorkProjects[index]; if (!project) return;
-                document.getElementById('laptop-screen').src = project.img;
+
+                const laptopScreen = document.getElementById('laptop-screen');
+
+                // [수정] 프롬프트 숨기는 로직 제거
+                
+                // [MODIFIED] 변수를 사용하여 src 및 텍스트 업데이트
+                laptopScreen.src = project.img;
                 document.getElementById('project-title').textContent = project.title;
-                document.getElementById('project-description').textContent = project.description;
+                // [MODIFIED] textContent를 innerHTML로 변경하여 HTML 태그가 렌더링되도록 수정
+                document.getElementById('project-description').innerHTML = project.description;
                 currentProjectUrl = project.url;
                 
                 const viewport = document.getElementById('laptop-screen-viewport');
@@ -857,18 +856,25 @@
                     viewport.scrollTop = 0;
                 }
 
-                thumbnailContainer.querySelectorAll('img').forEach((thumb, i) => {
-                    thumb.classList.toggle('border-[#F5A8B2]', i === index);
-                    thumb.classList.toggle('border-transparent', i !== index);
+                // 활성화 클래스를 'img'가 아닌 '.thumbnail-wrapper'에 적용
+                thumbnailContainer.querySelectorAll('.thumbnail-wrapper').forEach((wrapper, i) => {
+                    const isActive = (i === index);
+                    wrapper.classList.toggle('border-[#F5A8B2]', isActive);
+                    wrapper.classList.toggle('border-transparent', !isActive);
+                    wrapper.classList.toggle('active-thumbnail', isActive);
                 });
-                
-                // **[수정]** 프로젝트 설명이 바뀌면 높이가 변하므로, 썸네일 높이를 다시 계산합니다.
-                setTimeout(setThumbnailHeight, 50);
             }
-            thumbnailContainer.addEventListener('click', e => { if (e.target.tagName === 'IMG') updateWebProject(parseInt(e.target.dataset.index)); });
+
+            // 클릭 이벤트 리스너를 '.thumbnail-wrapper' 기준으로 변경
+            thumbnailContainer.addEventListener('click', e => {
+                const wrapper = e.target.closest('.thumbnail-wrapper');
+                if (wrapper) {
+                    updateWebProject(parseInt(wrapper.dataset.index));
+                }
+            });
+
             document.getElementById('laptop-container').addEventListener('click', () => { if (currentProjectUrl && currentProjectUrl !== '#') window.open(currentProjectUrl, '_blank'); });
 
-            // **[수정]** 썸네일 컨테이너의 높이를 왼쪽 컬럼(맥북 + 설명)의 전체 높이에 맞추도록 수정
             function setThumbnailHeight() {
                 const leftColumn = document.getElementById('web-work-left-column');
                 const thumbnailsContainer = document.getElementById('web-project-thumbnails');
@@ -880,15 +886,14 @@
                 }
             }
 
-
             function initializeProjects() {
                 updateGraphicWork(0);
-                updateWebProject(0);
+                // [MODIFIED] 첫 번째 웹 프로젝트로 초기화 (새로 추가된 "준비중인 프로젝트"가 됨)
+                updateWebProject(0); 
                 [...graphicWorkProjects, ...webWorkProjects].flatMap(p => [p.img_main, p.img_placeholder, p.img, p.thumbnail]).filter(Boolean).forEach(src => { (new Image()).src = src; });
             }
             initializeProjects();
 
-            // Contact Page
             const contactForm = document.getElementById('contact-form');
             contactForm.addEventListener('submit', e => {
                 e.preventDefault();
@@ -902,17 +907,13 @@
                 contactForm.reset();
             });
 
-Pos: 835
-            /* [수정] SyntaxError를 일으키는 'Two-way Data Binding' 텍스트 삭제 */
 
-            // --- Initial Page Load ---
             setTimeout(() => {
                 const initialHash = window.location.hash.substring(1);
                 const initialIndex = sectionIds.indexOf(initialHash);
                 const targetIndex = initialIndex !== -1 ? initialIndex : 0;
                 container.style.transition = 'none';
                 moveToPage(targetIndex, true);
-                // [수정] 페이지 이동 애니메이션 복구
                 setTimeout(() => { container.style.transition = 'transform 0.8s cubic-bezier(0.7, 0, 0.3, 1)'; }, 50);
 
                 setThumbnailHeight();
