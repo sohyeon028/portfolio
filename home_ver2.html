@@ -268,9 +268,7 @@
                     <div id="laptop-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
                         
                         <div id="laptop-screen-viewport" class="absolute w-full h-full top-0 left-0">
-                            <img id="laptop-screen" src="" 
-                                alt="Project Screenshot" class="w-full relative z-10 opacity-100 transition-opacity duration-500">
-                        </div>
+    </div>
 
                         <img src="images/web/맥북.webp" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E9ECEF/495057?text=Laptop+Frame';" alt="Laptop Frame" class="relative z-10 w-full h-auto pointer-events-none">
                     </div>
@@ -889,13 +887,73 @@
                 },
             ];
             
+            // [수정] const webWorkProjects = [ ... ]
+            // 서브 페이지 개수를 반영하여 imgs 배열을 수정했습니다.
             const webWorkProjects = [
-                { title: 'Web Work 가이드', type: '안내', description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', img: 'images/web/웹404.jpg', thumbnail: 'images/web/웹404.jpg' }, 
-                { title: '개인 웹 프로젝트 1: 수원화성', type: '개인', description: '조선의 걸작, 수원화성 공식 관광 웹사이트입니다. 정보를 직관적으로 파악하기 어려웠던 수원화성 관련 명소 안내를 이미지를 통해 역사적 가치와 관광 정보를 현대적인 디자인으로 전달합니다.', img: 'images/web/웹_수원화성 디자인.webp', thumbnail: 'images/web/웹_수원화성 디자인.webp', url: 'https://www.naver.com/' },
-                { title: '개인 웹 프로젝트 2: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', img: 'images/web/웹_카카오프렌즈 리디자인.webp', thumbnail: 'images/web/웹_카카오프렌즈 리디자인.webp', url: '#' },
-                { title: '개인 웹 프로젝트 3: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', img: 'images/web/웹_몬스터 에너지.webp', thumbnail: 'images/web/웹_몬스터 에너지.webp', url: '#' },
-                { title: '팀 웹 프로젝트 4: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', img: 'images/web/웹_MOA OTT.webp', thumbnail: 'images/web/웹_MOA OTT.webp', url: '#' } 
+                { 
+                    title: 'Web Work 가이드', 
+                    type: '안내', 
+                    description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', 
+                    imgs: ['images/web/웹404.jpg'], // 가이드는 1개
+                    thumbnail: 'images/web/웹404.jpg',
+                    url: '#' // 가이드는 클릭해도 이동 안 하도록 '#'로 설정
+                }, 
+                { 
+                    title: '개인 웹 프로젝트 1: 수원화성', 
+                    type: '개인', 
+                    description: '조선의 걸작, 수원화성 공식 관광 웹사이트입니다. 정보를 직관적으로 파악하기 어려웠던 수원화성 관련 명소 안내를 이미지를 통해 역사적 가치와 관광 정보를 현대적인 디자인으로 전달합니다.', 
+                    imgs: [ 
+                        'images/web/웹_수원화성 디자인.webp',     // 1. 메인
+                        'images/web/웹_수원화성 디자인 서브1.webp',          // 2. 서브 (총 2개)
+                        // TODO: '수원화성_서브1.webp'를 실제 파일명으로 수정하세요.
+                    ], 
+                    thumbnail: 'images/web/웹_수원화성 디자인.webp', 
+                    url: 'https://www.naver.com/' 
+                },
+                { 
+                    title: '개인 웹 프로젝트 2: 카카오프렌즈 리디자인', 
+                    type: '개인', 
+                    description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', 
+                    imgs: [
+                        'images/web/웹_카카오 메인.webp', // 1. 메인
+                        'images/web/웹_카카오 서브1.webp',
+                        'images/web/웹_카카오 서브2.webp',
+                    ], 
+                    thumbnail: 'images/web/웹_카카오 메인.webp', 
+                    url: 'https://sohyeon028.github.io/web_kakaofriends/' 
+                },
+                { 
+                    title: '개인 웹 프로젝트 3: 몬스터 에너지', 
+                    type: '개인', 
+                    description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', 
+                    imgs: [
+                        'images/web/웹_몬스터 에너지.webp', // 1. 메인
+                        'images/web/웹_몬스터 서브1.webp',
+                        'images/web/웹_몬스터 서브2.webp',      
+                        // TODO: '몬스터_서브N.webp' 4개를 실제 파일명으로 수정하세요.
+                    ],
+                    thumbnail: 'images/web/웹_몬스터 에너지.webp', 
+                    url: 'https://sohyeon028.github.io/web_monsterenergy/' 
+                },
+                { 
+                    title: '팀 웹 프로젝트 4: MOA OTT', 
+                    type: '팀', 
+                    description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', 
+                    imgs: [
+                        'images/web/웹_MOA OTT.webp', // 1. 메인
+                        'images/web/웹_MOA OTT 서브1.webp',
+                        'images/web/웹_MOA OTT 서브2.webp',
+                        'images/web/웹_MOA OTT 서브3.webp',
+                        'images/web/웹_MOA OTT 서브4.webp',
+                        'images/web/웹_MOA OTT 서브5.webp',
+                        'images/web/웹_MOA OTT 서브6.webp',
+                    ], 
+                    thumbnail: 'images/web/웹_MOA OTT.webp', 
+                    url: ' https://sohyeon028.github.io/web_moa/' 
+                } 
             ];
+
+
 
             // [삭제] let currentGraphicIndex = 0;
             let currentProjectUrl = '';
@@ -984,27 +1042,117 @@
                 </div>
             `).join('');
             
+            // [수정] updateWebProject 함수 전체를 아래 코드로 교체하세요.
+            // (className을 직접 덮어쓰도록 수정하여 높이 오류 최종 해결)
             function updateWebProject(index) {
                 const project = webWorkProjects[index]; if (!project) return;
 
-                const laptopScreen = document.getElementById('laptop-screen');
-                
-                laptopScreen.src = project.img;
+                const viewport = document.getElementById('laptop-screen-viewport');
+                if (!viewport) return;
+
+                // 1. 뷰포트 비우기 및 스크롤 리셋
+                viewport.innerHTML = '';
+                viewport.scrollTop = 0;
+
+                // 2. 프로젝트 정보 업데이트 (설명, URL 등)
                 document.getElementById('project-title').textContent = project.title;
                 document.getElementById('project-description').innerHTML = project.description;
-                currentProjectUrl = project.url;
-                
-                const viewport = document.getElementById('laptop-screen-viewport');
-                if (viewport) {
-                    viewport.scrollTop = 0;
-                }
+                currentProjectUrl = project.url; // 새 창에서 열릴 URL
 
+                // 3. 썸네일 활성 상태 업데이트
                 thumbnailContainer.querySelectorAll('.thumbnail-wrapper').forEach((wrapper, i) => {
                     const isActive = (i === index);
                     wrapper.classList.toggle('border-[#F5A8B2]', isActive);
                     wrapper.classList.toggle('border-transparent', !isActive);
                     wrapper.classList.toggle('active-thumbnail', isActive);
                 });
+
+                // 4. 이미지 슬라이더 생성
+                if (project.imgs && project.imgs.length > 0) {
+                    const sliderContainer = document.createElement('div');
+                    sliderContainer.className = 'relative w-full h-auto'; 
+                    sliderContainer.dataset.currentSlide = '0'; 
+
+                    // 4-1. 이미지들 추가 (공통 클래스 설정)
+                    const baseImgClass = 'w-full h-auto transition-opacity duration-300 ease-in-out';
+
+                    project.imgs.forEach((imgSrc, imgIndex) => {
+                        const img = document.createElement('img');
+                        img.src = imgSrc;
+                        img.alt = `${project.title} - 이미지 ${imgIndex + 1}`;
+                        
+                        if (imgIndex !== 0) {
+                            // 2번째 이미지부터는 숨김
+                            img.className = `${baseImgClass} opacity-0 absolute top-0 left-0`;
+                        } else {
+                            // 1번째 이미지만 보이게
+                            img.className = `${baseImgClass} opacity-100 relative`;
+                        }
+                        sliderContainer.appendChild(img);
+                    });
+
+                    viewport.appendChild(sliderContainer);
+
+                    // 4-2. 이미지가 2개 이상일 때만 좌우 버튼 추가
+                    if (project.imgs.length > 1) {
+                        const prevButton = document.createElement('button');
+                        prevButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>`;
+                        prevButton.className = 'absolute top-4 left-4 bg-black bg-opacity-30 text-white rounded-full p-2 hover:bg-opacity-50 transition-all z-20 cursor-pointer';
+
+                        const nextButton = document.createElement('button');
+                        nextButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>`;
+                        nextButton.className = 'absolute top-4 right-4 bg-black bg-opacity-30 text-white rounded-full p-2 hover:bg-opacity-50 transition-all z-20 cursor-pointer';
+
+                        sliderContainer.appendChild(prevButton);
+                        sliderContainer.appendChild(nextButton);
+
+                        let isWheelSliding = false;
+                        sliderContainer.addEventListener('wheel', (e) => {
+                            e.preventDefault(); 
+                            e.stopPropagation(); 
+                            if (isWheelSliding) return; 
+                            isWheelSliding = true;
+                            if (e.deltaY > 0) { updateSlide(1); } else { updateSlide(-1); }
+                            setTimeout(() => { isWheelSliding = false; }, 500); 
+                        });
+
+
+                        // 4-3. 버튼 이벤트 리스너 함수
+                        // --- [ 여기가 수정되었습니다 ] ---
+                        const updateSlide = (direction) => {
+                            const images = sliderContainer.querySelectorAll('img');
+                            let currentIndex = parseInt(sliderContainer.dataset.currentSlide, 10);
+                            
+                            let nextIndex = currentIndex + direction;
+                            if (nextIndex < 0) { nextIndex = images.length - 1; }
+                            else if (nextIndex >= images.length) { nextIndex = 0; }
+
+                            // [수정] 기본 클래스 문자열을 상수로 정의
+                            const baseImgClass = 'w-full h-auto transition-opacity duration-300 ease-in-out';
+
+                            images.forEach((img, index) => {
+                                if (index === nextIndex) {
+                                    // 1. 보여줄 이미지: className을 'relative' 버전으로 덮어쓰기
+                                    img.className = `${baseImgClass} opacity-100 relative`;
+                                } else {
+                                    // 2. 숨길 이미지: className을 'absolute' 버전으로 덮어쓰기
+                                    img.className = `${baseImgClass} opacity-0 absolute top-0 left-0`;
+                                }
+                            });
+                            // --- [ 수정 끝 ] ---
+
+                            sliderContainer.dataset.currentSlide = nextIndex; 
+                            viewport.scrollTop = 0; 
+                        };
+
+                        // 4-4. 버튼 클릭 이벤트 연결
+                        prevButton.addEventListener('click', (e) => { e.stopPropagation(); updateSlide(-1); });
+                        nextButton.addEventListener('click', (e) => { e.stopPropagation(); updateSlide(1); });
+                    }
+
+                } else {
+                    viewport.innerHTML = '<p class="text-center p-4">표시할 이미지가 없습니다.</p>';
+                }
             }
 
             thumbnailContainer.addEventListener('click', e => {
@@ -1034,8 +1182,21 @@
                 updateGraphicProject(0);
                 updateWebProject(0); 
                 
-                // [수정] 이미지 프리로더가 새 배열 구조(img, thumbnail)를 참조하도록 변경
-                [...graphicWorkProjects, ...webWorkProjects].flatMap(p => [p.img, p.thumbnail]).filter(Boolean).forEach(src => { (new Image()).src = src; });
+                // [수정] 이미지 프리로더가 새 배열 구조(imgs)를 참조하도록 변경
+                
+                // --- 이 부분을 수정하세요 ---
+                // 기존 코드:
+                // [...graphicWorkProjects, ...webWorkProjects].flatMap(p => [p.img, p.thumbnail]).filter(Boolean).forEach(src => { (new Image()).src = src; });
+
+                // 새 코드:
+                const webImgs = webWorkProjects.flatMap(p => p.imgs || []); // Web: p.imgs 배열을 펼침
+                const graphicImgs = graphicWorkProjects.map(p => p.img);    // Graphic: 기존 p.img
+                const thumbnails = [...graphicWorkProjects, ...webWorkProjects].map(p => p.thumbnail); // 모든 썸네일
+                
+                // 중복 제거 및 프리로딩
+                const allImages = [...new Set([...webImgs, ...graphicImgs, ...thumbnails])];
+                allImages.filter(Boolean).forEach(src => { (new Image()).src = src; });
+                // --- 여기까지 수정 ---
             }
             initializeProjects();
 
