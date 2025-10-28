@@ -10,12 +10,11 @@
     <style>
         body, html {
             font-family: 'Noto Sans KR', sans-serif;
-            background: linear-gradient(135deg, #FFDDE1 0%, #B2EBF2 100%); /* [수정] 배경 그라데이션을 body로 이동 */
+            background: linear-gradient(135deg, #FFDDE1 0%, #B2EBF2 100%);
             color: #495057; 
             overflow: hidden;
             margin: 0;
             padding: 0;
-            /* 12 12는 커서의 'hotspot'(클릭 지점)을 의미하며, 이미지의 왼쪽 상단에서 12px, 위쪽에서 12px 떨어진 지점입니다. */
             cursor: url('images/돋보기\ 커서.webp') 12 12, auto;
         }
         #page-container {
@@ -93,19 +92,19 @@
         }
         
         #home {
-             /* [삭제] #home의 개별 배경 스타일 제거 */
         }
 
-        #web-project-thumbnails {
+        #web-project-thumbnails, #graphic-work-thumbnails { /* [수정] graphic-work-thumbnails 추가 */
             overflow-y: auto;
         }
 
-        #laptop-container {
+        #laptop-container, #graphic-work-viewer-container { /* [수정] graphic-work-viewer-container 추가 */
             position: relative;
             overflow: hidden; 
         }
 
-        #laptop-screen-viewport {
+        /* [수정] #graphic-work-screen-viewport 추가 */
+        #laptop-screen-viewport, #graphic-work-screen-viewport { 
             position: absolute; 
             padding: 2.3% 10% 12% 9.2%; 
             top: 0; left: 0;
@@ -115,14 +114,12 @@
             border-radius: 42px; 
         }
         
-        #laptop-screen-viewport img {
+        #laptop-screen-viewport img, #graphic-work-screen-viewport img { /* [수정] graphic-work-screen-viewport img 추가 */
             width: 100%;
             height: auto; 
             display: block;
         }
 
-        /* --- [수정됨] --- */
-        /* 썸네일 이미지 기본 스타일 */
         .web-thumbnail-img {
             height: 140px; 
             object-fit: cover;  
@@ -130,41 +127,35 @@
             filter: grayscale(90%) brightness(0.8);
             opacity: 0.8;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: scale(1); /* 줌 효과를 위한 기본 스케일 */
+            transform: scale(1);
         }
         
-        /* 래퍼에 호버/활성화 시 이미지 스타일 변경 */
         .thumbnail-wrapper:hover .web-thumbnail-img,
         .thumbnail-wrapper.active-thumbnail .web-thumbnail-img {
             filter: grayscale(0%) brightness(1);
             opacity: 1;
-            transform: scale(1.05); /* 줌 효과 */
+            transform: scale(1.05);
         }
 
-        /* 래퍼 스타일 */
         .thumbnail-wrapper {
             transition: border-color 0.3s ease;
-             /* overflow-hidden은 Tailwind 클래스로 JS에서 직접 추가 */
         }
         
-        /* 프로젝트 타입 뱃지 스타일 */
         .project-type-badge {
             transition: opacity 0.3s ease;
-            pointer-events: none; /* 뱃지가 마우스 이벤트를 가로채지 않도록 함 */
+            pointer-events: none;
         }
 
-        /* 래퍼에 호버/활성화 시 뱃지 숨기기 */
         .thumbnail-wrapper:hover .project-type-badge,
         .thumbnail-wrapper.active-thumbnail .project-type-badge {
             opacity: 0;
         }
-        /* --- [수정 끝] --- */
 
-
-        #laptop-screen-viewport::-webkit-scrollbar {
-            display: none; /* 스크롤바 숨기기 */
+        /* [수정] #graphic-work-screen-viewport 추가 */
+        #laptop-screen-viewport::-webkit-scrollbar, #graphic-work-screen-viewport::-webkit-scrollbar {
+            display: none;
         }
-        #laptop-screen-viewport {
+        #laptop-screen-viewport, #graphic-work-screen-viewport { /* [수정] graphic-work-screen-viewport 추가 */
             -ms-overflow-style: none;
             scrollbar-width: none; 
         }
@@ -181,6 +172,24 @@
         .typing-effect.typing-done::after {
             animation: none;
             content: ''; 
+        }
+
+        #about-content h3, #about-content p {
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .about-content-out {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        
+        .cube-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .cube-btn.active-cube-btn {
+            background-color: #F5A8B2;
+            color: white;
         }
     </style>
 </head>
@@ -199,7 +208,7 @@
         </div>
     </header>
     <main id="page-container">
-        <!-- ... Home 섹션 ... --><section id="home" class="page-section relative flex-col justify-center items-center text-center p-8 pt-24">
+        <section id="home" class="page-section relative flex-col justify-center items-center text-center p-8 pt-24">
             <h1 id="home-text-h1" class="text-6xl font-extrabold text-[#495057] mb-6 min-h-[72px] md:min-h-[84px]"></h1>
             <p id="home-text-p" class="text-xl text-[#6C757D] opacity-0 min-h-[28px]"></p>
 
@@ -209,49 +218,57 @@
                 </svg>
             </div>
         </section>
-        <!-- [수정] bg-[#FAFAFA] 클래스 제거 --><section id="about" class="page-section flex-col justify-center items-center p-8 pt-24">
+        <section id="about" class="page-section flex-col justify-center items-center p-8 pt-24">
             <h2 class="text-4xl font-bold mb-10 text-center animate-on-scroll">About Me</h2>
             <div class="container mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 animate-on-scroll">
                 <div id="three-canvas-container" class="cursor-grab active:cursor-grabbing card-shadow bg-white rounded-2xl"></div>
+                
                 <div class="lg:w-1/2 flex flex-col gap-5">
-                    <div id="about-content" class="p-8 bg-white card-shadow min-h-[160px] rounded-2xl">
-                        <h3 id="about-title" class="text-2xl font-bold mb-4 text-center text-[#F5A8B2]">큐브를 돌려보세요!</h3>
-                        <p id="about-text" class="text-gray-700 text-center">큐브의 각 면 및 버튼 클릭, 큐브를 직접 돌려 저에 대한 정보를 확인해보세요.</p> 
+                    
+                    <div id="cube-controls" class="grid grid-cols-6 gap-2 p-4 bg-white card-shadow rounded-2xl">
                     </div>
-                    <div id="cube-controls" class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4 bg-white card-shadow rounded-2xl">
+                    <div id="about-content" class="p-8 bg-white card-shadow min-h-[160px] rounded-2xl">
+                        <h3 id="about-title" class="text-2xl font-bold mb-4 text-center text-[#F5A8B2] hidden">큐브를 돌려보세요!</h3>
+                        <p id="about-text" class="text-gray-700 text-center">버튼을 클릭하거나 큐브를 돌려 저의 정보를 확인해보세요.</p> 
+                    </div>
+
+                </div>
+                </div>
+        </section>
+
+        <section id="graphic-work" class="page-section flex-col justify-center items-center p-8 pt-24">
+            <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Graphic Works</h2>
+            <div class="container mx-auto flex flex-col md:flex-row gap-8 items-start justify-center animate-on-scroll">
+                <div id="graphic-work-left-column" class="w-full md:w-3/4 flex flex-col items-center gap-8">
+                    <div id="graphic-work-viewer-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
+                        
+                        <div id="graphic-work-screen-viewport" class="absolute w-full h-full top-0 left-0">
+                            <img id="graphic-work-screen" src="" 
+                                alt="Graphic Work Screenshot" class="w-full relative z-10 opacity-100 transition-opacity duration-500">
+                        </div>
+
+                        <img src="images/web/맥북.webp" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E9ECEF/495057?text=Frame';" alt="Laptop Frame" class="relative z-10 w-full h-auto pointer-events-none">
+                    </div>
+                    
+                    <div id="graphic-work-description-box" class="w-full max-w-3xl bg-white p-6 card-shadow min-h-[150px] rounded-2xl">
+                        <h3 id="graphic-work-title" class="text-2xl font-bold mb-2 text-[#495057]">Graphic Works</h3>
+                        <p id="graphic-work-description" class="text-gray-600">오른쪽 목록에서 작품을 선택하세요.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/4">
+                    <div id="graphic-work-thumbnails" class="bg-white p-4 card-shadow space-y-4 overflow-y-auto rounded-2xl">
                         </div>
                 </div>
             </div>
         </section>
-
-        <!-- [수정] bg-[#FAFAFA] 클래스 제거 --><section id="graphic-work" class="page-section flex-col justify-center items-center p-8 pt-24">
-            <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Graphic Works</h2>
-            <div class="container mx-auto flex flex-col items-center max-w-5xl relative animate-on-scroll">
-                <div id="graphic-slider" class="relative w-full h-[400px] flex justify-center items-center mb-8 group cursor-pointer card-shadow bg-white p-6 rounded-2xl">
-                    <img id="graphic-image-main" src="" alt="Graphic Work Main" class="max-w-full max-h-full h-auto object-contain absolute transition-opacity duration-500 opacity-0 group-hover:opacity-100 rounded-lg">
-                    <img id="graphic-image-placeholder" src="" alt="Graphic Work Placeholder" class="max-w-full max-h-full h-auto object-contain transition-opacity duration-500 opacity-100 group-hover:opacity-0 rounded-lg">
-                </div>
-                <div id="graphic-description-box" class="w-full max-w-2xl bg-white p-6 card-shadow min-h-[120px] text-center rounded-2xl">
-                    <h3 id="graphic-title" class="text-2xl font-bold mb-2 text-[#495057]">작품명</h3>
-                    <p id="graphic-description" class="text-gray-600">작품 설명</p>
-                </div>
-                <button id="graphic-prev" class="absolute left-0 top-1/2 -translate-y-1/2 transform bg-white card-shadow hover:bg-[#F5A8B2] hover:text-white text-[#495057] rounded-full p-3 transition -mt-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
-                </button>
-                <button id="graphic-next" class="absolute right-0 top-1/2 -translate-y-1/2 transform bg-white card-shadow hover:bg-[#F5A8B2] hover:text-white text-[#495057] rounded-full p-3 transition -mt-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-                </button>
-            </div>
-        </section>
-
-        <!-- [수정] bg-[#F8F9FA] 클래스 제거 --><section id="web-work" class="page-section flex-col justify-center items-center p-8 pt-24">
+        <section id="web-work" class="page-section flex-col justify-center items-center p-8 pt-24">
             <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Web Works</h2>
             <div class="container mx-auto flex flex-col md:flex-row gap-8 items-start justify-center animate-on-scroll">
                 <div id="web-work-left-column" class="w-full md:w-3/4 flex flex-col items-center gap-8">
                     <div id="laptop-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
                         
                         <div id="laptop-screen-viewport" class="absolute w-full h-full top-0 left-0">
-                            <!-- [수정] 프롬프트 div 제거 --><img id="laptop-screen" src="" 
+                            <img id="laptop-screen" src="" 
                                 alt="Project Screenshot" class="w-full relative z-10 opacity-100 transition-opacity duration-500">
                         </div>
 
@@ -265,12 +282,12 @@
                 </div>
                 <div class="w-full md:w-1/4">
                     <div id="web-project-thumbnails" class="bg-white p-4 card-shadow space-y-4 overflow-y-auto rounded-2xl">
-                        <!-- 썸네일이 여기에 동적으로 생성됩니다. --></div>
+                        </div>
                 </div>
             </div>
         </section>
 
-        <!-- [수정] bg-[#FAFAFA] 클래스 제거 --><section id="contact" class="page-section flex-col justify-center items-center p-8 pt-24">
+        <section id="contact" class="page-section flex-col justify-center items-center p-8 pt-24">
             <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Contact Me</h2>
             <div class="container mx-auto bg-white p-10 rounded-3xl card-shadow flex flex-col md:flex-row gap-10 max-w-5xl animate-on-scroll">
                 <div class="md:w-1/2">
@@ -377,9 +394,9 @@
             let wasAutoRotatingBeforeMouseDown = true;
             
             const aboutData = [
-                { title: '소개 (Introduction)', content: '박소현<br>2002.02.08<br>사람을 향한 소통 디자인, 따뜻한 감성으로 <br>사용자의 이야기에 귀 기울여 미소 지을 수 있는 결과물을 만듭니다.', rotation: { x: -Math.PI / 2, y: 0 }, face: 'bottom', img: 'images/web/맥북.webp' }, // [수정] img 경로 추가
+                { title: '소개 (Introduction)', content: '박소현<br>2002.02.08<br>사람을 향한 소통 디자인, 따뜻한 감성으로 <br>사용자의 이야기에 귀 기울여 미소 지을 수 있는 결과물을 만듭니다.', rotation: { x: -Math.PI / 2, y: 0 }, face: 'bottom', img: 'images/web/맥북.webp' },
                 { title: '기술 (Skills)', content: 'Adobe Photoshop | Adobe Illustrator | Adobe InDesign | Adobe Premiere Pro | Adobe After Effects | Figma | procreate', rotation: { x: 0, y: Math.PI / 2 }, face: 'left', img: 'images/about me/기술.jpg' },
-                { title: '학력 (Education)', content: '2026. 02. 한국폴리텍1대학 서울정수캠퍼스 시각디자인과 졸업 예정', rotation: { x: 0, y: 0 }, face: 'front', img: 'images/about me/학력.jpg' }, // '학력'이 index 2로 이동
+                { title: '학력 (Education)', content: '2026. 02. 한국폴리텍1대학 서울정수캠퍼스 시각디자인과 졸업 예정', rotation: { x: 0, y: 0 }, face: 'front', img: 'images/about me/학력.jpg' },
                 { title: '자격증 (License)', content: '전산회계2급 | 워드프로세서 | ERP 회계/물류/생산 정보관리사 2급 | 미용사(일반)', rotation: { x: 0, y: -Math.PI / 2 }, face: 'right', img: 'images/about me/자격증.jpg' },
                 { title: '수상 (Awards)', content: '무한도전뷰티콘테스트 2017 퍼머넌트 장려상', rotation: { x: Math.PI / 2, y: 0 }, face: 'top', img: 'images/about me/수상.jpg' },
                 { title: '비전 (Vision)', content: '웹과 그래픽 영역을 아우르며, 어떤 환경에서든 직관적이고 효과적으로 메시지를 전달하는 웹 디자이너로 성장하겠습니다.', rotation: { x: 0, y: Math.PI }, face: 'back', img: 'images/about me/비전.jpg' }
@@ -430,8 +447,18 @@
                 isAutoRotating = true; 
                 snapAndResume = false; 
 
-                document.getElementById('about-title').textContent = '큐브를 돌려보세요!';
-                document.getElementById('about-text').textContent = '큐브의 각 면 및 버튼 클릭, 큐브를 직접 돌려 저에 대한 정보를 확인해보세요.';
+                const aboutTextEl = document.getElementById('about-text');
+                const controlsContainer = document.getElementById('cube-controls');
+
+                if (aboutTextEl) {
+                    aboutTextEl.textContent = '버튼을 클릭하거나 큐브를 돌려 저의 정보를 확인해보세요.';
+                    aboutTextEl.classList.remove('about-content-out');
+                }
+                if (controlsContainer) {
+                    controlsContainer.querySelectorAll('.cube-btn').forEach(btn => {
+                        btn.classList.remove('active-cube-btn');
+                    });
+                }
                 animate();
             }
 
@@ -503,7 +530,10 @@
                     isThreeJsInitialized = true;
                 }
 
-                if (currentPageIndex === 3) {
+                // [수정] 2번(Graphic) 또는 3번(Web) 페이지로 이동 시 높이 조절 함수 호출
+                if (currentPageIndex === 2) {
+                    setTimeout(setGraphicThumbnailHeight, 50); 
+                } else if (currentPageIndex === 3) {
                     setTimeout(setThumbnailHeight, 50); 
                 }
             }
@@ -546,6 +576,14 @@
 
                 setTimeout(() => { isScrolling = false; }, 1000); 
             }
+
+            // [추가] Graphic Work 섹션 스크롤 이벤트 차단
+            document.getElementById('graphic-work').addEventListener('wheel', function(event) {
+                const isInsideScrollable = event.target.closest('#graphic-work-thumbnails') || event.target.closest('#graphic-work-screen-viewport');
+                if (isInsideScrollable) {
+                    event.stopPropagation();
+                }
+            }, { capture: true });
 
             document.getElementById('web-work').addEventListener('wheel', function(event) {
                 const isInsideScrollable = event.target.closest('#web-project-thumbnails') || event.target.closest('#laptop-screen-viewport');
@@ -591,6 +629,10 @@
 
                 const raycaster = new THREE.Raycaster();
                 const mouse = new THREE.Vector2();
+
+                const aboutTextEl = document.getElementById('about-text');
+                const controlsContainer = document.getElementById('cube-controls');
+                let isAnimatingAboutContent = false;
 
                 scene = new THREE.Scene();
                 camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -639,25 +681,55 @@
 
                 animate();
 
-                const controlsContainer = document.getElementById('cube-controls');
+                controlsContainer.innerHTML = '';
                 aboutData.forEach((item, index) => {
                     const button = document.createElement('button');
                     button.textContent = item.title.split('(')[0].trim();
                     button.dataset.index = index;
-                    button.className = 'p-3 bg-[#B2EBF2]/50 text-sm text-[#495057] rounded-xl hover:bg-[#F5A8B2] hover:text-white font-medium transition-all card-shadow';
+                    button.className = 'p-3 bg-[#B2EBF2] text-sm text-[#495057] rounded-xl hover:brightness-90 font-medium transition-all card-shadow cube-btn';
                     controlsContainer.appendChild(button);
                 });
 
+                function updateAboutContent(selectedData, clickedButtonEl = null) {
+                    if (isAnimatingAboutContent) return;
+
+                    isAnimatingAboutContent = true;
+
+                    controlsContainer.querySelectorAll('.cube-btn').forEach(btn => {
+                        btn.classList.remove('active-cube-btn');
+                    });
+
+                    if (clickedButtonEl) {
+                        clickedButtonEl.classList.add('active-cube-btn');
+                    } else {
+                        const button = Array.from(controlsContainer.querySelectorAll('.cube-btn')).find(
+                            btn => btn.textContent === selectedData.title.split('(')[0].trim()
+                        );
+                        if (button) button.classList.add('active-cube-btn');
+                    }
+
+                    aboutTextEl.classList.add('about-content-out');
+
+                    setTimeout(() => {
+                        aboutTextEl.innerHTML = selectedData.content;
+                        aboutTextEl.classList.remove('about-content-out');
+                        setTimeout(() => {
+                            isAnimatingAboutContent = false;
+                        }, 300);
+                    }, 300);
+                }
+
                 controlsContainer.addEventListener('click', (e) => {
                     if (e.target.tagName === 'BUTTON') {
+                        if (e.target.classList.contains('active-cube-btn') || isAnimatingAboutContent) return; 
+                        
                         const index = parseInt(e.target.dataset.index, 10);
                         const selectedData = aboutData[index];
                         
                         targetRotation = selectedData.rotation;
                         isAutoRotating = false;
                         
-                        document.getElementById('about-title').textContent = selectedData.title;
-                        document.getElementById('about-text').innerHTML = selectedData.content;
+                        updateAboutContent(selectedData, e.target); 
                     }
                 });
 
@@ -712,11 +784,8 @@
                             const selectedData = aboutData.find(d => d.face === bestFace);
                             if (selectedData) {
                                 targetRotation = selectedData.rotation; 
-                                document.getElementById('about-title').textContent = selectedData.title;
-                                document.getElementById('about-text').innerHTML = selectedData.content;
-                                
+                                updateAboutContent(selectedData);
                             }
-                            
                         }
                         
                     } else {
@@ -737,14 +806,11 @@
                         let selectedData = null;
 
                         if (intersects.length > 0) {
-                        
                             const faceIndex = intersects[0].face.materialIndex;
-                            
                             const faceNameMap = ['right', 'left', 'top', 'bottom', 'front', 'back'];
                             const hitFaceName = faceNameMap[faceIndex];
                             selectedData = aboutData.find(d => d.face === hitFaceName);
                         } else {
-                            
                             const viewVector = new THREE.Vector3(0, 0, 1);
                             let bestFace = null;
                             let maxDot = -Infinity;
@@ -768,19 +834,30 @@
                                 selectedData = aboutData.find(d => d.face === bestFace);
                             }
                         }
-
                         
                         if (selectedData) {
                             targetRotation = selectedData.rotation; 
-                            document.getElementById('about-title').textContent = selectedData.title;
-                            document.getElementById('about-text').innerHTML = selectedData.content; 
+                            updateAboutContent(selectedData);
                         }
 
                     } else {
                         isAutoRotating = true;
                         targetRotation = null; 
-                        document.getElementById('about-title').textContent = '큐브를 돌려보세요!';
-                        document.getElementById('about-text').textContent = '큐브의 각 면 및 버튼 클릭, 큐브를 직접 돌려 저에 대한 정보를 확인해보세요.';
+                        
+                        if (!isAnimatingAboutContent) {
+                            isAnimatingAboutContent = true;
+                            aboutTextEl.classList.add('about-content-out');
+                            
+                            controlsContainer.querySelectorAll('.cube-btn').forEach(btn => {
+                                btn.classList.remove('active-cube-btn');
+                            });
+
+                            setTimeout(() => {
+                                aboutTextEl.textContent = '버튼을 클릭하거나 큐브를 돌려 저의 정보를 확인해보세요.'; 
+                                aboutTextEl.classList.remove('about-content-out');
+                                setTimeout(() => { isAnimatingAboutContent = false; }, 300);
+                            }, 300);
+                        }
                     }
                 });
 
@@ -794,40 +871,110 @@
                 }, false);
             }
 
+            // [수정] graphicWorkProjects 배열 형식을 Web Work와 동일하게 변경 (img, thumbnail, type 추가)
             const graphicWorkProjects = [
-                { title: '로고 디자인', description: '달걀을 모티브로 한 에그타르트 브랜드의 \'에그랑너\' 캐릭터입니다. 빵빵한 볼과 부스러기, 혀는 \'맛\'을 표현했고, 스포크는 어린이도 섭취할 수 있다는 의미로 \'안전성\'을 표현했습니다.', img_placeholder: 'images/graphic/에그타르트_먹는_아바타.jpg', img_main: 'images/graphic/누2.png' },
-                { title: '포스터 디자인', description: '기업 클룹의 \'ZERO SODA\' 음료 제품 촬영 후, 더운 여름 날씨와 바다 배경에 시원함을 나타내는 얼음으로 포스터 디자인 작업을 했습니다.', img_placeholder: 'images/graphic/파인애플_주스_먹는_아바타.jpg', img_main: 'images/graphic/2401110077 박소현_제로소다.jpg' },
+                { 
+                    title: '로고 디자인', 
+                    type: '브랜딩', 
+                    description: '달걀을 모티브로 한 에그타르트 브랜드의 \'에그랑너\' 캐릭터입니다. 빵빵한 볼과 부스러기, 혀는 \'맛\'을 표현했고, 스포크는 어린이도 섭취할 수 있다는 의미로 \'안전성\'을 표현했습니다.', 
+                    img: 'images/graphic/누2.png', 
+                    thumbnail: 'images/graphic/누2.png' // 썸네일 이미지 경로 (임시로 메인 이미지와 동일하게 설정)
+                },
+                { 
+                    title: '포스터 디자인', 
+                    type: '포스터', 
+                    description: '기업 클룹의 \'ZERO SODA\' 음료 제품 촬영 후, 더운 여름 날씨와 바다 배경에 시원함을 나타내는 얼음으로 포스터 디자인 작업을 했습니다.', 
+                    img: 'images/graphic/2401110077 박소현_제로소다.jpg', 
+                    thumbnail: 'images/graphic/2401110077 박소현_제로소다.jpg' // 썸네일 이미지 경로 (임시로 메인 이미지와 동일하게 설정)
+                },
             ];
             
             const webWorkProjects = [
-                // [MODIFIED] 404 섹션 안내 문구 수정
                 { title: 'Web Work 가이드', type: '안내', description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', img: 'images/web/웹404.jpg', thumbnail: 'images/web/웹404.jpg' }, 
-                // [MODIFIED] 설명에서 Tip 제거
                 { title: '개인 웹 프로젝트 1: 수원화성', type: '개인', description: '조선의 걸작, 수원화성 공식 관광 웹사이트입니다. 정보를 직관적으로 파악하기 어려웠던 수원화성 관련 명소 안내를 이미지를 통해 역사적 가치와 관광 정보를 현대적인 디자인으로 전달합니다.', img: 'images/web/웹_수원화성 디자인.webp', thumbnail: 'images/web/웹_수원화성 디자인.webp', url: 'https://www.naver.com/' },
-                // [MODIFIED] 설명에서 Tip 제거
                 { title: '개인 웹 프로젝트 2: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', img: 'images/web/웹_카카오프렌즈 리디자인.webp', thumbnail: 'images/web/웹_카카오프렌즈 리디자인.webp', url: '#' },
-                // [MODIFIED] 설명에서 Tip 제거
                 { title: '개인 웹 프로젝트 3: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', img: 'images/web/웹_몬스터 에너지.webp', thumbnail: 'images/web/웹_몬스터 에너지.webp', url: '#' },
-                // [MODIFIED] 설명에서 Tip 제거
                 { title: '팀 웹 프로젝트 4: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', img: 'images/web/웹_MOA OTT.webp', thumbnail: 'images/web/웹_MOA OTT.webp', url: '#' } 
             ];
 
-            let currentGraphicIndex = 0, currentProjectUrl = '';
+            // [삭제] let currentGraphicIndex = 0;
+            let currentProjectUrl = '';
             
-            function updateGraphicWork(index) {
-                const project = graphicWorkProjects[index];
-                document.getElementById('graphic-image-main').src = project.img_main;
-                document.getElementById('graphic-image-placeholder').src = project.img_placeholder;
-                document.getElementById('graphic-title').textContent = project.title;
-                document.getElementById('graphic-description').textContent = project.description;
+            // [삭제] 기존 updateGraphicWork 함수 및 관련 오버레이 로직 (prevBtn, nextBtn 리스너 등)
+            // ... (관련 코드 블록 전체 삭제됨) ...
+
+            // --- [신규 추가] Graphic Works 섹션 로직 (Web Works 로직 복제 및 수정) ---
+
+            // [추가] Graphic Works 썸네일 컨테이너
+            const graphicThumbnailContainer = document.getElementById('graphic-work-thumbnails');
+            
+            // [추가] Graphic Works 썸네일 생성
+            graphicThumbnailContainer.innerHTML = graphicWorkProjects.map((p, i) => `
+                <div class="thumbnail-wrapper relative w-full rounded-xl cursor-pointer border-4 overflow-hidden ${i === 0 ? 'border-[#F5A8B2] active-thumbnail' : 'border-transparent hover:border-[#B2EBF2]'}" data-index="${i}">
+                    <img src="${p.thumbnail}" alt="${p.title}" class="w-full transition-all web-thumbnail-img">
+                    <span class="project-type-badge absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs font-bold py-1 px-2 rounded-md transition-opacity duration-300">
+                        ${p.type}
+                    </span>
+                </div>
+            `).join('');
+
+            // [추가] Graphic Works 뷰어 업데이트 함수
+            function updateGraphicProject(index) {
+                const project = graphicWorkProjects[index]; if (!project) return;
+
+                const graphicScreen = document.getElementById('graphic-work-screen');
+
+                graphicScreen.src = project.img;
+                document.getElementById('graphic-work-title').textContent = project.title;
+                document.getElementById('graphic-work-description').innerHTML = project.description;
+                // Graphic Works는 외부 URL이 없으므로 currentProjectUrl 업데이트 안 함
+                
+                const viewport = document.getElementById('graphic-work-screen-viewport');
+                if (viewport) {
+                    viewport.scrollTop = 0;
+                }
+
+                // 썸네일 활성 상태 업데이트
+                graphicThumbnailContainer.querySelectorAll('.thumbnail-wrapper').forEach((wrapper, i) => {
+                    const isActive = (i === index);
+                    wrapper.classList.toggle('border-[#F5A8B2]', isActive);
+                    wrapper.classList.toggle('border-transparent', !isActive);
+                    wrapper.classList.toggle('active-thumbnail', isActive);
+                });
             }
-            document.getElementById('graphic-prev').addEventListener('click', () => { currentGraphicIndex = (currentGraphicIndex - 1 + graphicWorkProjects.length) % graphicWorkProjects.length; updateGraphicWork(currentGraphicIndex); });
-            document.getElementById('graphic-next').addEventListener('click', () => { currentGraphicIndex = (currentGraphicIndex + 1) % graphicWorkProjects.length; updateGraphicWork(currentGraphicIndex); });
+
+            // [추가] Graphic Works 썸네일 클릭 리스너
+            graphicThumbnailContainer.addEventListener('click', e => {
+                const wrapper = e.target.closest('.thumbnail-wrapper');
+                if (wrapper) {
+                    updateGraphicProject(parseInt(wrapper.dataset.index));
+                }
+            });
+
+            // [추가] Graphic Works 뷰어 클릭 리스너 (현재는 아무 동작 안 함)
+            document.getElementById('graphic-work-viewer-container').addEventListener('click', () => { 
+                // 그래픽 작업물은 외부 링크가 없으므로 클릭 이벤트를 비워둡니다.
+                // 향후 라이트박스(이미지 크게 보기) 기능 추가 가능
+            });
+
+            // [추가] Graphic Works 썸네일 높이 조절 함수
+            function setGraphicThumbnailHeight() {
+                const leftColumn = document.getElementById('graphic-work-left-column');
+                const thumbnailsContainer = document.getElementById('graphic-work-thumbnails');
+                if (leftColumn && thumbnailsContainer) {
+                    const leftColumnHeight = leftColumn.offsetHeight;
+                    if (leftColumnHeight > 0) {
+                        thumbnailsContainer.style.height = `${leftColumnHeight}px`;
+                    }
+                }
+            }
             
+            // --- [신규 추가] Graphic Works 섹션 로직 끝 ---
+
+
+            // --- [기존] Web Works 섹션 로직 ---
             const thumbnailContainer = document.getElementById('web-project-thumbnails');
             
-            // 썸네일 생성 로직 변경 (div 래퍼 및 뱃지 추가)
-            // 첫 번째 썸네일이 기본적으로 'active-thumbnail' 클래스를 갖도록 수정됨
             thumbnailContainer.innerHTML = webWorkProjects.map((p, i) => `
                 <div class="thumbnail-wrapper relative w-full rounded-xl cursor-pointer border-4 overflow-hidden ${i === 0 ? 'border-[#F5A8B2] active-thumbnail' : 'border-transparent hover:border-[#B2EBF2]'}" data-index="${i}">
                     <img src="${p.thumbnail}" alt="${p.title}" class="w-full transition-all web-thumbnail-img">
@@ -841,13 +988,9 @@
                 const project = webWorkProjects[index]; if (!project) return;
 
                 const laptopScreen = document.getElementById('laptop-screen');
-
-                // [수정] 프롬프트 숨기는 로직 제거
                 
-                // [MODIFIED] 변수를 사용하여 src 및 텍스트 업데이트
                 laptopScreen.src = project.img;
                 document.getElementById('project-title').textContent = project.title;
-                // [MODIFIED] textContent를 innerHTML로 변경하여 HTML 태그가 렌더링되도록 수정
                 document.getElementById('project-description').innerHTML = project.description;
                 currentProjectUrl = project.url;
                 
@@ -856,7 +999,6 @@
                     viewport.scrollTop = 0;
                 }
 
-                // 활성화 클래스를 'img'가 아닌 '.thumbnail-wrapper'에 적용
                 thumbnailContainer.querySelectorAll('.thumbnail-wrapper').forEach((wrapper, i) => {
                     const isActive = (i === index);
                     wrapper.classList.toggle('border-[#F5A8B2]', isActive);
@@ -865,7 +1007,6 @@
                 });
             }
 
-            // 클릭 이벤트 리스너를 '.thumbnail-wrapper' 기준으로 변경
             thumbnailContainer.addEventListener('click', e => {
                 const wrapper = e.target.closest('.thumbnail-wrapper');
                 if (wrapper) {
@@ -885,12 +1026,16 @@
                     }
                 }
             }
+            // --- [기존] Web Works 섹션 로직 끝 ---
+
 
             function initializeProjects() {
-                updateGraphicWork(0);
-                // [MODIFIED] 첫 번째 웹 프로젝트로 초기화 (새로 추가된 "준비중인 프로젝트"가 됨)
+                // [수정] updateGraphicWork(0) -> updateGraphicProject(0)
+                updateGraphicProject(0);
                 updateWebProject(0); 
-                [...graphicWorkProjects, ...webWorkProjects].flatMap(p => [p.img_main, p.img_placeholder, p.img, p.thumbnail]).filter(Boolean).forEach(src => { (new Image()).src = src; });
+                
+                // [수정] 이미지 프리로더가 새 배열 구조(img, thumbnail)를 참조하도록 변경
+                [...graphicWorkProjects, ...webWorkProjects].flatMap(p => [p.img, p.thumbnail]).filter(Boolean).forEach(src => { (new Image()).src = src; });
             }
             initializeProjects();
 
@@ -917,10 +1062,15 @@
                 setTimeout(() => { container.style.transition = 'transform 0.8s cubic-bezier(0.7, 0, 0.3, 1)'; }, 50);
 
                 setThumbnailHeight();
-                window.addEventListener('resize', setThumbnailHeight);
+                setGraphicThumbnailHeight(); // [추가] 그래픽 썸네일 높이 초기 설정
+                
+                // [수정] 리사이즈 시 두 섹션의 썸네일 높이를 모두 조절
+                window.addEventListener('resize', () => {
+                    setThumbnailHeight();
+                    setGraphicThumbnailHeight();
+                });
             }, 100);
         });
     </script>
 </body>
 </html>
-
