@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>박소현 포트폴리오</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="overflow-hidden">
+
+    <header class="fixed top-6 left-1/2 -translate-x-1/2 z-50">
+        <div class="nav-container">
+            <div class="nav-slider"></div>
+            <nav class="nav-menu">
+                <button class="nav-link" data-index="0">Home</button>
+                <button class="nav-link" data-index="1">About Me</button>
+                <button class="nav-link" data-index="2">Graphic Work</button>
+                <button class="nav-link" data-index="3">Web Work</button>
+                <button class="nav-link" data-index="4">Contact</button>
+            </nav>
+        </div>
+    </header>
+    <main id="page-container">
+        <section id="home" class="page-section relative flex-col justify-center items-center text-center p-8 pt-24">
+            <h1 id="home-text-h1" class="text-6xl font-extrabold text-[#495057] mb-6 min-h-[72px] md:min-h-[84px]"></h1>
+            <p id="home-text-p" class="text-xl text-[#6C757D] opacity-0 min-h-[28px]"></p>
+
+            <div id="scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-0 transition-opacity duration-500 cursor-pointer flex flex-col items-center">
+                <p class="text-sm text-gray-600 mb-1">SCROLL</p> <svg class="w-8 h-8 text-gray-600 animate-bounce" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+            </div>
+        </section>
+
+        <section id="about" class="page-section flex-col justify-center items-center p-8 pt-24">
+            <h2 class="text-4xl font-bold mb-10 text-center animate-on-scroll">About Me</h2>
+            <div class="container mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 animate-on-scroll">
+                <div id="three-canvas-container" class="cursor-grab active:cursor-grabbing card-shadow bg-white rounded-2xl"></div>
+                
+                <div class="lg:w-1/2 flex flex-col gap-5">
+                    
+                    <div id="cube-controls" class="grid grid-cols-6 gap-2 p-4 bg-white card-shadow rounded-2xl">
+                    </div>
+                    <div id="about-content" class="p-8 bg-white card-shadow min-h-[160px] rounded-2xl">
+                        <h3 id="about-title" class="text-2xl font-bold mb-4 text-center text-[#F5A8B2] hidden">큐브를 돌려보세요!</h3>
+                        <p id="about-text" class="text-gray-700 text-center">버튼을 클릭하거나 큐브를 돌려 저의 정보를 확인해보세요.</p> 
+                    </div>
+
+                </div>
+                </div>
+        </section>
+
+        <section id="graphic-work" class="page-section flex-col justify-center items-center p-8 pt-24">
+            <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Graphic Works</h2>
+            <div class="container mx-auto flex flex-col md:flex-row gap-8 items-start justify-center animate-on-scroll">
+                <div id="graphic-work-left-column" class="w-full md:w-3/4 flex flex-col items-center gap-8">
+                    <div id="graphic-work-viewer-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
+                        
+                        <div id="graphic-work-screen-viewport" class="absolute w-full h-full top-0 left-0">
+                            <img id="graphic-work-screen" src="" 
+                                alt="Graphic Work Screenshot" class="w-full relative z-10 opacity-100 transition-opacity duration-500">
+                        </div>
+
+                        <img src="images/web/맥북.webp" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E9ECEF/495057?text=Frame';" alt="Laptop Frame" class="relative z-10 w-full h-auto pointer-events-none">
+                    </div>
+                    
+                    <div id="graphic-work-description-box" class="w-full max-w-3xl bg-white p-6 card-shadow min-h-[150px] rounded-2xl">
+                        <h3 id="graphic-work-title" class="text-2xl font-bold mb-2 text-[#495057]">Graphic Works</h3>
+                        <p id="graphic-work-description" class="text-gray-600">오른쪽 목록에서 작품을 선택하세요.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/4">
+                    <div id="graphic-work-thumbnails" class="bg-white p-4 card-shadow space-y-4 overflow-y-auto rounded-2xl">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="web-work" class="page-section flex-col justify-center items-center p-8 pt-24">
+            <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Web Works</h2>
+            <div class="container mx-auto flex flex-col md:flex-row gap-8 items-start justify-center animate-on-scroll">
+                <div id="web-work-left-column" class="w-full md:w-3/4 flex flex-col items-center gap-8">
+                    <div id="laptop-container" class="relative w-full max-w-3xl cursor-pointer card-shadow rounded-2xl">
+                        
+                        <div id="laptop-screen-viewport" class="absolute w-full h-full top-0 left-0">
+                            </div>
+
+                        <img src="images/web/맥북.webp" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E9ECEF/495057?text=Laptop+Frame';" alt="Laptop Frame" class="relative z-10 w-full h-auto pointer-events-none">
+                    </div>
+                    
+                    <div id="project-description-box" class="w-full max-w-3xl bg-white p-6 card-shadow min-h-[150px] rounded-2xl">
+                        <h3 id="project-title" class="text-2xl font-bold mb-2 text-[#495057]">Web Projects</h3>
+                        <p id="project-description" class="text-gray-600">오른쪽 목록에서 작품을 선택하세요.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/4">
+                    <div id="web-project-thumbnails" class="bg-white p-4 card-shadow space-y-4 overflow-y-auto rounded-2xl">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="page-section flex-col justify-center items-center p-8 pt-24">
+            <h2 class="text-4xl font-bold mb-12 text-center animate-on-scroll">Contact Me</h2>
+            <div class="container mx-auto bg-white p-10 rounded-3xl card-shadow flex flex-col md:flex-row gap-10 max-w-5xl animate-on-scroll">
+                <div class="md:w-1/2">
+                    <div class="flex items-center mb-8">
+                        <svg class="w-16 h-16 text-[#F5A8B2] mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
+                        <div>
+                            <h3 class="text-3xl font-bold text-[#495057]">박소현</h3>
+                            <p class="text-gray-500">Web Designer</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4 mb-8">
+                        <p class="flex items-center text-lg"><svg class="w-6 h-6 mr-3 text-[#F5A8B2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>lisianthso@naver.com</p>
+                        <p class="flex items-center text-lg"><svg class="w-6 h-6 mr-3 text-[#B2EBF2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.213-.992-.55-1.347l-5.25-5.25a.75.75 0 0 0-1.06 0l-2.25 2.25a.75.75 0 0 0 0 1.061l6 6a.75.75 0 0 0 1.06 0l-2.25-2.25a.75.75 0 0 0 0-1.06l-5.25-5.25a.75.75 0 0 0-1.06 0l-2.25 2.25a.75.75 0 0 1-1.06 0Z" /></svg>010-1234-5678</p>
+                    </div>
+                    <form id="contact-form" class="space-y-4">
+                        <input type="text" id="contact-name" placeholder="성함" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F5A8B2] focus:outline-none transition-shadow" required>
+                        <input type="email" id="contact-email" placeholder="이메일" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F5A8B2] focus:outline-none transition-shadow" required>
+                        <textarea id="contact-message" rows="4" placeholder="메시지" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F5A8B2] focus:outline-none transition-shadow" required></textarea>
+                        <button type="submit" class="w-full bg-[#F5A8B2] text-white font-bold py-3 px-4 rounded-xl hover:bg-[#E597A1] transition-colors card-shadow">메시지 보내기</button>
+                    </form>
+                </div>
+                <div class="md:w-1/2 bg-[#F8F9FA] p-6 rounded-2xl flex flex-col card-shadow">
+                    <h3 class="font-bold text-lg mb-4 text-[#495057]">전송 내용 확인 (Chat Simulation)</h3>
+                    <div id="chat-simulation" class="flex-grow space-y-4 overflow-y-auto">
+                        <div class="flex justify-start">
+                            <div class="bg-gray-300 text-gray-800 p-3 rounded-lg max-w-xs"> 안녕하세요! 궁금한 점이 있어 연락드립니다. </div>
+                        </div>
+                        <p class="text-center text-sm text-gray-500">메시지를 보내면 이곳에 표시됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

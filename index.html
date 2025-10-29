@@ -70,28 +70,28 @@
 <body>
 
     <div class="image-wrapper">
-        <img src="images/융프_인트로.png" id="background-main" alt="기본 배경 이미지">
+        <img src="images/인트로.png" id="background-main" alt="기본 배경 이미지">
     
-        <img src="images/융프_인트로 이미지_아바타노트북.png" class="hover-image" id="avatar-hover-layer" alt="아바타와 노트북 호버 이미지">
-        <img src="images/융프_인트로_핸드폰 호버.png" class="hover-image" id="phone-hover-layer" alt="핸드폰 호버 이미지">
-        <img src="images/융프_인트로_이력서 호버.png" class="hover-image" id="resume-hover-layer" alt="이력서 호버 이미지">
-        <img src="images/융프_인트로_포스터 호버.png" class="hover-image" id="poster-hover-layer" alt="포스터 호버 이미지">
-        <img src="images/융프_인트로_선반_집.png" class="hover-image" id="home-hover-layer" alt="집 호버 이미지">
-        <img src="images/융프_인트로_선반_곰1.png" class="hover-image" id="bear1-hover-layer" alt="첫번째 곰 호버 이미지">
-        <img src="images/융프_인트로_선반_곰2.png" class="hover-image" id="bear2-hover-layer" alt="두번째 곰 호버 이미지">
-        <img src="images/융프_인트로_선반_곰3.png" class="hover-image" id="bear3-hover-layer" alt="세번째 곰 호버 이미지">
+        <img src="images/인트로 이미지_아바타노트북.png" class="hover-image" id="avatar-hover-layer" alt="아바타와 노트북 호버 이미지">
+        <img src="images/인트로_핸드폰 호버.png" class="hover-image" id="phone-hover-layer" alt="핸드폰 호버 이미지">
+        <img src="images/인트로_이력서 호버.png" class="hover-image" id="resume-hover-layer" alt="이력서 호버 이미지">
+        <img src="images/인트로_포스터 호버.png" class="hover-image" id="poster-hover-layer" alt="포스터 호버 이미지">
+        <img src="images/인트로_선반_집.png" class="hover-image" id="home-hover-layer" alt="집 호버 이미지">
+        <img src="images/인트로_선반_곰1.png" class="hover-image" id="bear1-hover-layer" alt="첫번째 곰 호버 이미지">
+        <img src="images/인트로_선반_곰2.png" class="hover-image" id="bear2-hover-layer" alt="두번째 곰 호버 이미지">
+        <img src="images/인트로_선반_곰3.png" class="hover-image" id="bear3-hover-layer" alt="세번째 곰 호버 이미지">
 
         <!-- [수정됨] 요청에 맞게 링크(href) 및 data-title 수정 -->
-        <a href="home_ver2.html#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
-        <a href="home_ver2.html#web-work" class="interactive-area" id="laptop-area" data-title="Projects"></a>
+        <a href="main.html#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
+        <a href="main.html#web-work" class="interactive-area" id="laptop-area" data-title="Projects"></a>
         <!-- phone-hover: 웹 섹션으로 변경 -->
-        <a href="home_ver2.html#web-work" class="interactive-area" id="phone-area" data-hover-target="phone-hover-layer" data-title="Web Work"></a>
+        <a href="main.html#contact" class="interactive-area" id="phone-area" data-hover-target="phone-hover-layer" data-title="Web Work"></a>
         <!-- resume-hover: 컨텍트 섹션 (기존과 동일) -->
-        <a href="home_ver2.html#contact" class="interactive-area" id="resume-area" data-hover-target="resume-hover-layer" data-title="Contact"></a>
+        <a href="main.html#contact" class="interactive-area" id="resume-area" data-hover-target="resume-hover-layer" data-title="Contact"></a>
         <!-- poster-hover: 그래픽 섹션 (기존과 동일) -->
-        <a href="home_ver2.html#graphic-work" class="interactive-area" id="bear-poster-area" data-hover-target="poster-hover-layer" data-title="Graphic Work"></a>
+        <a href="main.html#graphic-work" class="interactive-area" id="bear-poster-area" data-hover-target="poster-hover-layer" data-title="Graphic Work"></a>
         <!-- home-hover: 홈 섹션으로 변경 -->
-        <a href="home_ver2.html#home" class="interactive-area" id="home-area" data-hover-target="home-hover-layer" data-title="Home"></a>
+        <a href="main.html#home" class="interactive-area" id="home-area" data-hover-target="home-hover-layer" data-title="Home"></a>
         
         <!-- [수정됨] bear: <a> 태그를 <div> 태그로 변경하여 링크 이동 방지, 호버 효과만 유지 -->
         <!-- [수정됨] bear: data-title 속성 제거하여 툴팁 문구 미표시 -->
@@ -106,14 +106,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const imagesToPreload = [
-                'images/융프_인트로 이미지_아바타노트북.png',
-                'images/융프_인트로_핸드폰 호버.png',
-                'images/융프_인트로_이력서 호버.png',
-                'images/융프_인트로_포스터 호버.png',
-                'images/융프_인트로_선반_집.png',
-                'images/융프_인트로_선반_곰1.png',
-                'images/융프_인트로_선반_곰2.png',
-                'images/융프_인트로_선반_곰3.png'
+                'images/인트로 이미지_아바타노트북.png',
+                'images/인트로_핸드폰 호버.png',
+                'images/인트로_이력서 호버.png',
+                'images/인트로_포스터 호버.png',
+                'images/인트로_선반_집.png',
+                'images/인트로_선반_곰1.png',
+                'images/인트로_선반_곰2.png',
+                'images/인트로_선반_곰3.png'
             ];
             imagesToPreload.forEach(src => { (new Image()).src = src; });
 
