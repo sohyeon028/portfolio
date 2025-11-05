@@ -70,16 +70,16 @@
 <body>
 
     <div class="image-wrapper">
-        <img src="images/인트로.png" id="background-main" alt="기본 배경 이미지">
+        <img src="images/bg/인트로.png" id="background-main" alt="기본 배경 이미지">
     
-        <img src="images/인트로 이미지_아바타노트북.png" class="hover-image" id="avatar-hover-layer" alt="아바타와 노트북 호버 이미지">
-        <img src="images/인트로_핸드폰 호버.png" class="hover-image" id="phone-hover-layer" alt="핸드폰 호버 이미지">
-        <img src="images/인트로_이력서 호버.png" class="hover-image" id="resume-hover-layer" alt="이력서 호버 이미지">
-        <img src="images/인트로_포스터 호버.png" class="hover-image" id="poster-hover-layer" alt="포스터 호버 이미지">
-        <img src="images/인트로_선반_집.png" class="hover-image" id="home-hover-layer" alt="집 호버 이미지">
-        <img src="images/인트로_선반_곰1.png" class="hover-image" id="bear1-hover-layer" alt="첫번째 곰 호버 이미지">
-        <img src="images/인트로_선반_곰2.png" class="hover-image" id="bear2-hover-layer" alt="두번째 곰 호버 이미지">
-        <img src="images/인트로_선반_곰3.png" class="hover-image" id="bear3-hover-layer" alt="세번째 곰 호버 이미지">
+        <img src="images/bg/인트로 이미지_아바타노트북.png" class="hover-image" id="avatar-hover-layer" alt="아바타와 노트북 호버 이미지">
+        <img src="images/bg/인트로_핸드폰 호버.png" class="hover-image" id="phone-hover-layer" alt="핸드폰 호버 이미지">
+        <img src="images/bg/인트로_이력서 호버.png" class="hover-image" id="resume-hover-layer" alt="이력서 호버 이미지">
+        <img src="images/bg/인트로_포스터 호버.png" class="hover-image" id="poster-hover-layer" alt="포스터 호버 이미지">
+        <img src="images/bg/인트로_선반_집.png" class="hover-image" id="home-hover-layer" alt="집 호버 이미지">
+        <img src="images/bg/인트로_선반_곰1.png" class="hover-image" id="bear1-hover-layer" alt="첫번째 곰 호버 이미지">
+        <img src="images/bg/인트로_선반_곰2.png" class="hover-image" id="bear2-hover-layer" alt="두번째 곰 호버 이미지">
+        <img src="images/bg/인트로_선반_곰3.png" class="hover-image" id="bear3-hover-layer" alt="세번째 곰 호버 이미지">
 
         <!-- [수정됨] 요청에 맞게 링크(href) 및 data-title 수정 -->
         <a href="main.html#about" class="interactive-area" id="avatar-area" data-hover-target="avatar-hover-layer" data-title="About Me"></a>
@@ -106,14 +106,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const imagesToPreload = [
-                'images/인트로 이미지_아바타노트북.png',
-                'images/인트로_핸드폰 호버.png',
-                'images/인트로_이력서 호버.png',
-                'images/인트로_포스터 호버.png',
-                'images/인트로_선반_집.png',
-                'images/인트로_선반_곰1.png',
-                'images/인트로_선반_곰2.png',
-                'images/인트로_선반_곰3.png'
+                'images/bg/인트로 이미지_아바타노트북.png',
+                'images/bg/인트로_핸드폰 호버.png',
+                'images/bg/인트로_이력서 호버.png',
+                'images/bg/인트로_포스터 호버.png',
+                'images/bg/인트로_선반_집.png',
+                'images/bg/인트로_선반_곰1.png',
+                'images/bg/인트로_선반_곰2.png',
+                'images/bg/인트로_선반_곰3.png'
             ];
             imagesToPreload.forEach(src => { (new Image()).src = src; });
 
