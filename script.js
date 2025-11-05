@@ -115,17 +115,16 @@ window.addEventListener('load', function() {
     const homeH1 = document.getElementById('home-text-h1');
     const homeP = document.getElementById('home-text-p');
     const scrollIndicator = document.getElementById('scroll-indicator');
-    const textH1 = "고민 없이 바로 이해되는 디자인";
-    const textP = "emoji를 움직여보세요.";
+    const textH1 = "즐거운 상상, 재밌는 아이디어";
+    const textP = "나를 보여주다!";
     function typeWriter(element, text, speed = 100, callback) { let i = 0; element.innerHTML = ""; element.classList.add('typing-effect'); element.classList.remove('typing-done'); function typeLoop() { if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(typeLoop, speed); } else { element.classList.add('typing-done'); element.classList.remove('typing-effect'); if (callback) callback(); } } typeLoop(); }
     function startHomeTyping() { if (!homeH1 || !homeP || !scrollIndicator) return; homeH1.innerHTML = ""; homeP.innerHTML = ""; homeP.style.opacity = 0; scrollIndicator.style.opacity = 0; homeH1.classList.remove('typing-done', 'typing-effect'); homeP.classList.remove('typing-done', 'typing-effect'); typeWriter(homeH1, textH1, 100, () => { setTimeout(() => { homeP.style.opacity = 1; typeWriter(homeP, textP, 60, () => { setTimeout(() => { if (scrollIndicator) scrollIndicator.style.opacity = 1; }, 300); }); }, 500); }); }
     if (scrollIndicator) { scrollIndicator.addEventListener('click', () => { document.getElementById('about').scrollIntoView({ behavior: 'smooth' }); }); }
     startHomeTyping();
 
     setTimeout(() => {
-    // const initialHash = window.location.hash; // 이 부분을
-    if (initialHashOnLoad) { // 이렇게 수정
-        const targetElement = document.getElementById(initialHashOnLoad.substring(1)); // 여기도 수정
+    if (initialHashOnLoad) { 
+        const targetElement = document.getElementById(initialHashOnLoad.substring(1)); 
         if (targetElement) targetElement.scrollIntoView();
     }
     setThumbnailHeight();
@@ -202,7 +201,11 @@ function initEmojiPhysics() {
 
 
 // Web Work
-const webWorkProjects = [ { title: 'Web Work 가이드', type: '안내', description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', imgs: ['images/web/웹404.jpg'], thumbnail: 'images/web/웹404.jpg', url: '#' }, { title: '웹 프로젝트 1: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', imgs: ['images/web/웹_카카오 메인.webp', 'images/web/웹_카카오 서브1.webp', 'images/web/웹_카카오 서브2.webp'], thumbnail: 'images/web/웹_카카오 메인.webp', url: 'https://sohyeon028.github.io/web_kakaofriends/' }, { title: '웹 프로젝트 2: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', imgs: ['images/web/웹_몬스터 에너지.webp', 'images/web/웹_몬스터 서브1.webp', 'images/web/웹_몬스터 서브2.webp'], thumbnail: 'images/web/웹_몬스터 에너지.webp', url: 'https://sohyeon028.github.io/web_monsterenergy/' }, { title: '웹 프로젝트 3: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', collaborators: '고영인, 박송희, 서유정', imgs: ['images/web/웹_MOA OTT.webp', 'images/web/웹_MOA OTT 서브1.webp', 'images/web/웹_MOA OTT 서브2.webp', 'images/web/웹_MOA OTT 서브3.webp', 'images/web/웹_MOA OTT 서브4.webp', 'images/web/웹_MOA OTT 서브5.webp', 'images/web/웹_MOA OTT 서브6.webp'], thumbnail: 'images/web/웹_MOA OTT.webp', url: ' https://sohyeon028.github.io/web_moa/' } ];
+const webWorkProjects = [ { title: 'Web Work 가이드', type: '안내',
+    description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', imgs: ['images/web/웹404.jpg'], thumbnail: 'images/web/웹404.jpg', url: '#' }, 
+    { title: '웹 프로젝트 1: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트의 주요 문제점인 캐릭터 상품 탐색의 복잡함과 낮은 가독성을 직관적이고 명쾌하게 개선하고자 했습니다. 캐릭터 탐색 문제를 해결하기 위해, 네비게이션 바에 캐릭터별 상품 메뉴를 독립적으로 구성하고 메인 페이지에 캐릭터 그리드를 배치했습니다. 또한, 캐릭터 소개 페이지를 별도 제작하여 사용자가 원하는 캐릭터에 쉽게 접근하도록 했습니다. 가독성 및 레이아웃 문제는 상품명과 가격의 폰트 크기를 키우고, 상품 리스트를 4열 그리드 레이아웃으로 최적화하여 해결했습니다. 마지막으로, 메인 페이지의 상품 노출을 일관된 가로 슬라이더로 변경하여 불필요한 스크롤을 줄였습니다. ', imgs: ['images/web/웹_카카오 메인.webp', 'images/web/웹_카카오 서브1.webp', 'images/web/웹_카카오 서브2.webp'], thumbnail: 'images/web/웹_카카오 메인.webp', url: 'https://sohyeon028.github.io/web_kakaofriends/' }, 
+    { title: '웹 프로젝트 2: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', imgs: ['images/web/웹_몬스터 에너지.webp', 'images/web/웹_몬스터 서브1.webp', 'images/web/웹_몬스터 서브2.webp'], thumbnail: 'images/web/웹_몬스터 에너지.webp', url: 'https://sohyeon028.github.io/web_monsterenergy/' }, 
+    { title: '웹 프로젝트 3: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', collaborators: '고영인, 박송희, 서유정', imgs: ['images/web/웹_MOA OTT.webp', 'images/web/웹_MOA OTT 서브1.webp', 'images/web/웹_MOA OTT 서브2.webp', 'images/web/웹_MOA OTT 서브3.webp', 'images/web/웹_MOA OTT 서브4.webp', 'images/web/웹_MOA OTT 서브5.webp', 'images/web/웹_MOA OTT 서브6.webp'], thumbnail: 'images/web/웹_MOA OTT.webp', url: ' https://sohyeon028.github.io/web_moa/' } ];
 let currentProjectUrl = '';
 
 function updateWebProject(index) { 
