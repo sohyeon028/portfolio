@@ -1,5 +1,6 @@
 window.addEventListener('load', function() {
-    
+    const initialHashOnLoad = window.location.hash; //
+
     gsap.registerPlugin(ScrollTrigger);
 
     initEmojiPhysics();
@@ -122,13 +123,13 @@ window.addEventListener('load', function() {
     startHomeTyping();
 
     setTimeout(() => {
-        const initialHash = window.location.hash;
-        if (initialHash) {
-            const targetElement = document.getElementById(initialHash.substring(1));
-            if (targetElement) targetElement.scrollIntoView();
-        }
-        setThumbnailHeight();
-    }, 100);
+    // const initialHash = window.location.hash; // 이 부분을
+    if (initialHashOnLoad) { // 이렇게 수정
+        const targetElement = document.getElementById(initialHashOnLoad.substring(1)); // 여기도 수정
+        if (targetElement) targetElement.scrollIntoView();
+    }
+    setThumbnailHeight();
+}, 100);
 
 });
 
@@ -147,7 +148,7 @@ function initAboutCube() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
     scene.add(ambientLight);
     const textureLoader = new THREE.TextureLoader();
-    const imagePaths = [ 'images/about me/기술.webp', 'images/about me/수상.webp', 'images/about me/학력.webp', 'images/about me/자격증.webp', 'images/about me/소개.webp', 'images/about me/비전.webp' ];
+    const imagePaths = [ 'images/about me/수상.webp', 'images/about me/기술.webp', 'images/about me/학력.webp', 'images/about me/자격증.webp', 'images/about me/소개.webp', 'images/about me/비전.webp' ];
     const materials = imagePaths.map(path => { return new THREE.MeshBasicMaterial({ map: textureLoader.load(path) }); });
     const geometry = new THREE.BoxGeometry(2.5, 2.5, 2.5);
     const cube = new THREE.Mesh(geometry, materials);
@@ -201,7 +202,7 @@ function initEmojiPhysics() {
 
 
 // Web Work
-const webWorkProjects = [ { title: 'Web Work 가이드', type: '안내', description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', imgs: ['images/web/웹404.jpg'], thumbnail: 'images/web/웹404.jpg', url: '#' }, { title: '웹 프로젝트 1: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', imgs: ['images/web/웹_카카오 메인.webp', 'images/web/웹_카카오 서브1.webp', 'images/web/웹_카카오 서브2.webp'], thumbnail: 'images/web/웹_카카오 메인.webp', url: 'https://sohyeon028.github.io/web_kakaofriends/' }, { title: '웹 프로젝트 2: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', imgs: ['images/web/웹_몬스터 에너지.webp', 'images/web/웹_몬스터 서브1.webp', 'images/web/웹_몬스터 서브2.webp'], thumbnail: 'images/web/웹_몬스터 에너지.webp', url: 'https://sohyeon028.github.io/web_monsterenergy/' }, { title: '웹 프로젝트 3: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다. 공동작업자: 고영인, 박송희, 서유정', imgs: ['images/web/웹_MOA OTT.webp', 'images/web/웹_MOA OTT 서브1.webp', 'images/web/웹_MOA OTT 서브2.webp', 'images/web/웹_MOA OTT 서브3.webp', 'images/web/웹_MOA OTT 서브4.webp', 'images/web/웹_MOA OTT 서브5.webp', 'images/web/웹_MOA OTT 서브6.webp'], thumbnail: 'images/web/웹_MOA OTT.webp', url: ' https://sohyeon028.github.io/web_moa/' } ];
+const webWorkProjects = [ { title: 'Web Work 가이드', type: '안내', description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', imgs: ['images/web/웹404.jpg'], thumbnail: 'images/web/웹404.jpg', url: '#' }, { title: '웹 프로젝트 1: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트를 상품 이미지 대비 작았던 상품명과 가격의 폰트 크기, 상품의 배열 조정으로 가독성을 높였으며, 기존에 없던 캐릭터별 카테고리 구성을 통해 사용자 경험을 개선했습니다. ', imgs: ['images/web/웹_카카오 메인.webp', 'images/web/웹_카카오 서브1.webp', 'images/web/웹_카카오 서브2.webp'], thumbnail: 'images/web/웹_카카오 메인.webp', url: 'https://sohyeon028.github.io/web_kakaofriends/' }, { title: '웹 프로젝트 2: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', imgs: ['images/web/웹_몬스터 에너지.webp', 'images/web/웹_몬스터 서브1.webp', 'images/web/웹_몬스터 서브2.webp'], thumbnail: 'images/web/웹_몬스터 에너지.webp', url: 'https://sohyeon028.github.io/web_monsterenergy/' }, { title: '웹 프로젝트 3: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', collaborators: '고영인, 박송희, 서유정', imgs: ['images/web/웹_MOA OTT.webp', 'images/web/웹_MOA OTT 서브1.webp', 'images/web/웹_MOA OTT 서브2.webp', 'images/web/웹_MOA OTT 서브3.webp', 'images/web/웹_MOA OTT 서브4.webp', 'images/web/웹_MOA OTT 서브5.webp', 'images/web/웹_MOA OTT 서브6.webp'], thumbnail: 'images/web/웹_MOA OTT.webp', url: ' https://sohyeon028.github.io/web_moa/' } ];
 let currentProjectUrl = '';
 
 function updateWebProject(index) { 
@@ -217,7 +218,17 @@ function updateWebProject(index) {
     viewport.scrollTop = 0; 
 
     document.getElementById('project-title').textContent = project.title; 
-    document.getElementById('project-description').innerHTML = project.description; 
+    let descriptionHtml = `<p>${project.description}</p>`;
+    if (project.collaborators) {
+        descriptionHtml += `
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <p class="text-base text-gray-500 font-medium">
+                    <strong>공동 작업자:</strong> ${project.collaborators}
+                </p>
+            </div>
+        `;
+    }
+    document.getElementById('project-description').innerHTML = descriptionHtml;
     
     currentProjectUrl = project.url; 
     
