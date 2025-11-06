@@ -116,9 +116,31 @@ window.addEventListener('load', function() {
     const homeP = document.getElementById('home-text-p');
     const scrollIndicator = document.getElementById('scroll-indicator');
     const textH1 = "즐거운 상상, 재밌는 아이디어";
-    const textP = "나를 보여주다!";
+    const textP = "넓은 세상에 나를 펼치다!";
     function typeWriter(element, text, speed = 100, callback) { let i = 0; element.innerHTML = ""; element.classList.add('typing-effect'); element.classList.remove('typing-done'); function typeLoop() { if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(typeLoop, speed); } else { element.classList.add('typing-done'); element.classList.remove('typing-effect'); if (callback) callback(); } } typeLoop(); }
-    function startHomeTyping() { if (!homeH1 || !homeP || !scrollIndicator) return; homeH1.innerHTML = ""; homeP.innerHTML = ""; homeP.style.opacity = 0; scrollIndicator.style.opacity = 0; homeH1.classList.remove('typing-done', 'typing-effect'); homeP.classList.remove('typing-done', 'typing-effect'); typeWriter(homeH1, textH1, 100, () => { setTimeout(() => { homeP.style.opacity = 1; typeWriter(homeP, textP, 60, () => { setTimeout(() => { if (scrollIndicator) scrollIndicator.style.opacity = 1; }, 300); }); }, 500); }); }
+    
+    // [!] 'startHomeTyping' 함수 (속도 30으로 수정됨)
+    function startHomeTyping() { 
+        if (!homeH1 || !homeP || !scrollIndicator) return; 
+        homeH1.innerHTML = ""; 
+        homeP.innerHTML = ""; 
+        homeP.style.opacity = 0; 
+        scrollIndicator.style.opacity = 0; 
+        homeH1.classList.remove('typing-done', 'typing-effect'); 
+        homeP.classList.remove('typing-done', 'typing-effect'); 
+        
+        typeWriter(homeH1, textH1, 100, () => { 
+            setTimeout(() => { 
+                homeP.style.opacity = 1; 
+                typeWriter(homeP, textP, 30, () => { // [!] 속도 30
+                    setTimeout(() => { 
+                        if (scrollIndicator) scrollIndicator.style.opacity = 1; 
+                    }, 300); 
+                }); 
+            }, 500); 
+        }); 
+    }
+    
     if (scrollIndicator) { scrollIndicator.addEventListener('click', () => { document.getElementById('about').scrollIntoView({ behavior: 'smooth' }); }); }
     startHomeTyping();
 
@@ -169,9 +191,11 @@ function initAboutCube() {
 }
 
 
-// 이모지
+// [!] 이모지
 function initEmojiPhysics() {
-    const Engine = Matter.Engine, Render = Matter.Render, Runner = Matter.Runner, World = Matter.World, Bodies = Matter.Bodies, Mouse = Matter.Mouse, MouseConstraint = Matter.MouseConstraint;
+    // [!] Events, Body, Query 등 필요한 모듈을 Matter에서 가져옵니다.
+    const Engine = Matter.Engine, Render = Matter.Render, Runner = Matter.Runner, World = Matter.World, Bodies = Matter.Bodies, Mouse = Matter.Mouse, MouseConstraint = Matter.MouseConstraint, Body = Matter.Body, Query = Matter.Query, Events = Matter.Events;
+    
     const emojis = ['🎨', '💖', '😻', '🍫', '🍕', '🍓', '😝', '🔥', '🐶', '🧸', '☘️', '🌸', '🏡', '🌕', '🌈', '💸', '🍞', '🔎', '🍑', '🥞'];
     const offset = 10;
     const container = document.getElementById('emoji-canvas-container');
@@ -184,15 +208,67 @@ function initEmojiPhysics() {
     const ceiling = Bodies.rectangle(container.clientWidth / 2, -offset, container.clientWidth, offset * 2, { isStatic: true, render: { visible: false } });
     const boundaries = [ Bodies.rectangle(container.clientWidth / 2, container.clientHeight - 20, container.clientWidth, offset * 2, { isStatic: true, render: { visible: false } }), Bodies.rectangle(-offset, container.clientHeight / 2, offset * 2, container.clientHeight * 5, { isStatic: true, render: { visible: false } }), Bodies.rectangle(container.clientWidth + offset, container.clientHeight / 2, offset * 2, container.clientHeight * 5, { isStatic: true, render: { visible: false } }) ];
     World.add(world, boundaries);
-    const emojiBodies = [];
+    
+    // [!] emojiBodies 배열을 여기서 선언해야 클릭 이벤트에서 참조 가능
+    const emojiBodies = []; 
+    
     for (let i = 0; i < emojis.length; i++) { const x = Math.random() * container.clientWidth; const y = -80 - (Math.random() * 100); const radius = 24; const emojiFromList = emojis[i]; const body = Bodies.circle(x, y, radius, { restitution: 0.4, friction: 0.35, render: { sprite: { texture: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 60 60"><text x="30" y="30" font-size="48" dominant-baseline="central" text-anchor="middle">' + emojiFromList + '</text></svg>'), xScale: 1, yScale: 1 } } }); emojiBodies.push(body); }
     World.add(world, emojiBodies);
     setTimeout(() => { World.add(world, ceiling); }, 2000);
+    
+    // 마우스 '드래그' 기능
     const mouse = Mouse.create(render.canvas);
     mouse.element.removeEventListener('mousewheel', mouse.mousewheel);
     mouse.element.removeEventListener('wheel', mouse.mousewheel);
-    const mouseConstraint = MouseConstraint.create(engine, { mouse: mouse, constraint: { stiffness: 0.2, render: { visible: false } } });
+    const mouseConstraint = MouseConstraint.create(engine, { 
+        mouse: mouse, 
+        constraint: { 
+            stiffness: 0.2, 
+            render: { visible: false } 
+        } 
+    });
     World.add(world, mouseConstraint);
+
+    // [!] '클릭' 로직 수정 (MouseConstraint와 충돌 해결)
+    let startMousePos = { x: 0, y: 0 };
+    let isDragging = false; // 드래그 중인지 확인하는 플래그
+
+    // 마우스를 눌렀을 때 시작 위치 저장
+    Events.on(mouseConstraint, 'mousedown', function(event) {
+        startMousePos = { x: event.mouse.position.x, y: event.mouse.position.y };
+        isDragging = false; // 드래그 상태 초기화
+    });
+    
+    // 마우스가 움직이면 '드래그 중'으로 표시 (약간의 오차 5px 허용)
+    Events.on(mouseConstraint, 'mousemove', function(event) {
+        // isDragging 플래그가 false일 때만 거리 체크
+        if (!isDragging) {
+            if (Math.abs(event.mouse.position.x - startMousePos.x) > 5 || Math.abs(event.mouse.position.y - startMousePos.y) > 5) {
+                isDragging = true;
+            }
+        }
+    });
+
+    // 마우스를 뗄 때, '드래그 중'이 아니었다면 '클릭'으로 간주
+    Events.on(mouseConstraint, 'mouseup', function(event) {
+        if (!isDragging) {
+            const mousePosition = event.mouse.position;
+            // [!] emojiBodies 배열을 참조하여 클릭된 바디를 찾음
+            const bodies = Query.point(emojiBodies, mousePosition); 
+
+            if (bodies.length > 0) {
+                const clickedBody = bodies[0];
+                Body.applyForce(clickedBody, clickedBody.position, {
+                    x: (Math.random() - 0.5) * 0.04, // 좌우 랜덤 힘
+                    y: -(Math.random() * 0.03) - 0.02 // 위로 튕기는 힘
+                });
+            }
+        }
+        isDragging = false; // 상태 리셋
+    });
+    // [!] 기존 canvas.addEventListener('click', ...) 부분은 삭제 (이 로직으로 대체됨)
+
+    
     window.addEventListener('resize', () => { if (!container.clientWidth || !container.clientHeight) return; render.canvas.width = container.clientWidth; render.canvas.height = container.clientHeight + (offset * 2); Matter.Body.setPosition(boundaries[0], { x: container.clientWidth / 2, y: container.clientHeight - 20 }); Matter.Body.setPosition(boundaries[1], { x: -offset, y: container.clientHeight / 2 }); Matter.Body.setPosition(boundaries[2], { x: container.clientWidth + offset, y: container.clientHeight / 2 }); Matter.Body.setPosition(ceiling, { x: container.clientWidth / 2, y: -offset }); });
     Runner.run(engine);
     Render.run(render);
@@ -204,9 +280,9 @@ function initEmojiPhysics() {
 // [수정] MOA OTT 'goal' 및 'solutions' 내용 "중간" 안으로 수정
 const webWorkProjects = [ 
     { 
-        title: 'Web Work 가이드', 
+        title: '안내', 
         type: '안내',
-        description: '위쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', 
+        description: '위 목록에서 프로젝트를 선택하세요.<br><hr class="project-divider" style="margin-top: 1.5rem; margin-bottom: 1rem;"><br>프로젝트 <strong>선택</strong> 후 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 이미지로 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', 
         imgs: ['images/web/웹404.jpg'], 
         thumbnail: 'images/web/웹404.jpg', 
         url: '#',
@@ -520,10 +596,10 @@ function initGallery() {
         {src: "images/gallery/66.webp", w: 300, h: 400 },
         {src: "images/gallery/67.webp", w: 300, h: 400 },
         {src: "images/gallery/68.webp", w: 300, h: 250 },
-        {src: "images/gallery/69.webp", w: 300, h: 200 },
-        {src: "images/gallery/70.webp", w: 300, h: 400 },
-        {src: "images/gallery/71.webp", w: 300, h: 400 },
-        {src: "images/gallery/72.webp", w: 300, h: 550 },
+        { src: "images/gallery/69.webp", w: 300, h: 200 },
+        { src: "images/gallery/70.webp", w: 300, h: 400 },
+        { src: "images/gallery/71.webp", w: 300, h: 400 },
+        { src: "images/gallery/72.webp", w: 300, h: 550 },
         { src: "images/gallery/73.webp", w: 300, h: 520 },
         { src: "images/gallery/74.webp", w: 300, h: 400 },
         { src: "images/gallery/고양이낚시1.webp", w: 300, h: 220 },
@@ -645,7 +721,10 @@ function initGallery() {
 
 }
 
-// Contact
+
+// 
+// [!] initContactForm 함수가 아바타 기능을 포함하도록 대대적으로 수정되었습니다.
+// 
 function initContactForm() {
     const form = document.getElementById('contact-form');
     const nameInput = document.getElementById('name-input');
@@ -657,83 +736,181 @@ function initContactForm() {
         return;
     }
 
-    const CHAT_STORAGE_KEY = 'sohyeon-portfolio-chat-local'; 
+    const CHAT_STORAGE_KEY = 'sohyeon-portfolio-chat-local';
 
-    function createChatBubble(name, message) {
+    /**
+     * [!] 날짜/시간 포맷 함수가 여기 수정되었습니다.
+     */
+    function formatTimestamp(isoString) {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        const now = new Date(); // 현재 시간
+
+        const options = {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        };
+
+        // [!] 년도가 다를 경우에만 년/월/일 표시
+        if (date.getFullYear() !== now.getFullYear()) {
+            options.year = 'numeric';
+            options.month = 'numeric';
+            options.day = 'numeric';
+        } else { // [!] 년도가 같다면 월/일만 표시
+            options.month = 'numeric';
+            options.day = 'numeric';
+        }
+
+        // [!] 수정된 options 객체를 사용
+        return date.toLocaleString('ko-KR', options);
+    }
+
+    /**
+     * [!] '보낸 사람'의 채팅 버블과 아바타를 생성하는 통합 함수
+     * @param {object} data - { name, message, timestamp, avatar }
+     * @param {boolean} isNew - 새 메시지인 경우 true (애니메이션 적용)
+     */
+    function createSenderChatRow(data, isNew = false) {
+        // 1. 전체 행(row) 컨테이너 생성
+        const chatRow = document.createElement('div');
+        chatRow.className = 'chat-row sender-row'; // 오른쪽 정렬
+
+        // 2. 말풍선(bubble) 생성
         const bubble = document.createElement('div');
         bubble.className = 'chat-bubble sender-bubble';
         
-        const safeName = document.createTextNode(`[${name}님]`);
+        // 3. 말풍선 내부 컨텐츠 구성
+        const safeName = document.createTextNode(`[${data.name}님]`);
         const strongTag = document.createElement('strong');
         strongTag.appendChild(safeName);
-
         bubble.appendChild(strongTag);
         bubble.appendChild(document.createElement('br'));
         
-        message.split('\n').forEach((line, index) => {
+        // 메시지 (줄바꿈 처리)
+        data.message.split('\n').forEach((line, index) => {
             if (index > 0) bubble.appendChild(document.createElement('br'));
             bubble.appendChild(document.createTextNode(line));
         });
         
-        chatWindow.appendChild(bubble);
+        // 타임스탬프
+        if (data.timestamp) {
+            const timestampEl = document.createElement('small');
+            timestampEl.className = 'chat-timestamp';
+            timestampEl.textContent = formatTimestamp(data.timestamp); // [!] 수정된 함수 사용
+            bubble.appendChild(document.createElement('br'));
+            bubble.appendChild(timestampEl);
+        }
+
+        // 4. 아바타(avatar) 이미지 생성
+        const avatarImg = document.createElement('img');
+        avatarImg.className = 'chat-avatar';
+
+        // [!] 오류 수정: data.avatar 값이 없으면(undefined) 'avatar1'을 기본값으로 사용
+        const avatarFile = data.avatar || 'avatar1'; 
         
+        // [!] 수정: avatarFile 변수를 사용 (경로 수정)
+        const avatarMap = {
+            'avatar1': 'images/contact/딸기 냠냠.webp',
+            'avatar2': 'images/contact/딸기잼.webp',
+            'avatar3': 'images/contact/쿨쿨.webp'
+        };
+        avatarImg.src = avatarMap[avatarFile] || avatarMap['avatar1']; // 기본값으로 avatar1 사용
+        avatarImg.alt = `${data.name}님의 아바타`;
+
+        // 5. 애니메이션 처리
+        if (isNew) {
+            // 새 메시지일 때만 fade-in 애니메이션 적용
+            bubble.style.opacity = '0';
+            bubble.style.transform = 'translateY(10px)';
+            bubble.style.animation = 'bubble-fade-in 0.3s ease forwards';
+        } else {
+            // 로드된 메시지는 바로 표시
+            bubble.style.opacity = '1';
+            bubble.style.transform = 'translateY(0)';
+            bubble.style.animation = 'none';
+        }
+
+        // 6. 요소 조립 (버블 먼저, 그다음 아바타)
+        chatRow.appendChild(bubble);
+        chatRow.appendChild(avatarImg);
         
-        setTimeout(() => {
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }, 300); 
+        // 7. 채팅창에 추가
+        chatWindow.appendChild(chatRow);
     }
 
+    /**
+     * [!] 페이지 로드 시 저장된 메시지 불러오기 (createSenderChatRow 함수 사용)
+     */
     function loadMessages() {
         const savedMessages = localStorage.getItem(CHAT_STORAGE_KEY); 
         if (savedMessages) {
             const messages = JSON.parse(savedMessages);
             messages.forEach(msgData => {
-                const bubble = document.createElement('div');
-                bubble.className = 'chat-bubble sender-bubble';
-                bubble.style.opacity = '1';
-                bubble.style.transform = 'translateY(0)';
-                bubble.style.animation = 'none';
-
-                const safeName = document.createTextNode(`[${msgData.name}님]`);
-                const strongTag = document.createElement('strong');
-                strongTag.appendChild(safeName);
-
-                bubble.appendChild(strongTag);
-                bubble.appendChild(document.createElement('br'));
-                
-                msgData.message.split('\n').forEach((line, index) => {
-                    if (index > 0) bubble.appendChild(document.createElement('br'));
-                    bubble.appendChild(document.createTextNode(line));
-                });
-
-                chatWindow.appendChild(bubble);
+                // 저장된 각 메시지에 대해 '보낸 사람 채팅 행' 생성
+                createSenderChatRow(msgData, false); // isNew = false
             });
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            chatWindow.scrollTop = chatWindow.scrollHeight; // 로드 후 맨 아래로 스크롤
         }
     }
 
+    /**
+     * [!] 폼 제출 이벤트 리스너 (아바타 값 포함)
+     */
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // 폼 입력값 가져오기
         const nameValue = nameInput.value.trim();
         const messageValue = messageInput.value.trim();
-
+        
+        // [추가] 선택된 아바타 값 가져오기
+        const selectedAvatarInput = document.querySelector('input[name="avatar"]:checked');
+        
+        // 유효성 검사
         if (nameValue === '' || messageValue === '') {
             alert('성함과 메시지 내용을 입력해주세요.');
             return;
         }
+        if (!selectedAvatarInput) {
+            alert('프로필 아바타를 선택해주세요.');
+            return;
+        }
 
-        createChatBubble(nameValue, messageValue);
+        const avatarValue = selectedAvatarInput.value;
+        const timestamp = new Date().toISOString(); 
+        
+        // 1. 화면에 새 메시지 표시
+        const messageData = {
+            name: nameValue,
+            message: messageValue,
+            timestamp: timestamp,
+            avatar: avatarValue // 아바타 값 추가
+        };
+        createSenderChatRow(messageData, true); // isNew = true
 
+        // 2. localStorage에 저장
         const savedMessages = localStorage.getItem(CHAT_STORAGE_KEY); 
         let messages = savedMessages ? JSON.parse(savedMessages) : [];
-        messages.push({ name: nameValue, message: messageValue });
+        
+        // [수정] 아바타 값을 포함한 객체 저장
+        messages.push(messageData); 
         localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages)); 
 
+        // 3. 입력창 비우기 및 아바타 선택 해제
         nameInput.value = '';
         messageInput.value = '';
+        selectedAvatarInput.checked = false; // 선택 해제
+        
+        // 4. 새 메시지 후 맨 아래로 스크롤
+        setTimeout(() => {
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }, 300);
     });
 
+    // --- 함수 실행 ---
+    
+    // 페이지 로드 시 기존 메시지 불러오기
     loadMessages();
 }
 

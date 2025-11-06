@@ -66,14 +66,22 @@ body, html {
 #home {
     overflow: visible; 
 }
+
+/* [!] 홈 섹션 배경이 여기 수정되었습니다. 
+*/
 #home-background-image-container {
     background-image: url('images/bg/bg.webp');
     background-color: transparent;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    mask-image: linear-gradient(to bottom, black 75%, transparent 95%);
-    -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 95%);
+    
+    /* [수정] 밝기를 95%로 약간 어둡게 조절 */
+    filter: brightness(95%);
+    
+    /* [수정] 마스크 그라데이션을 65%부터 시작해 더 부드럽게 */
+    mask-image: linear-gradient(to bottom, black 65%, transparent 95%);
+    -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 95%);
 }
 
 .typing-effect::after {
@@ -225,8 +233,10 @@ body, html {
     width: auto;             
     height: auto;            
     object-fit: contain;     
+    
+    /* [수정됨] auto 마진 다시 추가 (모바일 기본값) */
     margin-left: auto;       
-    margin-right: auto;      
+    margin-right: auto;
     
     transition: transform 0.3s ease;
 }
@@ -485,7 +495,6 @@ textarea.contact-input {
 .chat-bubble {
     padding: 0.75rem 1rem; 
     border-radius: 1rem; 
-    max-width: 80%;
     word-wrap: break-word;
     font-size: 1.125rem;
     line-height: 1.7; 
@@ -495,18 +504,18 @@ textarea.contact-input {
 }
 
 .recipient-bubble {
-    align-self: flex-start; 
     background-color: #FFFFFF;
     border: 1px solid #E9ECEF;
     color: #495057;
     border-top-left-radius: 0;
+    /* [수정] max-width가 .chat-row > .chat-bubble로 이동 */
 }
 
 .sender-bubble {
-    align-self: flex-end;
     background-color: #FEE500;
     color: #3C1E1E; 
     border-bottom-right-radius: 0; 
+    text-align: right; 
 }
 
 @keyframes bubble-fade-in {
@@ -698,3 +707,108 @@ textarea.contact-input {
     font-style: italic;
 }
 
+/* --- Contact 채팅창 프로필 사진 --- */
+.chat-row {
+    display: flex;
+    align-items: flex-end; /* 버블 하단에 아바타를 정렬합니다 */
+    gap: 0.5rem; /* 8px */
+    width: 100%;
+}
+
+.chat-row.recipient-row {
+    justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+.chat-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0; /* 이미지가 찌그러지지 않게 함 */
+    border: 1px solid #E9ECEF;
+}
+
+/* [수정] .chat-row 안의 버블은 최대 너비를 가짐 */
+.chat-row > .chat-bubble {
+    max-width: calc(100% - 68px); /* 아바타(60px) + 갭(8px) */
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+
+.recipient-bubble {
+    border-top-left-radius: 1rem; 
+}
+
+.sender-bubble {
+    border-bottom-right-radius: 1rem; 
+    text-align: right; 
+}
+
+/* --- Contact 채팅창 타임스탬프 --- */
+.chat-timestamp {
+    display: inline-block; /* text-align: right; 적용받도록 */
+    font-size: 0.85rem;  /* 13.6px */
+    color: #6C757D;      /* 너무 튀지 않는 회색 */
+    margin-top: 6px;
+}
+
+/* 노란색 말풍선 안의 타임스탬프는 조금 더 진한 회색으로 */
+.sender-bubble .chat-timestamp {
+    color: #525252;
+}
+
+
+/* [!] 아바타 선택 UI 스타일 추가 
+*/
+.avatar-picker-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.avatar-radio {
+    display: none; /* 실제 라디오 버튼은 숨김 */
+}
+
+.avatar-label {
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    padding: 2px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.avatar-label img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 1px solid #DEE2E6;
+}
+
+.avatar-radio:checked + .avatar-label {
+    border-color: #F5A8B2; /* 선택 시 핑크색 테두리 */
+    transform: scale(1.05);
+}
+
+.avatar-label:hover {
+    transform: scale(1.05);
+}
+
+/* [!] 보낸 사람 아바타 스타일 추가 
+*/
+.chat-row.sender-row {
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
+
+.chat-row.sender-row > .chat-avatar {
+    width: 60px;  /* 보낸 사람 아바타는 조금 작게 */
+    height: 60px;
+}
+
+/* 보낸 사람 버블은 아바타 크기(40px) + 갭(8px) 만큼 최대 너비 */
+.chat-row.sender-row > .chat-bubble {
+    max-width: calc(100% - 48px);
+}
