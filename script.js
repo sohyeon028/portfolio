@@ -16,7 +16,7 @@ window.addEventListener('load', function() {
     }
     checkCubeContainer();
 
-    initializeProjects();
+    initializeProjects(); // Web Work 초기화
 
     function checkGalleryContainer() {
         const container = document.getElementById('gallery'); 
@@ -32,7 +32,11 @@ window.addEventListener('load', function() {
 
     initScrollToTop();
 
-    initScrollLeakPrevention();
+    // [수정됨] 스크롤 누수 방지 기능은 유지하되, 설명창 스크롤은 페이지 스크롤로 전환합니다.
+    initScrollLeakPrevention(); 
+    
+    // [NEW] Web Work 섹션용 높이 설정 (index2.html에서 가져옴)
+    setTimeout(setBoxHeight, 100); 
 
     // 헤더 네비게이션
     const navLinks = document.querySelectorAll('.nav-link');
@@ -89,10 +93,6 @@ window.addEventListener('load', function() {
                         history.replaceState(null, null, `#${activeId}`);
                     }
                 }
-                
-                if (activeId === 'web-work') {
-                    setThumbnailHeight();
-                }
             }
         });
     }, { 
@@ -123,12 +123,11 @@ window.addEventListener('load', function() {
     startHomeTyping();
 
     setTimeout(() => {
-    if (initialHashOnLoad) { 
-        const targetElement = document.getElementById(initialHashOnLoad.substring(1)); 
-        if (targetElement) targetElement.scrollIntoView();
-    }
-    setThumbnailHeight();
-}, 100);
+        if (initialHashOnLoad) { 
+            const targetElement = document.getElementById(initialHashOnLoad.substring(1)); 
+            if (targetElement) targetElement.scrollIntoView();
+        }
+    }, 100);
 
 });
 
@@ -200,12 +199,66 @@ function initEmojiPhysics() {
 }
 
 
-// Web Work
-const webWorkProjects = [ { title: 'Web Work 가이드', type: '안내',
-    description: '오른쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', imgs: ['images/web/웹404.jpg'], thumbnail: 'images/web/웹404.jpg', url: '#' }, 
-    { title: '웹 프로젝트 1: 카카오프렌즈 리디자인', type: '개인', description: '카카오프렌즈 웹사이트의 주요 문제점인 캐릭터 상품 탐색의 복잡함과 낮은 가독성을 직관적이고 명쾌하게 개선하고자 했습니다. 캐릭터 탐색 문제를 해결하기 위해, 네비게이션 바에 캐릭터별 상품 메뉴를 독립적으로 구성하고 메인 페이지에 캐릭터 그리드를 배치했습니다. 또한, 캐릭터 소개 페이지를 별도 제작하여 사용자가 원하는 캐릭터에 쉽게 접근하도록 했습니다. 가독성 및 레이아웃 문제는 상품명과 가격의 폰트 크기를 키우고, 상품 리스트를 4열 그리드 레이아웃으로 최적화하여 해결했습니다. 마지막으로, 메인 페이지의 상품 노출을 일관된 가로 슬라이더로 변경하여 불필요한 스크롤을 줄였습니다. ', imgs: ['images/web/웹_카카오 메인.webp', 'images/web/웹_카카오 서브1.webp', 'images/web/웹_카카오 서브2.webp'], thumbnail: 'images/web/웹_카카오 메인.webp', url: 'https://sohyeon028.github.io/web_kakaofriends/' }, 
-    { title: '웹 프로젝트 2: 몬스터 에너지', type: '개인', description: '브랜드의 익스트림 스포츠 및 관련 콘텐츠 노출을 하여 몬스터 에너지의 브랜드 아이덴티티를 강조했습니다. 제품의 라인업 배치와 제품 안내 페이지를 개선하였으며, 스크롤과 Hover 효과를 통해 브랜드의 인지도 상승 및 긍정적인 인상을 남기도록 리디자인 했습니다.', imgs: ['images/web/웹_몬스터 에너지.webp', 'images/web/웹_몬스터 서브1.webp', 'images/web/웹_몬스터 서브2.webp'], thumbnail: 'images/web/웹_몬스터 에너지.webp', url: 'https://sohyeon028.github.io/web_monsterenergy/' }, 
-    { title: '웹 프로젝트 3: MOA OTT', type: '팀', description: 'OTT 플랫폼 \'MOA\'의 웹 디자인입니다. 사용자가 다양한 콘텐츠를 쉽게 탐색하고 즐길 수 있도록 직관적인 UI/UX를 설계했습니다.', collaborators: '고영인, 박송희, 서유정', imgs: ['images/web/웹_MOA OTT.webp', 'images/web/웹_MOA OTT 서브1.webp', 'images/web/웹_MOA OTT 서브2.webp', 'images/web/웹_MOA OTT 서브3.webp', 'images/web/웹_MOA OTT 서브4.webp', 'images/web/웹_MOA OTT 서브5.webp', 'images/web/웹_MOA OTT 서브6.webp'], thumbnail: 'images/web/웹_MOA OTT.webp', url: ' https://sohyeon028.github.io/web_moa/' } ];
+// ========== [시작] Web Work 섹션용 스크립트 (index2.html 버전) ==========
+
+// [수정] MOA OTT 'goal' 및 'solutions' 내용 "중간" 안으로 수정
+const webWorkProjects = [ 
+    { 
+        title: 'Web Work 가이드', 
+        type: '안내',
+        description: '위쪽 목록에서 프로젝트를 선택하세요.<br><br><strong>Tip:</strong> 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', 
+        imgs: ['images/web/웹404.jpg'], 
+        thumbnail: 'images/web/웹404.jpg', 
+        url: '#',
+        badgeStyle: 'badge-default' 
+    }, 
+    { 
+        title: '카카오프렌즈 웹 사이트 리디자인',
+        type: '개인', 
+        goal: '캐릭터 상품 탐색의 복잡함과 낮은 가독성을 직관적으로 개선.',
+        keywords: ['UI/UX', '웹 리디자인', '가독성 개선'],
+        solutions: [
+            '<strong>캐릭터 탐색:</strong> 네비게이션 바에 \'캐릭터별 상품 메뉴\'를 독립 구성하고 메인에 캐릭터 그리드 배치.',
+            '<strong>가독성:</strong> 상품명/가격 폰트 크기를 키우고, 상품 리스트를 4열 그리드로 최적화.',
+            '<strong>메인 UI:</strong> 상품 노출을 일관된 가로 슬라이더로 변경하여 불필요한 스크롤 감소.'
+        ],
+        imgs: ['images/web/웹_카카오 메인.webp', 'images/web/웹_카카오 서브1.webp', 'images/web/웹_카카오 서브2.webp'], 
+        thumbnail: 'images/web/웹_카카오 메인.webp', 
+        url: 'https://sohyeon028.github.io/web_kakaofriends/',
+        badgeStyle: 'badge-kakao'
+    }, 
+    { 
+        title: '몬스터 에너지 웹 사이트 리디자인',
+        type: '개인', 
+        goal: '브랜드 아이덴티티 강조 및 제품 안내 페이지 개선, 긍정적 브랜드 인상 제고.',
+        keywords: ['브랜딩', '인터랙션', '웹 리디자인'],
+        solutions: [
+            '<strong>브랜딩:</strong> 익스트림 스포츠 및 관련 콘텐츠 노출로 브랜드 아이덴티티 강조.',
+            '<strong>UI 개선:</strong> 제품 라인업 배치와 제품 안내 페이지 개선.',
+            '<strong>인터랙션:</strong> 스크롤 및 Hover 효과를 통해 긍정적인 브랜드 인상 유도.'
+        ],
+        imgs: ['images/web/웹_몬스터 에너지.webp', 'images/web/웹_몬스터 서브1.webp', 'images/web/웹_몬스터 서브2.webp'], 
+        thumbnail: 'images/web/웹_몬스터 에너지.webp', 
+        url: 'https://sohyeon028.github.io/web_monsterenergy/',
+        badgeStyle: 'badge-monster'
+    }, 
+    { 
+        title: 'OTT 통합 검색 플랫폼 MOA 신규 설계 ',
+        type: '팀', 
+        goal: '사용자가 겪는 \'콘텐츠 파편화\'와 \'탐색 스트레스\'를 해결하는 통합 플랫폼 설계.',
+        keywords: ['UI/UX', 'OTT 플랫폼', '팀 프로젝트'],
+        solutions: [
+            '<strong>통합 검색 UI:</strong> 흩어진 OTT 콘텐츠를 한 번에 검색하고 바로 연결하는 직관적인 UI를 구현.',
+            '<strong>개인화 UX:</strong> 시청 이력, 구독 정보를 분석해 신뢰할 수 있는 \'나만을 위한\' 맞춤형 콘텐츠를 추천.',
+            '<strong>콘텐츠 중심 UI:</strong> 다크 모드와 블루/퍼플 포인트 컬러로 세련된 아이덴티티를 구축.'
+        ],
+        collaborators: '고영인, 박송희, 서유정', 
+        imgs: ['images/web/웹_MOA OTT.webp', 'images/web/웹_MOA OTT 서브1.webp', 'images/web/웹_MOA OTT 서브2.webp', 'images/web/웹_MOA OTT 서브3.webp', 'images/web/웹_MOA OTT 서브4.webp', 'images/web/웹_MOA OTT 서브5.webp', 'images/web/웹_MOA OTT 서브6.webp'], 
+        thumbnail: 'images/web/웹_MOA OTT.webp', 
+        url: ' https://sohyeon028.github.io/web_moa/',
+        badgeStyle: 'badge-moa'
+    } 
+];
 let currentProjectUrl = '';
 
 function updateWebProject(index) { 
@@ -221,29 +274,67 @@ function updateWebProject(index) {
     viewport.scrollTop = 0; 
 
     document.getElementById('project-title').textContent = project.title; 
-    let descriptionHtml = `<p>${project.description}</p>`;
-    if (project.collaborators) {
-        descriptionHtml += `
-            <div class="mt-4 pt-4 border-t border-gray-200">
-                <p class="text-base text-gray-500 font-medium">
-                    <strong>공동 작업자:</strong> ${project.collaborators}
-                </p>
-            </div>
+    const detailsContainer = document.getElementById('project-details-container');
+    if (!detailsContainer) return;
+
+    document.getElementById('project-description-box').scrollTop = 0;
+
+    if (index === 0 || !project.goal) {
+        detailsContainer.innerHTML = `<p class="text-lg text-gray-600">${project.description.replace('오른쪽 목록', '위쪽 목록')}</p>`;
+    } 
+    else {
+        let newHtml = '<div class="project-details-grid">';
+        
+        newHtml += `
+            <div class="project-grid-label">Type</div>
+            <div class="project-grid-value">${project.type}</div>
         `;
+        
+        newHtml += `
+            <div class="project-grid-label">Goal</div>
+            <div class="project-grid-value">${project.goal}</div>
+        `;
+
+        if (project.keywords && project.keywords.length > 0) {
+            const badgeClass = project.badgeStyle || 'badge-default';
+            newHtml += `
+                <div class="project-grid-label">Keywords</div>
+                <div class="project-grid-value">
+                    ${project.keywords.map(k => `<span class="project-keyword-badge ${badgeClass}">${k}</span>`).join(' ')}
+                </div>
+            `;
+        }
+        
+        if (project.collaborators) {
+            newHtml += `
+                <div class="project-grid-label">Collaborators</div>
+                <div class="project-grid-value">${project.collaborators}</div>
+            `;
+        }
+        
+        newHtml += '</div>'; 
+
+        if (project.solutions && project.solutions.length > 0) {
+            newHtml += '<hr class="project-divider">';
+            newHtml += '<h4 class="project-solutions-title">주요 개선 사항</h4>';
+            newHtml += '<ul class="project-solutions-list">';
+            newHtml += project.solutions.map(s => `<li>${s}</li>`).join('');
+            newHtml += '</ul>';
+        }
+        
+        detailsContainer.innerHTML = newHtml;
     }
-    document.getElementById('project-description').innerHTML = descriptionHtml;
     
     currentProjectUrl = project.url; 
     
     thumbnailContainer.querySelectorAll('.thumbnail-wrapper').forEach((wrapper, i) => { 
         const isActive = (i === index); 
-        wrapper.classList.toggle('border-[#F5A8B2]', isActive); 
-        wrapper.classList.toggle('border-transparent', !isActive); 
+        wrapper.classList.toggle('border-[#F5A8B2]', isActive);
+        wrapper.classList.toggle('border-transparent', !isActive);
         wrapper.classList.toggle('active-thumbnail', isActive); 
     }); 
     
     if (project.imgs && project.imgs.length > 0) {
-        // 이미지를 뷰포트에 추가
         project.imgs.forEach(imgSrc => {
             const img = document.createElement('img');
             img.src = imgSrc; 
@@ -251,14 +342,85 @@ function updateWebProject(index) {
             img.className = 'w-full h-auto'; 
             viewport.appendChild(img);
         });
-
     } else { 
         viewport.innerHTML = '<p class="text-center p-4">표시할 이미지가 없습니다.</p>'; 
     } 
+    
+    // [수정됨] setBoxHeight 함수를 호출하지 않습니다.
+    // setTimeout(setBoxHeight, 50); 
 }
 
-function setThumbnailHeight() { const leftColumn = document.getElementById('web-work-left-column'); const thumbnailsContainer = document.getElementById('web-project-thumbnails'); if (leftColumn && thumbnailsContainer) { const leftColumnHeight = leftColumn.offsetHeight; if (leftColumnHeight > 0) thumbnailsContainer.style.height = `${leftColumnHeight}px`; } }
-function initializeProjects() { const thumbnailContainer = document.getElementById('web-project-thumbnails'); if (!thumbnailContainer) return; thumbnailContainer.innerHTML = webWorkProjects.map((p, i) => `<div class="thumbnail-wrapper relative w-full rounded-xl cursor-pointer border-4 overflow-hidden ${i === 0 ? 'border-[#F5A8B2] active-thumbnail' : 'border-transparent hover:border-[#B2EBF2]'}" data-index="${i}"><img src="${p.thumbnail}" alt="${p.title}" class="w-full transition-all web-thumbnail-img"><span class="project-type-badge absolute top-2 left-2 bg-black bg-opacity-60 text-white text-sm font-bold py-1 px-2 rounded-md transition-opacity duration-300">${p.type}</span></div>`).join(''); thumbnailContainer.addEventListener('click', e => { const wrapper = e.target.closest('.thumbnail-wrapper'); if (wrapper) { updateWebProject(parseInt(wrapper.dataset.index)); } }); document.getElementById('laptop-container').addEventListener('click', () => { if (currentProjectUrl && currentProjectUrl !== '#') window.open(currentProjectUrl, '_blank'); }); updateWebProject(0); const webImgs = webWorkProjects.flatMap(p => p.imgs || []); const thumbnails = webWorkProjects.map(p => p.thumbnail); const allImages = [...new Set([...webImgs, ...thumbnails])]; allImages.filter(Boolean).forEach(src => { (new Image()).src = src; }); }
+// [수정됨] setBoxHeight 함수를 제거하고 CSS에 맡깁니다.
+// function setBoxHeight() {
+//     const laptopContainer = document.getElementById('laptop-container');
+//     const descBox = document.getElementById('project-description-box');
+//     if (laptopContainer && descBox) {
+//         const laptopHeight = laptopContainer.offsetHeight;
+//         descBox.style.height = `${laptopHeight}px`;
+//     }
+// }
+const setBoxHeight = () => {};
+
+
+function initializeProjects() { 
+    const thumbnailContainer = document.getElementById('web-project-thumbnails'); 
+    if (!thumbnailContainer) return; 
+    
+    thumbnailContainer.innerHTML = webWorkProjects.map((p, i) => 
+        `<div class="thumbnail-wrapper relative rounded-xl cursor-pointer border-4 overflow-hidden ${i === 0 ? 'border-[#F5A8B2] active-thumbnail' : 'border-transparent hover:border-[#F5A8B2]'}" data-index="${i}">
+            <img src="${p.thumbnail}" alt="${p.title}" class="w-full transition-all web-thumbnail-img">
+            <span class="project-type-badge absolute top-2 left-2 bg-black bg-opacity-60 text-white text-sm font-bold py-1 px-2 rounded-md transition-opacity duration-300">${p.type}</span>
+        </div>`
+    ).join(''); 
+    
+    thumbnailContainer.addEventListener('click', e => { 
+        const wrapper = e.target.closest('.thumbnail-wrapper'); 
+        if (wrapper) { 
+            updateWebProject(parseInt(wrapper.dataset.index)); 
+        } 
+    }); 
+    
+    document.getElementById('laptop-container').addEventListener('click', () => { 
+        if (currentProjectUrl && currentProjectUrl !== '#') {
+            window.open(currentProjectUrl, '_blank'); 
+        }
+    }); 
+    
+    updateWebProject(0); 
+    
+    const webImgs = webWorkProjects.flatMap(p => p.imgs || []); 
+    const thumbnails = webWorkProjects.map(p => p.thumbnail); 
+    const allImages = [...new Set([...webImgs, ...thumbnails])]; 
+    allImages.filter(Boolean).forEach(src => { (new Image()).src = src; }); 
+}
+
+function initScrollLeakPrevention() {
+    const elements = [
+        document.getElementById('laptop-screen-viewport'),
+        document.getElementById('web-project-thumbnails'),
+        // [수정됨] project-description-box 제거
+    ];
+
+    elements.forEach(el => {
+        if (!el) return;
+        el.addEventListener('wheel', function(event) {
+            const isAtTop = (el.scrollTop === 0);
+            const isAtBottom = (el.scrollHeight - el.scrollTop <= el.clientHeight + 1); 
+
+            if (isAtTop && event.deltaY < 0) { 
+                event.preventDefault(); 
+            } else if (isAtBottom && event.deltaY > 0) { 
+                event.preventDefault(); 
+            }
+        }, { passive: false }); 
+    });
+}
+
+// [수정됨] setBoxHeight 호출 제거
+window.removeEventListener('resize', setBoxHeight); 
+
+// ========== [종료] Web Work 섹션용 스크립트 ==========
+
 
 // Gallery
 function initGallery() {
@@ -362,14 +524,14 @@ function initGallery() {
         {src: "images/gallery/70.webp", w: 300, h: 400 },
         {src: "images/gallery/71.webp", w: 300, h: 400 },
         {src: "images/gallery/72.webp", w: 300, h: 550 },
-        {src: "images/gallery/73.webp", w: 300, h: 520 },
-        {src: "images/gallery/74.webp", w: 300, h: 400 },
-        {src: "images/gallery/고양이낚시1.webp", w: 300, h: 220 },
-        {src: "images/gallery/고양이낚시3.webp", w: 300, h: 220 },
-        {src: "images/gallery/고양이낚시4.webp", w: 300, h: 220 },
-        {src: "images/gallery/고양이낚시5.webp", w: 300, h: 220 },
-        {src: "images/gallery/고양이낚시6.webp", w: 300, h: 220 },
-        {src: "images/gallery/고양이낚시7.webp", w: 300, h: 220 },
+        { src: "images/gallery/73.webp", w: 300, h: 520 },
+        { src: "images/gallery/74.webp", w: 300, h: 400 },
+        { src: "images/gallery/고양이낚시1.webp", w: 300, h: 220 },
+        { src: "images/gallery/고양이낚시3.webp", w: 300, h: 220 },
+        { src: "images/gallery/고양이낚시4.webp", w: 300, h: 220 },
+        { src: "images/gallery/고양이낚시5.webp", w: 300, h: 220 },
+        { src: "images/gallery/고양이낚시6.webp", w: 300, h: 220 },
+        { src: "images/gallery/고양이낚시7.webp", w: 300, h: 220 },
     ];
     const TOTAL_ITEMS = sourceImages.length;
     
@@ -450,6 +612,7 @@ function initGallery() {
         item.dataset.src = img.src;
         item.innerHTML = `<img src="${img.src}" alt="갤러리 이미지 ${i+1}">`;
         
+        // [수정된 부분] wpx -> ${w}px
         item.style.width = `${w}px`;
         item.style.height = `${h}px`; 
         item.style.left = `${left}px`;
@@ -591,27 +754,5 @@ function initScrollToTop() {
             top: 0,
             behavior: 'smooth'
         });
-    });
-}
-
-function initScrollLeakPrevention() {
-    const elements = [
-        document.getElementById('laptop-screen-viewport'),
-        document.getElementById('web-project-thumbnails')
-    ];
-
-    elements.forEach(el => {
-        if (!el) return;
-        el.addEventListener('wheel', function(event) {
-            const isAtTop = (el.scrollTop === 0);
-            const isAtBottom = (el.scrollHeight - el.scrollTop <= el.clientHeight + 1); 
-
-            if (isAtTop && event.deltaY < 0) { 
-                event.preventDefault(); 
-            } else if (isAtBottom && event.deltaY > 0) { 
-                event.preventDefault(); 
-            }
-            
-        }, { passive: false }); 
     });
 }

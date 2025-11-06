@@ -234,39 +234,29 @@ body, html {
     transform: scale(1.03);
 }
 
-/* Web */
+/* ========== [시작] Web Work (index2.html 버전) ========== */
 #web-work {
     background-color: #F8F9FA; 
 }
 
+/* 썸네일 목록 */
 #web-project-thumbnails {
-    overflow-y: auto;
+    display: inline-flex;
+    max-width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 1rem;
+    padding: 1rem;
 }
 
-#laptop-container {
-    position: relative;
-    overflow: hidden; 
-}
-
-#laptop-screen-viewport { 
-    position: absolute; 
-    padding: 2.3% 10% 12% 9.2%; 
-    top: 0; left: 0;
-    width: 100%; 
-    height: auto;
-    max-height: 100%;
-    overflow-y: auto;
-    border-radius: 42px;
-}
-
-#laptop-screen-viewport img {
-    width: 100%;
-    height: auto; 
-    display: block;
+.thumbnail-wrapper {
+    flex-shrink: 0;
+    width: 200px;
 }
 
 .web-thumbnail-img {
-    height: 180px; 
+    height: 120px;
     object-fit: cover;  
     object-position: top;
     filter: grayscale(90%) brightness(0.8);
@@ -296,14 +286,139 @@ body, html {
     opacity: 0;
 }
 
-#laptop-screen-viewport::-webkit-scrollbar {
-    display: none;
+#laptop-container {
+    position: relative;
+    overflow: hidden; 
 }
 
-#laptop-screen-viewport {
-    -ms-overflow-style: none;
-    scrollbar-width: none; 
+#laptop-screen-viewport { 
+    position: absolute; 
+    padding: 2.3% 10% 12% 9.2%; 
+    top: 0; left: 0;
+    width: 100%; 
+    height: auto;
+    max-height: 100%;
+    overflow-y: auto;
+    border-radius: 42px;
 }
+
+#laptop-screen-viewport img {
+    width: 100%;
+    height: auto; 
+    display: block;
+}
+
+/* 설명 상자: 내부 스크롤 -> 제거 */
+#project-description-box {
+    padding: 2rem;
+    overflow-y: visible; /* auto에서 visible로 변경 */
+    min-height: 400px; /* 내용이 적을 때 최소 높이 유지 */
+}
+
+
+#laptop-screen-viewport::-webkit-scrollbar,
+#web-project-thumbnails::-webkit-scrollbar,
+#project-description-box::-webkit-scrollbar {
+    display: none;
+}
+#laptop-screen-viewport,
+#web-project-thumbnails,
+#project-description-box {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 설명창 그리드 (Collaborators 겹침 문제 해결) */
+#project-details-container .project-details-grid {
+    display: grid;
+    grid-template-columns: 110px 1fr; /* 90px -> 110px */
+    gap: 1rem;
+    align-items: start;
+}
+#project-details-container .project-grid-label {
+    font-weight: 700;
+    color: #343a40;
+    font-size: 1.05rem;
+    padding-top: 0.15rem;
+}
+#project-details-container .project-grid-value {
+    font-size: 1.05rem;
+    color: #495057;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* 키워드 뱃지 (기본) 스타일 */
+#project-details-container .project-keyword-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-out;
+}
+
+/* 뱃지 호버 효과 (살짝 뜨기) */
+#project-details-container .project-keyword-badge:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+/* 기본/가이드 뱃지 (Pink) */
+#project-details-container .badge-default {
+    background-color: #FFF0F6;
+    color: #D6336C;
+    border-color: #FCC2D7;
+}
+
+/* 카카오 뱃지 (Yellow) */
+#project-details-container .badge-kakao {
+    background-color: #FEFCE8;
+    color: #CA8A04;
+    border-color: #FDE047;
+}
+
+/* 몬스터 뱃지 (Lime Green) */
+#project-details-container .badge-monster {
+    background-color: #F7FEE7;
+    color: #65A30D;
+    border-color: #BEF264;
+}
+
+/* MOA 뱃지 (Purple) */
+#project-details-container .badge-moa {
+    background-color: #F5F3FF;
+    color: #7C3AED;
+    border-color: #C4B5FD;
+}
+
+
+#project-details-container .project-divider {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-top: 1px solid #E9ECEF;
+}
+#project-details-container .project-solutions-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #343a40;
+    margin-bottom: 1rem;
+}
+#project-details-container .project-solutions-list {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    color: #495057;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+#project-details-container .project-solutions-list li {
+    margin-bottom: 0.5rem;
+}
+#project-details-container .project-solutions-list li::marker {
+    color: #F5A8B2; 
+}
+/* ========== [종료] Web Work ========== */
 
 
 /* Contact */
@@ -505,3 +620,81 @@ textarea.contact-input {
     background-color: #f39aac;
     transform: scale(1.05);
 }
+
+/* --- About Me 시각적 개선 --- */
+.about-visual-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* 항목 사이의 여백 */
+    padding: 0.5rem;
+}
+
+.about-visual-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* 아이콘과 텍스트 사이의 여백 */
+}
+
+.about-item-icon {
+    flex-shrink: 0;
+    width: 44px;  /* 크기 살짝 키움 */
+    height: 44px;
+    background-color: #FFF0F6; /* 스킬 차트와 유사한 연분홍 */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #D6336C; /* 진분홍 */
+    border: 1px solid #FCC2D7;
+}
+
+.about-item-icon svg {
+    width: 22px; /* 아이콘 크기 */
+    height: 22px;
+    stroke-width: 2;
+}
+
+.about-item-text .title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #343a40;
+    margin-bottom: 2px;
+}
+
+.about-item-text .subtitle {
+    font-size: 1rem;
+    color: #6C757D;
+}
+
+/* '비전' 항목 - 인용구 스타일 */
+.about-vision-quote {
+    text-align: center;
+    position: relative;
+    padding: 0 1rem;
+}
+
+/* 큰 따옴표 아이콘 */
+.about-vision-quote::before {
+    content: '“';
+    font-family: Georgia, serif;
+    font-size: 6rem; /* 크기 키움 */
+    font-weight: 700;
+    color: #F5A8B2;
+    opacity: 0.2; /* 연하게 */
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.about-vision-quote p {
+    position: relative;
+    z-index: 2; /* 텍스트가 따옴표 위로 오도록 */
+    font-size: 1.15rem; /* 글꼴 크기 조정 */
+    line-height: 1.8;
+    color: #495057;
+    font-weight: 500;
+    font-style: italic;
+}
+
