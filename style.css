@@ -21,7 +21,6 @@ body, html {
     border-radius: 2rem;
 }
 
-/* 헤더 */
 .nav-container {
     position: relative;
     background-color: rgba(255, 255, 255, 0.8);
@@ -62,24 +61,17 @@ body, html {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 홈 섹션 */
 #home {
     overflow: visible; 
 }
 
-/* [!] 홈 섹션 배경이 여기 수정되었습니다. 
-*/
 #home-background-image-container {
     background-image: url('images/bg/bg.webp');
     background-color: transparent;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    
-    /* [수정] 밝기를 95%로 약간 어둡게 조절 */
     filter: brightness(95%);
-    
-    /* [수정] 마스크 그라데이션을 65%부터 시작해 더 부드럽게 */
     mask-image: linear-gradient(to bottom, black 65%, transparent 95%);
     -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 95%);
 }
@@ -106,7 +98,6 @@ body, html {
     background-color: transparent !important;
 }
 
-/* About Me */
 #about {
     background-color: #F8F9FA; 
     min-height: 100vh; 
@@ -174,7 +165,6 @@ body, html {
     transform: translateY(0);
 }
 
-/* 기술 - 원형 차트 */
 @property --p {
   syntax: '<integer>';
   initial-value: 0;
@@ -208,7 +198,6 @@ body, html {
 .about-content-card.active .skill-figma { --p: 50; }
 .about-content-card.active .skill-procreate { --p: 55; }
 
-/* graphic */
 #graphic-work {
     background-color: #EFF6FF;
     color: #495057;
@@ -233,23 +222,18 @@ body, html {
     width: auto;             
     height: auto;            
     object-fit: contain;     
-    
-    /* [수정됨] auto 마진 다시 추가 (모바일 기본값) */
     margin-left: auto;       
     margin-right: auto;
-    
     transition: transform 0.3s ease;
 }
 .graphic-work-image:hover {
     transform: scale(1.03);
 }
 
-/* ========== [시작] Web Work (index2.html 버전) ========== */
 #web-work {
     background-color: #F8F9FA; 
 }
 
-/* 썸네일 목록 */
 #web-project-thumbnails {
     display: inline-flex;
     max-width: 100%;
@@ -318,11 +302,10 @@ body, html {
     display: block;
 }
 
-/* 설명 상자: 내부 스크롤 -> 제거 */
 #project-description-box {
     padding: 2rem;
-    overflow-y: visible; /* auto에서 visible로 변경 */
-    min-height: 400px; /* 내용이 적을 때 최소 높이 유지 */
+    overflow-y: visible; 
+    min-height: 400px; 
 }
 
 
@@ -338,10 +321,9 @@ body, html {
     scrollbar-width: none;
 }
 
-/* 설명창 그리드 (Collaborators 겹침 문제 해결) */
 #project-details-container .project-details-grid {
     display: grid;
-    grid-template-columns: 110px 1fr; /* 90px -> 110px */
+    grid-template-columns: 110px 1fr; 
     gap: 1rem;
     align-items: start;
 }
@@ -359,7 +341,6 @@ body, html {
     gap: 0.5rem;
 }
 
-/* 키워드 뱃지 (기본) 스타일 */
 #project-details-container .project-keyword-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -369,34 +350,29 @@ body, html {
     transition: all 0.2s ease-out;
 }
 
-/* 뱃지 호버 효과 (살짝 뜨기) */
 #project-details-container .project-keyword-badge:hover {
     transform: translateY(-2px);
     filter: brightness(1.05);
 }
 
-/* 기본/가이드 뱃지 (Pink) */
 #project-details-container .badge-default {
     background-color: #FFF0F6;
     color: #D6336C;
     border-color: #FCC2D7;
 }
 
-/* 카카오 뱃지 (Yellow) */
 #project-details-container .badge-kakao {
     background-color: #FEFCE8;
     color: #CA8A04;
     border-color: #FDE047;
 }
 
-/* 몬스터 뱃지 (Lime Green) */
 #project-details-container .badge-monster {
     background-color: #F7FEE7;
     color: #65A30D;
     border-color: #BEF264;
 }
 
-/* MOA 뱃지 (Purple) */
 #project-details-container .badge-moa {
     background-color: #F5F3FF;
     color: #7C3AED;
@@ -428,10 +404,7 @@ body, html {
 #project-details-container .project-solutions-list li::marker {
     color: #F5A8B2; 
 }
-/* ========== [종료] Web Work ========== */
 
-
-/* Contact */
 #contact {
     background-color: #FDF2F8; 
 }
@@ -490,12 +463,15 @@ textarea.contact-input {
     gap: 0.75rem;
     overflow-y: auto;
     scroll-behavior: smooth;
+    min-height: 0;
+    height: 60vh;
 }
 
 .chat-bubble {
     padding: 0.75rem 1rem; 
     border-radius: 1rem; 
-    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
     font-size: 1.125rem;
     line-height: 1.7; 
     opacity: 0;
@@ -508,7 +484,6 @@ textarea.contact-input {
     border: 1px solid #E9ECEF;
     color: #495057;
     border-top-left-radius: 0;
-    /* [수정] max-width가 .chat-row > .chat-bubble로 이동 */
 }
 
 .sender-bubble {
@@ -525,7 +500,6 @@ textarea.contact-input {
     }
 }
 
-/* 스크롤 애니메이션 */
 .animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
@@ -536,7 +510,6 @@ textarea.contact-input {
     transform: translateY(0);
 }
 
-/* gallery */
 #gallery {
     background-color: #FFFBEB;
     color: #495057;
@@ -596,7 +569,6 @@ textarea.contact-input {
 }
 #lightbox-close:hover { opacity: 1; }
 
-/* '맨 위로 가기' 버튼 */
 #scroll-to-top {
     position: fixed;
     bottom: 2rem;
@@ -630,35 +602,34 @@ textarea.contact-input {
     transform: scale(1.05);
 }
 
-/* --- About Me 시각적 개선 --- */
 .about-visual-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* 항목 사이의 여백 */
+    gap: 1.5rem; 
     padding: 0.5rem;
 }
 
 .about-visual-item {
     display: flex;
     align-items: center;
-    gap: 1rem; /* 아이콘과 텍스트 사이의 여백 */
+    gap: 1rem; 
 }
 
 .about-item-icon {
     flex-shrink: 0;
-    width: 44px;  /* 크기 살짝 키움 */
+    width: 44px;  
     height: 44px;
-    background-color: #FFF0F6; /* 스킬 차트와 유사한 연분홍 */
+    background-color: #FFF0F6; 
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #D6336C; /* 진분홍 */
+    color: #D6336C; 
     border: 1px solid #FCC2D7;
 }
 
 .about-item-icon svg {
-    width: 22px; /* 아이콘 크기 */
+    width: 22px; 
     height: 22px;
     stroke-width: 2;
 }
@@ -675,21 +646,19 @@ textarea.contact-input {
     color: #6C757D;
 }
 
-/* '비전' 항목 - 인용구 스타일 */
 .about-vision-quote {
     text-align: center;
     position: relative;
     padding: 0 1rem;
 }
 
-/* 큰 따옴표 아이콘 */
 .about-vision-quote::before {
     content: '“';
     font-family: Georgia, serif;
-    font-size: 6rem; /* 크기 키움 */
+    font-size: 6rem; 
     font-weight: 700;
     color: #F5A8B2;
-    opacity: 0.2; /* 연하게 */
+    opacity: 0.2; 
     position: absolute;
     top: -2rem;
     left: 50%;
@@ -699,24 +668,23 @@ textarea.contact-input {
 
 .about-vision-quote p {
     position: relative;
-    z-index: 2; /* 텍스트가 따옴표 위로 오도록 */
-    font-size: 1.15rem; /* 글꼴 크기 조정 */
+    z-index: 2; 
+    font-size: 1.15rem; 
     line-height: 1.8;
     color: #495057;
     font-weight: 500;
     font-style: italic;
 }
 
-/* --- Contact 채팅창 프로필 사진 --- */
 .chat-row {
     display: flex;
-    align-items: flex-end; /* 버블 하단에 아바타를 정렬합니다 */
-    gap: 0.5rem; /* 8px */
+    align-items: flex-end; 
+    gap: 0.5rem; 
     width: 100%;
 }
 
 .chat-row.recipient-row {
-    justify-content: flex-start; /* 왼쪽 정렬 */
+    justify-content: flex-start; 
 }
 
 .chat-avatar {
@@ -724,13 +692,12 @@ textarea.contact-input {
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    flex-shrink: 0; /* 이미지가 찌그러지지 않게 함 */
+    flex-shrink: 0; 
     border: 1px solid #E9ECEF;
 }
 
-/* [수정] .chat-row 안의 버블은 최대 너비를 가짐 */
 .chat-row > .chat-bubble {
-    max-width: calc(100% - 68px); /* 아바타(60px) + 갭(8px) */
+    max-width: calc(100% - 68px); 
     flex-grow: 0;
     flex-shrink: 1;
 }
@@ -744,22 +711,18 @@ textarea.contact-input {
     text-align: right; 
 }
 
-/* --- Contact 채팅창 타임스탬프 --- */
 .chat-timestamp {
-    display: inline-block; /* text-align: right; 적용받도록 */
-    font-size: 0.85rem;  /* 13.6px */
-    color: #6C757D;      /* 너무 튀지 않는 회색 */
+    display: inline-block; 
+    font-size: 0.85rem;  
+    color: #6C757D;      
     margin-top: 6px;
 }
 
-/* 노란색 말풍선 안의 타임스탬프는 조금 더 진한 회색으로 */
 .sender-bubble .chat-timestamp {
     color: #525252;
 }
 
 
-/* [!] 아바타 선택 UI 스타일 추가 
-*/
 .avatar-picker-container {
     display: flex;
     gap: 1rem;
@@ -768,7 +731,7 @@ textarea.contact-input {
 }
 
 .avatar-radio {
-    display: none; /* 실제 라디오 버튼은 숨김 */
+    display: none; 
 }
 
 .avatar-label {
@@ -789,7 +752,7 @@ textarea.contact-input {
 }
 
 .avatar-radio:checked + .avatar-label {
-    border-color: #F5A8B2; /* 선택 시 핑크색 테두리 */
+    border-color: #F5A8B2; 
     transform: scale(1.05);
 }
 
@@ -797,18 +760,15 @@ textarea.contact-input {
     transform: scale(1.05);
 }
 
-/* [!] 보낸 사람 아바타 스타일 추가 
-*/
 .chat-row.sender-row {
-    justify-content: flex-end; /* 오른쪽 정렬 */
+    justify-content: flex-end; 
 }
 
 .chat-row.sender-row > .chat-avatar {
-    width: 60px;  /* 보낸 사람 아바타는 조금 작게 */
+    width: 60px;  
     height: 60px;
 }
 
-/* 보낸 사람 버블은 아바타 크기(40px) + 갭(8px) 만큼 최대 너비 */
 .chat-row.sender-row > .chat-bubble {
     max-width: calc(100% - 48px);
 }

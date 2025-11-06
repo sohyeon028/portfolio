@@ -11,10 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
 
     <style>
-        /* 기본 스타일 */
         body { margin: 0; font-family: 'Noto Sans KR', sans-serif; }
         
-        /* 인트로 공통 스타일 */
         #intro-screen {
             background-color: #FDF2F8; 
             position: relative;
@@ -25,27 +23,22 @@
             align-items: center;
             overflow: hidden;
             z-index: 9999;
-            
-            /* [배경 이미지 설정] */
             background-image: url('images/bg/intro_bg.jpg'); 
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
         }
 
-        /* [오버레이 비활성화] */
         #intro-screen::before {
             content: none;
         }
 
-        /* 21번 시안 전용 스타일 */
         #postit-container { z-index: 30; position: absolute; width: 100%; height: 100%; }
         #intro-emoji-container { z-index: 20; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         #intro-emoji-container canvas { background-color: transparent !important; }
 
         .postit {
             position: absolute;
-            /* 배경색은 인라인 스타일로 설정됩니다 */
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
             padding: 1rem;
             width: 150px; height: 150px;
@@ -56,7 +49,6 @@
             cursor: pointer;
             transition: box-shadow 0.1s ease;
             will-change: transform, opacity;
-            /* border-top은 인라인 스타일로 설정됩니다 */
             line-height: 1.4;
             text-align: center;
             display: flex;
@@ -72,7 +64,7 @@
 
         #intro-content {
             position: relative;
-            z-index: 40; /* 중앙 메시지가 포스트잇(z-index: 30)보다 위에 오도록 유지 */
+            z-index: 40; 
             text-align: center;
             background-color: rgba(255, 255, 255, 0.95);
             padding: 2rem 3rem;
@@ -83,15 +75,13 @@
             pointer-events: none; 
         }
 
-        /* [추가] 완료 문구 강조 스타일 */
         .final-message-highlight {
-            font-size: 1.5rem; /* text-xl */
-            font-weight: 700; /* 굵게 */
-            color: #495057; /* 텍스트 색상 강조 */
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: #495057; 
             transition: all 0.3s ease;
         }
 
-        /* 중앙 메시지창 안의 버튼 스타일 */
         #skip-start-button {
             pointer-events: all; 
             background-color: #F5A8B2; 
@@ -107,7 +97,6 @@
             cursor: pointer;
         }
 
-        /* 메인 콘텐츠 시뮬레이션용 (선택 사항) */
         #main-content {
             min-height: 100vh;
             display: none;
@@ -141,25 +130,21 @@
     </section>
 
     <script>
-        // Matter.js 객체
         const { Engine, Render, Runner, World, Bodies, Composite, Body } = Matter;
         let introMatterEngine = null;
         let introMatterRender = null;
         let introMatterWorld = null;
 
-        // [포스트잇 색상 정의] 다양한 색상 (배경색과 상단 테이프 색상)
         const POSTIT_COLORS = [
-            { bg: '#FCD8D8', border: '#F5A8B2' }, // 핑크
-            { bg: '#FFFACD', border: '#FFD700' }, // 노랑
-            { bg: '#D8FCD8', border: '#A8F5B2' }, // 연두
-            { bg: '#D8E8FC', border: '#A8C2F5' }, // 하늘
-            { bg: '#FCE8D8', border: '#F5C2A8' }, // 주황
+            { bg: '#FCD8D8', border: '#F5A8B2' }, 
+            { bg: '#FFFACD', border: '#FFD700' }, 
+            { bg: '#D8FCD8', border: '#A8F5B2' }, 
+            { bg: '#D8E8FC', border: '#A8C2F5' }, 
+            { bg: '#FCE8D8', border: '#F5C2A8' }, 
         ];
 
-        // [요청 반영] 포스트잇 텍스트 10개 (영문)
         const postitTexts = ['Graphic', 'Web', 'Memory', 'UI/UX', 'Data', 'Idea', 'Art', 'Plan', 'Concept', 'Layout'];
         
-        // [요청 반영] 이모지와 테마 정의
         const POSTIT_EMOJI_MAP = {
             'Graphic': ['📐', '✂️', '✏️', '🖌️'],
             'Web': ['🌐', '🔗', '⚙️', '💻'], 
@@ -175,16 +160,6 @@
         
         let remainingPostits = postitTexts.length;
 
-        // 시뮬레이션용 함수 (삭제함)
-        /*
-        function startHomeTyping() {
-            const mainContent = document.getElementById('main-content');
-            mainContent.style.display = 'block';
-            console.log("포트폴리오 메인 화면 타이핑 효과가 시작되었습니다!");
-        }
-        */
-
-        // 인트로 종료 및 메인 시작 전환 함수 (수정됨)
         function handleIntroTransition() {
             const introScreen = document.getElementById('intro-screen');
             if (!introScreen) return;
@@ -196,19 +171,16 @@
                 opacity: 0,
                 duration: 0.5, 
                 onComplete: () => {
-                    // [수정: main.html로 페이지 이동]
                     window.location.href = 'main.html';
                 }
             });
         }
 
-        // Matter.js 엔진 초기화 (이모지 물리 효과)
         function initIntroMatterPhysics() {
             const container = document.getElementById('intro-emoji-container');
             if (!container || container.clientHeight === 0) return;
             
             introMatterEngine = Engine.create();
-            // 오타 수정 완료
             introMatterWorld = introMatterEngine.world; 
             introMatterEngine.world.gravity.y = 0.8;
             
@@ -217,7 +189,6 @@
                 options: { width: container.clientWidth, height: container.clientHeight, wireframes: false, background: 'transparent' } 
             });
             
-            // 경계 설정 (바닥, 좌, 우)
             const offset = 10;
             const boundaries = [ 
                 Bodies.rectangle(container.clientWidth / 2, container.clientHeight + offset, container.clientWidth, offset * 2, { isStatic: true, render: { visible: false } }), 
@@ -236,7 +207,6 @@
             });
         }
 
-        // 이모지 생성 및 월드에 추가
         function addThemedEmojis(x, y, theme) {
             if (!introMatterWorld) return;
             const emojis = POSTIT_EMOJI_MAP[theme] || ['✨', '💡'];
@@ -268,7 +238,6 @@
             }
         }
 
-        // 메인 화면 전환 직전, 이모지들을 모으는 애니메이션
         function finalizeEmojiGathering() {
             if (!introMatterWorld) return;
             
@@ -310,7 +279,6 @@
             setTimeout(handleIntroTransition, emojiDuration * 1000 + 300);
         }
 
-        // 포스트잇 스케치 로직 초기화
         function initPostitSketchWithEmoji() {
             initIntroMatterPhysics(); 
             
@@ -323,73 +291,59 @@
 
             const POSTIT_SIZE = 150;
             const EDGE_BUFFER = 50; 
-            // 중앙 메시지 제외 영역 비율: 0.45로 유지하여 중앙 겹침 방지 여백 확보
             const CENTER_EXCLUSION_RATIO = 0.45; 
             const EXCLUSION_MARGIN_X = screenWidth * CENTER_EXCLUSION_RATIO;
             const EXCLUSION_MARGIN_Y = screenHeight * CENTER_EXCLUSION_RATIO;
             
-            // 중앙 제외 영역의 시작/끝 좌표 (중앙 메시지 박스 경계선)
             const centerLeft = screenWidth / 2 - EXCLUSION_MARGIN_X / 2;
             const centerRight = screenWidth / 2 + EXCLUSION_MARGIN_X / 2;
             const centerTop = screenHeight / 2 - EXCLUSION_MARGIN_Y / 2;
             const centerBottom = screenHeight / 2 + EXCLUSION_MARGIN_Y / 2;
             
-            // [수정된 배치 로직] 14개의 후보 위치 정의 (빨간 동그라미 영역 포함)
             const positions = [
-                // 1-4: 4 Corners (네 모서리)
                 { area: 'TL', x: EDGE_BUFFER, y: EDGE_BUFFER },
                 { area: 'TR', x: screenWidth - POSTIT_SIZE - EDGE_BUFFER, y: EDGE_BUFFER },
                 { area: 'BL', x: EDGE_BUFFER, y: screenHeight - POSTIT_SIZE - EDGE_BUFFER },
                 { area: 'BR', x: screenWidth - POSTIT_SIZE - EDGE_BUFFER, y: screenHeight - POSTIT_SIZE - EDGE_BUFFER },
                 
-                // 5-8: Side Top/Bottom (좌/우 상단, 좌/우 하단) - 안쪽으로 배치
                 { area: 'ST-L', x: centerLeft - POSTIT_SIZE - EDGE_BUFFER, y: centerTop - POSTIT_SIZE - EDGE_BUFFER },
                 { area: 'ST-R', x: centerRight + EDGE_BUFFER, y: centerTop - POSTIT_SIZE - EDGE_BUFFER },
                 { area: 'SB-L', x: centerLeft - POSTIT_SIZE - EDGE_BUFFER, y: centerBottom + EDGE_BUFFER },
                 { area: 'SB-R', x: centerRight + EDGE_BUFFER, y: centerBottom + EDGE_BUFFER },
                 
-                // 9-10: Center Side (좌/우 중앙)
                 { area: 'ML', x: centerLeft - POSTIT_SIZE - EDGE_BUFFER, y: screenHeight / 2 - POSTIT_SIZE / 2 }, 
                 { area: 'MR', x: centerRight + EDGE_BUFFER, y: screenHeight / 2 - POSTIT_SIZE / 2 },
 
-                // --- [추가된 4개 위치] --- (빨간 동그라미 영역 커버)
-                
-                // 11-12: Top Center (상단 중앙의 넓은 영역)
-                { area: 'TC-L', x: centerLeft - POSTIT_SIZE * 2, y: EDGE_BUFFER + POSTIT_SIZE * 0.5 }, // Top-Left 빨간 동그라미 영역
-                { area: 'TC-R', x: centerRight + POSTIT_SIZE, y: EDGE_BUFFER + POSTIT_SIZE * 0.5 }, // Top-Right 빨간 동그라미 영역
+                { area: 'TC-L', x: centerLeft - POSTIT_SIZE * 2, y: EDGE_BUFFER + POSTIT_SIZE * 0.5 }, 
+                { area: 'TC-R', x: centerRight + POSTIT_SIZE, y: EDGE_BUFFER + POSTIT_SIZE * 0.5 }, 
 
-                // 13-14: Bottom Center (하단 중앙의 넓은 영역)
-                { area: 'BC-L', x: centerLeft - POSTIT_SIZE * 2, y: screenHeight - POSTIT_SIZE - EDGE_BUFFER - POSTIT_SIZE * 0.5 }, // Bottom-Left 빨간 동그라미 영역
-                { area: 'BC-R', x: centerRight + POSTIT_SIZE, y: screenHeight - POSTIT_SIZE - EDGE_BUFFER - POSTIT_SIZE * 0.5 }, // Bottom-Right 빨간 동그라미 영역
+                { area: 'BC-L', x: centerLeft - POSTIT_SIZE * 2, y: screenHeight - POSTIT_SIZE - EDGE_BUFFER - POSTIT_SIZE * 0.5 }, 
+                { area: 'BC-R', x: centerRight + POSTIT_SIZE, y: screenHeight - POSTIT_SIZE - EDGE_BUFFER - POSTIT_SIZE * 0.5 }, 
             ];
             
-            // 포스트잇 배치를 위한 셔플 (14개 후보 중 10개를 무작위로 뽑기 위해)
             function shuffle(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]];
                 }
             }
-            shuffle(positions); // 14개 포지션을 무작위로 섞습니다.
+            shuffle(positions); 
 
             for (let i = 0; i < postitTexts.length; i++) {
                 const postit = document.createElement('div');
                 const theme = postitTexts[i];
-                const color = POSTIT_COLORS[i % POSTIT_COLORS.length]; // 색상 순환 적용
-                // 14개 중 10개만 사용
+                const color = POSTIT_COLORS[i % POSTIT_COLORS.length]; 
                 const pos = positions[i]; 
                 
                 postit.className = 'postit';
                 postit.textContent = theme;
                 postit.dataset.theme = theme; 
                 
-                // 포스트잇 색상 적용
                 postit.style.backgroundColor = color.bg;
                 postit.style.borderTop = `15px solid ${color.border}`;
                 
                 postit.style.setProperty('--rot', `${(Math.random() - 0.5) * 10}deg`);
 
-                // 겹치지 않도록 미리 계산된 위치에 배치 + 약간의 무작위성 추가 (10px 범위)
                 const randomOffset = 10;
                 postit.style.left = `${pos.x + (Math.random() * randomOffset * 2 - randomOffset)}px`;
                 postit.style.top = `${pos.y + (Math.random() * randomOffset * 2 - randomOffset)}px`;
@@ -400,14 +354,12 @@
                 gsap.fromTo(postit, { scale: 0.5, opacity: 0, rotation: postit.style.getPropertyValue('--rot') }, 
                             { scale: 1, opacity: 1, duration: 0.5, delay: i * 0.1, ease: "back.out(1.7)" });
 
-                // 클릭 이벤트: 이모지 생성 및 포스트잇 폭발
                 postit.addEventListener('click', function() {
                     if (this.classList.contains('exploded')) return;
                     this.classList.add('exploded');
                     
                     remainingPostits--; 
                     
-                    // [!] 2번째 수정 (클릭 시 문구)
                     messageElement.textContent = `포스트잇을 한 개씩 떼주세요. (${remainingPostits}개 남음)`;
 
                     const rect = this.getBoundingClientRect();
@@ -420,28 +372,21 @@
                         onComplete: () => {
                             this.remove();
                             if (document.querySelectorAll('.postit').length === 0) {
-                                // [문구 유지] 완료 시 문구 적용
                                 messageElement.textContent = `모든 아이디어는 이 작은 메모에서 시작됩니다.`;
-                                
-                                // [강조 효과 유지]
                                 messageElement.classList.add('final-message-highlight');
                                 
-                                // [수정] 3초 대기 후 전환
                                 setTimeout(() => {
-                                    // 강조 클래스 제거
                                     messageElement.classList.remove('final-message-highlight');
                                     finalizeEmojiGathering();
-                                }, 1500); // 3000ms = 3초 지연
+                                }, 1500); 
                             }
                         }
                     });
                 });
             }
             
-            // [!] 3번째 수정 (초기 메시지 문구)
             messageElement.textContent = `포스트잇을 한 개씩 떼주세요. (${remainingPostits}개 남음)`;
             
-            // 🚀 [수정] 중앙 메시지 등장 속도 단축 (duration: 0.5s -> 0.3s, delay: 0.8s -> 0.2s)
             gsap.to(introContent, { opacity: 1, duration: 0.3, delay: 0.2 });
         }
 
@@ -454,11 +399,9 @@
                 initPostitSketchWithEmoji();
             }
             
-            // SKIP & START 버튼 클릭 이벤트
             const skipButton = document.getElementById('skip-start-button');
             if (skipButton) {
                 skipButton.addEventListener('click', () => {
-                    // handleIntroTransition 함수를 호출하여 페이지 전환
                     handleIntroTransition();
                 });
             }
