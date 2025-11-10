@@ -3,8 +3,9 @@ window.addEventListener('load', function() {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    initEmojiPhysics();
-
+    initCustomCursor();
+    initEmojiPhysics(); 
+    
     function checkCubeContainer() {
         const container = document.getElementById('about-cube-container');
         if (container && container.clientWidth > 0 && container.clientHeight > 0) {
@@ -689,17 +690,23 @@ function initContactForm() {
     const chatWindow = document.getElementById('chat-window');
 
     if (!form || !nameInput || !messageInput || !chatWindow) {
-        console.warn('Contact form 요소를 찾을 수 없습니다.');
         return;
     }
 
-    const CHAT_STORAGE_KEY = 'sohyeon-portfolio-chat-local';
+    const db = firebase.firestore();
+    const messagesCollection = db.collection('messages');
 
-    function formatTimestamp(isoString) {
-        if (!isoString) return '';
-        const date = new Date(isoString);
+    function formatTimestamp(timestamp) {
+        if (!timestamp) return '';
+        
+        let date;
+        if (timestamp.toDate) {
+            date = timestamp.toDate();
+        } else {
+            date = new Date(timestamp);
+        }
+
         const now = new Date(); 
-
         const options = {
             hour: 'numeric',
             minute: '2-digit',
@@ -718,7 +725,7 @@ function initContactForm() {
         return date.toLocaleString('ko-KR', options);
     }
 
-    function createSenderChatRow(data, isNew = false) {
+    function createSenderChatRow(data) {
         const chatRow = document.createElement('div');
         chatRow.className = 'chat-row sender-row'; 
 
@@ -752,20 +759,16 @@ function initContactForm() {
         const avatarMap = {
             'avatar1': 'images/contact/딸기 냠냠.webp',
             'avatar2': 'images/contact/딸기잼.webp',
-            'avatar3': 'images/contact/쿨쿨.webp'
+            'avatar3': 'images/contact/생일.webp',
+            'avatar4': 'images/contact/휴가.webp',
+            'avatar5': 'images/contact/붕어빵.webp',
         };
         avatarImg.src = avatarMap[avatarFile] || avatarMap['avatar1']; 
         avatarImg.alt = `${data.name}님의 아바타`;
 
-        if (isNew) {
-            bubble.style.opacity = '0';
-            bubble.style.transform = 'translateY(10px)';
-            bubble.style.animation = 'bubble-fade-in 0.3s ease forwards';
-        } else {
-            bubble.style.opacity = '1';
-            bubble.style.transform = 'translateY(0)';
-            bubble.style.animation = 'none';
-        }
+        bubble.style.opacity = '0';
+        bubble.style.transform = 'translateY(10px)';
+        bubble.style.animation = 'bubble-fade-in 0.3s ease forwards';
 
         chatRow.appendChild(bubble);
         chatRow.appendChild(avatarImg);
@@ -774,14 +777,19 @@ function initContactForm() {
     }
 
     function loadMessages() {
-        const savedMessages = localStorage.getItem(CHAT_STORAGE_KEY); 
-        if (savedMessages) {
-            const messages = JSON.parse(savedMessages);
-            messages.forEach(msgData => {
-                createSenderChatRow(msgData, false); 
+        messagesCollection.orderBy('timestamp', 'asc')
+            .onSnapshot((querySnapshot) => {
+                
+                const existingMessages = chatWindow.querySelectorAll('.sender-row');
+                existingMessages.forEach(msg => msg.remove());
+                
+                querySnapshot.forEach((doc) => {
+                    createSenderChatRow(doc.data());
+                });
+                
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }, (error) => {
             });
-            chatWindow.scrollTop = chatWindow.scrollHeight; 
-        }
     }
 
     form.addEventListener('submit', function(event) {
@@ -789,7 +797,6 @@ function initContactForm() {
 
         const nameValue = nameInput.value.trim();
         const messageValue = messageInput.value.trim();
-        
         const selectedAvatarInput = document.querySelector('input[name="avatar"]:checked');
         
         if (nameValue === '' || messageValue === '') {
@@ -802,29 +809,23 @@ function initContactForm() {
         }
 
         const avatarValue = selectedAvatarInput.value;
-        const timestamp = new Date().toISOString(); 
         
         const messageData = {
             name: nameValue,
             message: messageValue,
-            timestamp: timestamp,
-            avatar: avatarValue 
+            avatar: avatarValue,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp() 
         };
-        createSenderChatRow(messageData, true); 
 
-        const savedMessages = localStorage.getItem(CHAT_STORAGE_KEY); 
-        let messages = savedMessages ? JSON.parse(savedMessages) : [];
-        
-        messages.push(messageData); 
-        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages)); 
-
-        nameInput.value = '';
-        messageInput.value = '';
-        selectedAvatarInput.checked = false; 
-        
-        setTimeout(() => {
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }, 300);
+        messagesCollection.add(messageData)
+            .then(() => {
+                nameInput.value = '';
+                messageInput.value = '';
+                selectedAvatarInput.checked = false; 
+            })
+            .catch((error) => {
+                alert('메시지 전송에 실패했습니다. 다시 시도해주세요.');
+            });
     });
 
     loadMessages();
@@ -846,6 +847,33 @@ function initScrollToTop() {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
+        });
+    });
+}
+
+function initCustomCursor() { 
+    const follower = document.getElementById('cursor-follower');
+    const dot = document.getElementById('cursor-dot');
+
+    if (!follower || !dot) return;
+
+    gsap.set(follower, { xPercent: -50, yPercent: -50 });
+    gsap.set(dot, { xPercent: -50, yPercent: -50 });
+
+    window.addEventListener('mousemove', e => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        gsap.to(dot, {
+            duration: 0.1, 
+            x: mouseX,
+            y: mouseY
+        });
+        
+        gsap.to(follower, {
+            duration: 0.3, 
+            x: mouseX - 12, 
+            y: mouseY - 12  
         });
     });
 }

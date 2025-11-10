@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    
+    <div id="cursor-follower"></div>
+    <div id="cursor-dot"></div>
 
     <header class="fixed top-6 left-1/2 -translate-x-1/2 z-50">
         <div class="nav-container">
@@ -236,6 +239,7 @@
                         <div class="md:w-1/2">
                             <img src="images/graphic/고양이낚시2.webp" alt="그래픽 작업 3: 낚시하는 고양이" class="graphic-work-image md:ml-auto md:mr-0">
                         </div>
+                        
                         <div class="md:w-1/2 text-left">
                             <h3 class="text-3xl font-bold text-white">고양이의 여유로운 하루</h3>
                             <p class="text-lg text-gray-400 mt-2">낚시하는 고양이 미니어처로 '여유로운 하루, 평화로운 감성'을 전달하고자 한 이미지 촬영<br>
@@ -243,6 +247,9 @@
                                 얕은 심도를 사용해 메인 피사체에 시선을 집중 <br>
                                 연못을 거울의 '반사' 기법으로 표현 <br> 
                                 '상상력'과 '동심'을 자극하는 동화 같고 신비로운 장면을 표현</p>
+                            
+                            <p class="text-lg text-gray-300 mt-4"><strong>Collaborators:</strong> 강민진, 박송희, 송예준</p>
+                        
                         </div>
                     </div>
 
@@ -344,7 +351,17 @@
                                     
                                     <input type="radio" id="avatar3" name="avatar" value="avatar3" class="avatar-radio">
                                     <label for="avatar3" class="avatar-label">
-                                        <img src="images/contact/쿨쿨.webp" alt="아바타 3">
+                                        <img src="images/contact/생일.webp" alt="아바타 3">
+                                    </label>
+
+                                    <input type="radio" id="avatar4" name="avatar" value="avatar4" class="avatar-radio">
+                                    <label for="avatar4" class="avatar-label">
+                                        <img src="images/contact/휴가.webp" alt="아바타 4">
+                                    </label>
+
+                                    <input type="radio" id="avatar5" name="avatar" value="avatar5" class="avatar-radio">
+                                    <label for="avatar5" class="avatar-label">
+                                        <img src="images/contact/붕어빵.webp" alt="아바타 5">
                                     </label>
                                 </div>
                             </div>
@@ -387,6 +404,22 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
         </svg>
     </button>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCQMhMPQL6wDcDHwyd1dG0_7Qr1YaQLDCO",
+        authDomain: "sohyeon-portfolio.firebaseapp.com",
+        projectId: "sohyeon-portfolio",
+        storageBucket: "sohyeon-portfolio.firebase.storage.app",
+        messagingSenderId: "236613486885",
+        appId: "1:236613486885:web:b68dff2bb027bb6fbf32cc",
+        measurementId: "G-BBGJZ7G5K2"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
     
     <script src="script.js"></script>
     

@@ -4,9 +4,10 @@ body, html {
     color: #495057; 
     margin: 0;
     padding: 0;
-    cursor: url('images/bg/돋보기 커서.webp') 12 12, auto;
+    cursor: none; 
     scroll-behavior: smooth;
 }
+
 #page-container {
     display: block;
     width: 100%;
@@ -771,4 +772,30 @@ textarea.contact-input {
 
 .chat-row.sender-row > .chat-bubble {
     max-width: calc(100% - 48px);
+}
+
+#cursor-follower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 32px; 
+    height: 32px; 
+    background-image: url('images/bg/돋보기 커서.webp');
+    background-size: contain;
+    pointer-events: none; 
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+}
+
+#cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px; 
+    height: 8px; 
+    background-color: #303030; 
+    border-radius: 50%;
+    pointer-events: none; 
+    transform: translate(-50%, -50%);
+    z-index: 10001; 
 }
