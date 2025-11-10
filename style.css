@@ -77,6 +77,13 @@ body, html {
     -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 95%);
 }
 
+#home-text-h1 {
+    color: #131212;
+}
+#home-text-p {
+    color: #23282c; 
+}
+
 .typing-effect::after {
     content: '|';
     margin-left: 0.5rem;
@@ -309,15 +316,16 @@ body, html {
     min-height: 400px; 
 }
 
-
 #laptop-screen-viewport::-webkit-scrollbar,
 #web-project-thumbnails::-webkit-scrollbar,
-#project-description-box::-webkit-scrollbar {
+#project-description-box::-webkit-scrollbar,
+#gallery::-webkit-scrollbar {
     display: none;
 }
 #laptop-screen-viewport,
 #web-project-thumbnails,
-#project-description-box {
+#project-description-box,
+#gallery {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -342,7 +350,7 @@ body, html {
     gap: 0.5rem;
 }
 
-#project-details-container .project-keyword-badge {
+.project-keyword-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.9rem;
@@ -351,7 +359,7 @@ body, html {
     transition: all 0.2s ease-out;
 }
 
-#project-details-container .project-keyword-badge:hover {
+.project-keyword-badge:hover {
     transform: translateY(-2px);
     filter: brightness(1.05);
 }
@@ -514,10 +522,9 @@ textarea.contact-input {
 #gallery {
     background-color: #FFFBEB;
     color: #495057;
-    height: auto; 
-    min-height: 100vh;
     padding: 6rem 2% 2rem 2%; 
-    overflow: visible; 
+    overflow-y: hidden; 
+    overflow-x: hidden;
     position: relative; 
     display: block; 
 }
@@ -545,6 +552,8 @@ textarea.contact-input {
     width: 100%;
     height: auto;
     object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 #gallery-lightbox {
@@ -708,6 +717,8 @@ textarea.contact-input {
 }
 
 .sender-bubble {
+    background-color: #FEE500;
+    color: #3C1E1E; 
     border-bottom-right-radius: 1rem; 
     text-align: right; 
 }
@@ -774,18 +785,34 @@ textarea.contact-input {
     max-width: calc(100% - 48px);
 }
 
-#cursor-follower {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 32px; 
-    height: 32px; 
-    background-image: url('images/bg/돋보기 커서.webp');
-    background-size: contain;
-    pointer-events: none; 
-    transform: translate(-50%, -50%);
-    z-index: 10000;
+.badge-graphic-1 {
+    background-color: #FFF0F6; /* Light Pink */
+    color: #D6336C; /* Dark Pink */
+    border-color: #FCC2D7; /* Medium Pink */
 }
+
+.badge-graphic-2 {
+    background-color: #EBFBFE; /* Light Cyan */
+    color: #0E7490; /* Dark Cyan */
+    border-color: #A5F3FC; /* Medium Cyan */
+}
+
+.badge-graphic-3 {
+    background-color: #FFFBEB; /* Light Yellow */
+    color: #B45309; /* Dark Yellow */
+    border-color: #FCD34D; /* Medium Yellow */
+}
+
+.badge-graphic-4 {
+    background-color: #F3E8FF; /* Light Purple */
+    color: #6B21A8; /* Dark Purple */
+    border-color: #D8B4FE; /* Medium Purple */
+}
+
+.clickable-graphic {
+    cursor: zoom-in;
+}
+
 
 #cursor-dot {
     position: fixed;

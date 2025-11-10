@@ -6,6 +6,9 @@ window.addEventListener('load', function() {
     initCustomCursor();
     initEmojiPhysics(); 
     
+    initGlobalLightbox();
+    initGraphicWorkLightbox();
+    
     function checkCubeContainer() {
         const container = document.getElementById('about-cube-container');
         if (container && container.clientWidth > 0 && container.clientHeight > 0) {
@@ -137,7 +140,6 @@ window.addEventListener('load', function() {
         }); 
     }
     
-    if (scrollIndicator) { scrollIndicator.addEventListener('click', () => { document.getElementById('about').scrollIntoView({ behavior: 'smooth' }); }); }
     startHomeTyping();
 
     setTimeout(() => {
@@ -251,20 +253,17 @@ function initAboutCube() {
     controls.addEventListener('start', () => { gsap.killTweensOf(controlProxy); });
     controls.addEventListener('end', () => { const closestFaceIndex = findClosestFace(); if (closestFaceIndex) { setActiveFace(closestFaceIndex); } });
     function setActiveFace(faceIndex) { gsap.killTweensOf(controlProxy); const target = controlTargets[faceIndex]; if (target) { controlProxy.polar = controls.getPolarAngle(); controlProxy.azimuth = controls.getAzimuthalAngle(); gsap.to(controlProxy, { polar: target.polar, azimuth: target.azimuth, duration: 0.5, ease: 'power3.inOut', onUpdate: () => { const radius = camera.position.length(); camera.position.setFromSphericalCoords(radius, controlProxy.polar, controlProxy.azimuth); controls.update(); } }); } navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.face === faceIndex)); contentCards.forEach(card => card.classList.toggle('active', card.dataset.face === faceIndex)); }
-    navButtons.forEach(button => { button.addEventListener('click', () => { setActiveFace(button.dataset.face); }); });
+    
+    navButtons.forEach(button => { 
+        button.addEventListener('mouseenter', () => { 
+            setActiveFace(button.dataset.face); 
+        }); 
+    });
+    
     setActiveFace('4'); animate(); 
 }
 
 const webWorkProjects = [ 
-    { 
-        title: '안내', 
-        type: '안내',
-        description: '위 목록에서 프로젝트를 선택하세요.<br><hr class="project-divider" style="margin-top: 1.5rem; margin-bottom: 1rem;"><br>프로젝트 <strong>선택</strong> 후 맥북 화면 <strong>스크롤</strong> 시 프로젝트를 이미지로 미리 볼 수 있으며, <strong>클릭</strong> 시 해당 사이트를 새 창으로 보실 수 있습니다.', 
-        imgs: ['images/web/웹404.jpg'], 
-        thumbnail: 'images/web/웹404.jpg', 
-        url: '#',
-        badgeStyle: 'badge-default' 
-    }, 
     { 
         title: '카카오프렌즈 웹 사이트 리디자인',
         type: '개인', 
@@ -314,6 +313,50 @@ const webWorkProjects = [
 ];
 let currentProjectUrl = '';
 
+let lightbox, lightboxImage, lightboxClose;
+
+function openLightbox(imgSrc) {
+    if (!lightboxImage || !lightbox) return;
+    lightboxImage.src = imgSrc;
+    lightbox.style.display = 'flex'; 
+    gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+    gsap.fromTo(lightboxImage, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'power2.out', delay: 0.1 });
+}
+
+function closeLightbox() {
+    if (!lightbox) return;
+    gsap.to(lightbox, { 
+        opacity: 0, 
+        duration: 0.3, 
+        onComplete: () => {
+            lightbox.style.display = 'none';
+            if (lightboxImage) lightboxImage.src = "";
+        }
+    });
+}
+
+function initGlobalLightbox() {
+    lightbox = document.getElementById('gallery-lightbox');
+    lightboxImage = document.getElementById('lightbox-image');
+    lightboxClose = document.getElementById('lightbox-close');
+    
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+    }
+}
+
+function initGraphicWorkLightbox() {
+    const graphicImages = document.querySelectorAll('.clickable-graphic');
+    graphicImages.forEach(img => {
+        img.addEventListener('click', () => {
+            openLightbox(img.src);
+        });
+    });
+}
+
 function updateWebProject(index) { 
     const project = webWorkProjects[index]; 
     if (!project) return; 
@@ -332,51 +375,46 @@ function updateWebProject(index) {
 
     document.getElementById('project-description-box').scrollTop = 0;
 
-    if (index === 0 || !project.goal) {
-        detailsContainer.innerHTML = `<p class="text-lg text-gray-600">${project.description.replace('오른쪽 목록', '위쪽 목록')}</p>`;
-    } 
-    else {
-        let newHtml = '<div class="project-details-grid">';
-        
-        newHtml += `
-            <div class="project-grid-label">Type</div>
-            <div class="project-grid-value">${project.type}</div>
-        `;
-        
-        newHtml += `
-            <div class="project-grid-label">Goal</div>
-            <div class="project-grid-value">${project.goal}</div>
-        `;
+    let newHtml = '<div class="project-details-grid">';
+    
+    newHtml += `
+        <div class="project-grid-label">Type</div>
+        <div class="project-grid-value">${project.type}</div>
+    `;
+    
+    newHtml += `
+        <div class="project-grid-label">Goal</div>
+        <div class="project-grid-value">${project.goal}</div>
+    `;
 
-        if (project.keywords && project.keywords.length > 0) {
-            const badgeClass = project.badgeStyle || 'badge-default';
-            newHtml += `
-                <div class="project-grid-label">Keywords</div>
-                <div class="project-grid-value">
-                    ${project.keywords.map(k => `<span class="project-keyword-badge ${badgeClass}">${k}</span>`).join(' ')}
-                </div>
-            `;
-        }
-        
-        if (project.collaborators) {
-            newHtml += `
-                <div class="project-grid-label">Collaborators</div>
-                <div class="project-grid-value">${project.collaborators}</div>
-            `;
-        }
-        
-        newHtml += '</div>'; 
-
-        if (project.solutions && project.solutions.length > 0) {
-            newHtml += '<hr class="project-divider">';
-            newHtml += '<h4 class="project-solutions-title">주요 개선 사항</h4>';
-            newHtml += '<ul class="project-solutions-list">';
-            newHtml += project.solutions.map(s => `<li>${s}</li>`).join('');
-            newHtml += '</ul>';
-        }
-        
-        detailsContainer.innerHTML = newHtml;
+    if (project.keywords && project.keywords.length > 0) {
+        const badgeClass = project.badgeStyle || 'badge-default';
+        newHtml += `
+            <div class="project-grid-label">Keywords</div>
+            <div class="project-grid-value">
+                ${project.keywords.map(k => `<span class="project-keyword-badge ${badgeClass}">${k}</span>`).join(' ')}
+            </div>
+        `;
     }
+    
+    if (project.collaborators) {
+        newHtml += `
+            <div class="project-grid-label">Collaborators</div>
+            <div class="project-grid-value">${project.collaborators}</div>
+        `;
+    }
+    
+    newHtml += '</div>'; 
+
+    if (project.solutions && project.solutions.length > 0) {
+        newHtml += '<hr class="project-divider">';
+        newHtml += '<h4 class="project-solutions-title">주요 개선 사항</h4>';
+        newHtml += '<ul class="project-solutions-list">';
+        newHtml += project.solutions.map(s => `<li>${s}</li>`).join('');
+        newHtml += '</ul>';
+    }
+    
+    detailsContainer.innerHTML = newHtml;
     
     currentProjectUrl = project.url; 
     
@@ -414,7 +452,7 @@ function initializeProjects() {
         </div>`
     ).join(''); 
     
-    thumbnailContainer.addEventListener('click', e => { 
+    thumbnailContainer.addEventListener('mouseover', e => { 
         const wrapper = e.target.closest('.thumbnail-wrapper'); 
         if (wrapper) { 
             updateWebProject(parseInt(wrapper.dataset.index)); 
@@ -439,6 +477,8 @@ function initScrollLeakPrevention() {
     const elements = [
         document.getElementById('laptop-screen-viewport'),
         document.getElementById('web-project-thumbnails'),
+        document.getElementById('chat-window')
+        // document.getElementById('gallery') // <-- 스크롤 문제 수정을 위해 이 줄을 제거했습니다.
     ];
 
     elements.forEach(el => {
@@ -462,111 +502,40 @@ function initGallery() {
     
     const container = document.getElementById('gallery');
     
-    const lightbox = document.getElementById('gallery-lightbox');
-    const lightboxImage = document.getElementById('lightbox-image');
-    const lightboxClose = document.getElementById('lightbox-close');
-
-    function openLightbox(imgSrc) {
-        lightboxImage.src = imgSrc;
-        lightbox.style.display = 'flex'; 
-        gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-        gsap.fromTo(lightboxImage, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'power2.out', delay: 0.1 });
-    }
-    function closeLightbox() {
-        gsap.to(lightbox, { 
-            opacity: 0, 
-            duration: 0.3, 
-            onComplete: () => {
-                lightbox.style.display = 'none';
-                lightboxImage.src = "";
-            }
-        });
-    }
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
-    });
-
     const sourceImages = [
-        { src: "images/gallery/1.webp", w: 200, h: 270 },
-        { src: "images/gallery/2.webp", w: 200, h: 350 },
-        { src: "images/gallery/3.webp", w: 300, h: 220 },
-        { src: "images/gallery/4.webp", w: 300, h: 200 },
-        { src: "images/gallery/6.webp", w: 300, h: 220 },
-        { src: "images/gallery/7.webp", w: 300, h: 220 },
-        { src: "images/gallery/8.webp", w: 300, h: 220 },
-        { src: "images/gallery/9.webp", w: 300, h: 220 },
-        { src: "images/gallery/10.webp", w: 300, h: 220 },
-        { src: "images/gallery/11.webp", w: 300, h: 220 },
-        { src: "images/gallery/12.webp", w: 300, h: 220 },
-        { src: "images/gallery/13.webp", w: 300, h: 220 },
-        { src: "images/gallery/14.webp", w: 300, h: 220 },
-        { src: "images/gallery/15.webp", w: 300, h: 220 },
-        { src: "images/gallery/16.webp", w: 300, h: 220 },
-        { src: "images/gallery/17.webp", w: 300, h: 220 },
-        { src: "images/gallery/18.webp", w: 300, h: 220 },
-        { src: "images/gallery/19.webp", w: 300, h: 220 },
-        { src: "images/gallery/20.webp", w: 200, h: 270 },
-        { src: "images/gallery/21.webp", w: 300, h: 220 },
-        { src: "images/gallery/22.webp", w: 300, h: 220 },
-        { src: "images/gallery/23.webp", w: 300, h: 220 },
-        { src: "images/gallery/24.webp", w: 300, h: 220 },
-        { src: "images/gallery/25.webp", w: 300, h: 220 },
-        { src: "images/gallery/26.webp", w: 300, h: 220 },
-        { src: "images/gallery/27.webp", w: 300, h: 220 },
-        { src: "images/gallery/28.webp", w: 300, h: 220 },
-        { src: "images/gallery/29.webp", w: 200, h: 270 },
-        { src: "images/gallery/30.webp", w: 300, h: 220 },
-        { src: "images/gallery/31.webp", w: 300, h: 220 },
-        { src: "images/gallery/32.webp", w: 200, h: 270 },
-        { src: "images/gallery/33.webp", w: 200, h: 270 },
-        { src: "images/gallery/34.webp", w: 300, h: 220 },
-        { src: "images/gallery/35.webp", w: 200, h: 270 },
-        { src: "images/gallery/36.webp", w: 300, h: 220 },
-        { src: "images/gallery/37.webp", w: 300, h: 220 },
-        { src: "images/gallery/38.webp", w: 300, h: 400 }, 
-        { src: "images/gallery/39.webp", w: 300, h: 220 },
-        { src: "images/gallery/40.webp", w: 300, h: 220 },
-        { src: "images/gallery/41.webp", w: 300, h: 400 }, 
-        { src: "images/gallery/42.webp", w: 300, h: 220 },
-        { src: "images/gallery/43.webp", w: 300, h: 400 }, 
-        { src: "images/gallery/44.webp", w: 200, h: 300 },
-        { src: "images/gallery/45.webp", w: 200, h: 270 },
-        { src: "images/gallery/46.webp", w: 300, h: 220 },
-        { src: "images/gallery/47.webp", w: 300, h: 220 },
-        { src: "images/gallery/48.webp", w: 300, h: 220 },
-        { src: "images/gallery/49.webp", w: 300, h: 220 },
-        { src: "images/gallery/50.webp", w: 300, h: 220 },
-        { src: "images/gallery/51.webp", w: 300, h: 240 },
-        { src: "images/gallery/52.webp", w: 300, h: 220 },
-        { src: "images/gallery/53.webp", w: 300, h: 220 },
-        { src: "images/gallery/54.webp", w: 300, h: 220 },
-        { src: "images/gallery/55.webp", w: 300, h: 220 },
-        { src: "images/gallery/56.webp", w: 300, h: 220 },
-        { src: "images/gallery/57.webp", w: 300, h: 220 },
-        { src: "images/gallery/58.webp", w: 600, h: 880 },
-        { src: "images/gallery/59.webp", w: 300, h: 220 },
-        { src: "images/gallery/60.webp", w: 300, h: 400 },
-        { src: "images/gallery/61.webp", w: 300, h: 250 }, 
-        {src: "images/gallery/62.webp", w: 300, h: 400 },
-        {src: "images/gallery/63.webp", w: 300, h: 400 },
-        {src: "images/gallery/64.webp", w: 300, h: 300 },
-        {src: "images/gallery/65.webp", w: 300, h: 400 },
-        {src: "images/gallery/66.webp", w: 300, h: 400 },
-        {src: "images/gallery/67.webp", w: 300, h: 400 },
-        { src: "images/gallery/68.webp", w: 300, h: 250 },
-        { src: "images/gallery/69.webp", w: 300, h: 190 },
-        { src: "images/gallery/70.webp", w: 300, h: 400 },
-        { src: "images/gallery/71.webp", w: 300, h: 400 },
-        { src: "images/gallery/72.webp", w: 300, h: 530 },
-        { src: "images/gallery/73.webp", w: 300, h: 520 },
-        { src: "images/gallery/74.webp", w: 300, h: 400 },
-        { src: "images/gallery/고양이낚시1.webp", w: 300, h: 220 },
-        { src: "images/gallery/고양이낚시3.webp", w: 300, h: 220 },
-        { src: "images/gallery/고양이낚시4.webp", w: 300, h: 220 },
-        { src: "images/gallery/고양이낚시5.webp", w: 300, h: 220 },
-        { src: "images/gallery/고양이낚시6.webp", w: 300, h: 220 },
-        { src: "images/gallery/고양이낚시7.webp", w: 300, h: 220 },
+        { src: "images/gallery/1.jpg", },
+        { src: "images/gallery/2.jpg", },
+        { src: "images/gallery/3.jpg", },
+        { src: "images/gallery/4.jpg", },
+        //{ src: "images/gallery/5.jpg", },
+        { src: "images/gallery/6.jpg", },
+        { src: "images/gallery/7.jpg", },
+        { src: "images/gallery/8.jpg", },
+        { src: "images/gallery/9.webp", },
+        //{ src: "images/gallery/10.jpg", },
+        { src: "images/gallery/11.jpg", },
+        { src: "images/gallery/12.jpg", },
+        { src: "images/gallery/13.jpg", },
+        { src: "images/gallery/14.jpg", },
+        //{ src: "images/gallery/15.jpg", },
+        { src: "images/gallery/16.jpg", },
+        { src: "images/gallery/17.jpg", },
+        //{ src: "images/gallery/18.jpg", },
+        //{ src: "images/gallery/19.jpg", },
+        { src: "images/gallery/20.jpg", },
+        { src: "images/gallery/21.jpg", },
+        { src: "images/gallery/22.jpg", },
+        { src: "images/gallery/23.jpg", },
+        { src: "images/gallery/24.jpg", },
+        //{ src: "images/gallery/25.jpg", },
+        //{ src: "images/gallery/26.jpg", },
+        //{ src: "images/gallery/27.jpg", },
+        //{ src: "images/gallery/28.jpg", },
+        { src: "images/gallery/32.webp", },
+        { src: "images/gallery/33.webp", },
+        { src: "images/gallery/56.webp", },
+        //{ src: "images/gallery/59.webp", },
+        { src: "images/gallery/62.webp", },
     ];
     const TOTAL_ITEMS = sourceImages.length;
     
@@ -585,14 +554,10 @@ function initGallery() {
         const img = sourceImages[i];
         
         const scale = (Math.random() * 0.2 + 0.85); 
-        
         const baseWidth = 300 * scale; 
-        
         const ratio = (img.w > 0) ? (img.h / img.w) : 1; 
-        
         const w = baseWidth;
         const h = baseWidth * ratio; 
-    
         const rotation = (Math.random() * 30) - 15;
         
         let success = false;
@@ -600,12 +565,22 @@ function initGallery() {
         let left, top;
         let newRect;
 
+        const itemHeight = h + 20; 
+        const minTop = headerHeight;
+        const maxTop = 2800 - itemHeight - 20; 
+        const searchRange = maxTop - minTop; 
+
         while (!success && attempts < 100) {
             const maxLeft = containerWidth - w - (sidePadding * 2);
             left = (Math.random() * maxLeft) + sidePadding;
             
-            const searchRange = lowestY + 200 - headerHeight;
-            top = (Math.random() * searchRange) + headerHeight; 
+            
+            if (searchRange > 0) {
+                top = (Math.random() * searchRange) + minTop; 
+            } else {
+                top = minTop; 
+            }
+            
 
             newRect = {
                 left: left - itemPadding, 
@@ -633,7 +608,6 @@ function initGallery() {
 
         if (!success) { 
             left = (Math.random() * (containerWidth - w - (sidePadding * 2))) + sidePadding;
-            top = lowestY + itemPadding; 
             newRect = {
                 left: left - itemPadding, top: top - itemPadding,
                 right: left + w + itemPadding, bottom: top + h + itemPadding
@@ -652,20 +626,71 @@ function initGallery() {
         item.innerHTML = `<img src="${img.src}" alt="갤러리 이미지 ${i+1}">`;
         
         item.style.width = `${w}px`;
-        item.style.height = `${h}px`; 
         item.style.left = `${left}px`;
         item.style.top = `${top}px`;
         item.style.setProperty('--rotate', `rotate(${rotation}deg)`);
         item.style.transform = `translateY(50px) rotate(${rotation}deg)`; 
         
-        container.appendChild(item);
-        
-        item.addEventListener('click', () => {
-            openLightbox(item.dataset.src);
+        let isDragging = false;
+        let hasDragged = false;
+        let startX, startY;
+        let itemStartLeft, itemStartTop;
+
+        item.addEventListener('mousedown', (e) => {
+            e.preventDefault(); 
+            
+            isDragging = true;
+            hasDragged = false;
+            
+            startX = e.clientX;
+            startY = e.clientY;
+
+            itemStartLeft = item.offsetLeft;
+            itemStartTop = item.offsetTop;
+            
+            item.style.zIndex = 30;
+            item.style.cursor = 'grabbing';
+            
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
         });
+
+        function onMouseMove(e) {
+            if (!isDragging) return;
+            
+            let deltaX = e.clientX - startX;
+            let deltaY = e.clientY - startY;
+
+            if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+                hasDragged = true;
+            }
+
+            let newLeft = itemStartLeft + deltaX;
+            let newTop = itemStartTop + deltaY;
+            
+            item.style.left = newLeft + 'px';
+            item.style.top = newTop + 'px';
+        }
+
+        function onMouseUp(e) {
+            if (!isDragging) return;
+
+            isDragging = false;
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+
+            item.style.zIndex = 10;
+            item.style.cursor = 'pointer';
+            
+            if (!hasDragged) {
+                openLightbox(item.dataset.src);
+            }
+        }
+
+        container.appendChild(item);
     }
 
-    container.style.height = `${Math.max(window.innerHeight, lowestY + 200)}px`; 
+container.style.height = '2800px'; 
 
     gsap.utils.toArray('.gallery-item').forEach(item => {
         gsap.to(item, {
@@ -677,10 +702,10 @@ function initGallery() {
                 trigger: item,
                 start: "top 90%",
                 toggleActions: "play none none none"
+                
             }
         });
     });
-
 }
 
 function initContactForm() {
@@ -852,12 +877,10 @@ function initScrollToTop() {
 }
 
 function initCustomCursor() { 
-    const follower = document.getElementById('cursor-follower');
     const dot = document.getElementById('cursor-dot');
 
-    if (!follower || !dot) return;
+    if (!dot) return;
 
-    gsap.set(follower, { xPercent: -50, yPercent: -50 });
     gsap.set(dot, { xPercent: -50, yPercent: -50 });
 
     window.addEventListener('mousemove', e => {
@@ -868,12 +891,6 @@ function initCustomCursor() {
             duration: 0.1, 
             x: mouseX,
             y: mouseY
-        });
-        
-        gsap.to(follower, {
-            duration: 0.3, 
-            x: mouseX - 12, 
-            y: mouseY - 12  
         });
     });
 }
