@@ -174,9 +174,9 @@ body, html {
 }
 
 @property --p {
-  syntax: '<integer>';
-  initial-value: 0;
-  inherits: true;
+    syntax: '<integer>';
+    initial-value: 0;
+    inherits: true;
 }
 
 .skill-chart {
@@ -199,12 +199,12 @@ body, html {
     color: #535353;
 }
 
-.about-content-card.active .skill-photoshop { --p: 60; }
+.about-content-card.active .skill-photoshop { --p: 67; }
 .about-content-card.active .skill-illustrator { --p: 80; }
-.about-content-card.active .skill-premiere { --p: 52; }
-.about-content-card.active .skill-aftereffects { --p: 65; }
-.about-content-card.active .skill-figma { --p: 50; }
-.about-content-card.active .skill-procreate { --p: 55; }
+.about-content-card.active .skill-premiere { --p: 60; }
+.about-content-card.active .skill-aftereffects { --p: 73; }
+.about-content-card.active .skill-figma { --p: 55; }
+.about-content-card.active .skill-procreate { --p: 60; }
 
 #graphic-work {
     background-color: #EFF6FF;
@@ -786,27 +786,27 @@ textarea.contact-input {
 }
 
 .badge-graphic-1 {
-    background-color: #FFF0F6; /* Light Pink */
-    color: #D6336C; /* Dark Pink */
-    border-color: #FCC2D7; /* Medium Pink */
+    background-color: #FFF0F6; 
+    color: #D6336C; 
+    border-color: #FCC2D7; 
 }
 
 .badge-graphic-2 {
-    background-color: #EBFBFE; /* Light Cyan */
-    color: #0E7490; /* Dark Cyan */
-    border-color: #A5F3FC; /* Medium Cyan */
+    background-color: #EBFBFE; 
+    color: #0E7490;
+    border-color: #A5F3FC; 
 }
 
 .badge-graphic-3 {
-    background-color: #FFFBEB; /* Light Yellow */
-    color: #B45309; /* Dark Yellow */
-    border-color: #FCD34D; /* Medium Yellow */
+    background-color: #FFFBEB; 
+    color: #B45309;
+    border-color: #FCD34D; 
 }
 
 .badge-graphic-4 {
-    background-color: #F3E8FF; /* Light Purple */
-    color: #6B21A8; /* Dark Purple */
-    border-color: #D8B4FE; /* Medium Purple */
+    background-color: #F3E8FF; 
+    color: #6B21A8; 
+    border-color: #D8B4FE; 
 }
 
 .clickable-graphic {

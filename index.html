@@ -281,32 +281,30 @@
             setTimeout(handleIntroTransition, emojiDuration * 1000 + 300);
         }
 
-        // --- (추가) 포스트잇 연쇄 폭발 로직을 별도 함수로 분리 ---
+        
         function startChainReaction(clickedPostitElement) {
-            // 이미 연쇄 반응 중이면 실행하지 않음
+            
             if (isChainReactionActive) return;
             isChainReactionActive = true; 
 
-            // 메시지 텍스트를 찾음
+            
             const introContent = document.getElementById('intro-content');
             if (!introContent) return; 
             const messageElement = introContent.querySelector('p');
             if (!messageElement) return; 
 
-            // 아직 터지지 않은 모든 포스트잇을 가져옴
+            
             const allLivePostits = Array.from(document.querySelectorAll('.postit:not(.exploded)'));
             
-            // 터뜨릴 포스트잇이 없으면 중단
+            
             if (allLivePostits.length === 0) {
                 isChainReactionActive = false;
                 return;
             }
 
-            // 'clickedPostitElement'가 (SKIP 버튼처럼) null로 들어오면,
-            // 리스트의 첫 번째 포스트잇을 기준으로 삼음
             const firstToExplode = clickedPostitElement || allLivePostits[0];
             
-            // 기준이 되는 포스트잇(firstToExplode)이 0번이 되도록 정렬
+            
             const sortedPostits = allLivePostits.sort((a, b) => {
                 if (a === firstToExplode) return -1; 
                 if (b === firstToExplode) return 1;
@@ -316,20 +314,20 @@
             const totalToExplode = sortedPostits.length;
 
             sortedPostits.forEach((note, index) => {
-                note.classList.add('exploded'); // 중복 실행 방지
+                note.classList.add('exploded'); 
                 
-                // (참고) 480ms는 이전에 업로드하신 파일의 딜레이 값입니다.
+                
                 setTimeout(() => {
-                    // 카운터 하나씩 줄이기
+                    
                     const currentRemaining = totalToExplode - (index + 1);
                     remainingPostits = currentRemaining; 
                     messageElement.textContent = `포스트잇을 한 개씩 떼주세요. (${currentRemaining}개 남음)`;
 
-                    // 이모지 생성
+                    
                     const rect = note.getBoundingClientRect();
                     addThemedEmojis(rect.left + rect.width / 2, rect.top + rect.height / 2, note.dataset.theme);
 
-                    // 폭발 애니메이션
+                    
                     gsap.to(note, {
                         scale: 1.5, opacity: 0, rotation: (Math.random() - 0.5) * 720,
                         x: (Math.random() - 0.5) * 200, y: (Math.random() - 0.5) * 200,
@@ -337,23 +335,23 @@
                         onComplete: () => {
                             note.remove();
                             
-                            // 마지막 포스트잇이 터졌을 때
+                            
                             if (currentRemaining === 0) {
                                 messageElement.textContent = `모든 아이디어는 이 작은 메모에서 시작됩니다.`;
                                 messageElement.classList.add('final-message-highlight');
                                 
                                 setTimeout(() => {
                                     messageElement.classList.remove('final-message-highlight');
-                                    finalizeEmojiGathering(); // 다음 단계로 이동
+                                    finalizeEmojiGathering(); 
                                 }, 1500); 
                             }
                         }
                     });
 
-                }, index * 420); // 0.48초 간격으로 터짐 (파일 기준)
+                }, index * 420); 
             });
         }
-        // --- 함수 분리 끝 ---
+        
 
 
         function initPostitSketchWithEmoji() {
@@ -431,12 +429,12 @@
                 gsap.fromTo(postit, { scale: 0.5, opacity: 0, rotation: postit.style.getPropertyValue('--rot') }, 
                             { scale: 1, opacity: 1, duration: 0.5, delay: i * 0.1, ease: "back.out(1.7)" });
 
-                // --- (수정) 클릭 이벤트 리스너를 단순화 ---
+                
                 postit.addEventListener('click', function() {
-                    // 분리된 함수를 호출 (클릭된 자기 자신 'this'를 넘겨줌)
+                    
                     startChainReaction(this);
                 });
-                // --- 수정 끝 ---
+                
             }
             
             messageElement.textContent = `포스트잇을 한 개씩 떼주세요. (${remainingPostits}개 남음)`;
@@ -455,13 +453,12 @@
             
             const skipButton = document.getElementById('skip-start-button');
             if (skipButton) {
-                // --- (수정) SKIP 버튼의 클릭 이벤트 ---
+                
                 skipButton.addEventListener('click', () => {
-                    // handleIntroTransition() 대신,
-                    // 분리된 함수를 호출 (클릭된 포스트잇이 없으므로 'null'을 넘김)
+                    
                     startChainReaction(null);
                 });
-                // --- 수정 끝 ---
+                
             }
         }
 

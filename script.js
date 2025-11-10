@@ -478,7 +478,6 @@ function initScrollLeakPrevention() {
         document.getElementById('laptop-screen-viewport'),
         document.getElementById('web-project-thumbnails'),
         document.getElementById('chat-window')
-        // document.getElementById('gallery') // <-- 스크롤 문제 수정을 위해 이 줄을 제거했습니다.
     ];
 
     elements.forEach(el => {
