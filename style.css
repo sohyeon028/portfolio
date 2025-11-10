@@ -201,9 +201,9 @@ body, html {
 
 .about-content-card.active .skill-photoshop { --p: 67; }
 .about-content-card.active .skill-illustrator { --p: 80; }
-.about-content-card.active .skill-premiere { --p: 60; }
-.about-content-card.active .skill-aftereffects { --p: 73; }
-.about-content-card.active .skill-figma { --p: 55; }
+.about-content-card.active .skill-premiere { --p: 65; }
+.about-content-card.active .skill-aftereffects { --p: 78; }
+.about-content-card.active .skill-figma { --p: 60; }
 .about-content-card.active .skill-procreate { --p: 60; }
 
 #graphic-work {
