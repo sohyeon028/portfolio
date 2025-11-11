@@ -348,14 +348,23 @@ function initGlobalLightbox() {
     }
 }
 
+// ========== 시작: 수정된 함수 ==========
 function initGraphicWorkLightbox() {
     const graphicImages = document.querySelectorAll('.clickable-graphic');
-    graphicImages.forEach(img => {
-        img.addEventListener('click', () => {
-            openLightbox(img.src);
+    graphicImages.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation(); // 부모 패널의 링크 이동을 막기 위해 추가 (필요시)
+            
+            // [수정됨] data-src 대신 이미지의 src 속성을 직접 사용합니다.
+            const imgSrc = item.src; 
+            
+            if (imgSrc) {
+                openLightbox(imgSrc);
+            }
         });
     });
 }
+// ========== 끝: 수정된 함수 ==========
 
 function updateWebProject(index) { 
     const project = webWorkProjects[index]; 
