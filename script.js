@@ -511,21 +511,21 @@ function initGallery() {
         { src: "images/gallery/2.jpg", },
         { src: "images/gallery/3.jpg", },
         { src: "images/gallery/4.jpg", },
-        //{ src: "images/gallery/5.jpg", },
+        { src: "images/gallery/5.jpg", },
         { src: "images/gallery/6.jpg", },
         { src: "images/gallery/7.jpg", },
         { src: "images/gallery/8.jpg", },
         { src: "images/gallery/9.webp", },
-        //{ src: "images/gallery/10.jpg", },
+        { src: "images/gallery/10.jpg", },
         { src: "images/gallery/11.jpg", },
         { src: "images/gallery/12.jpg", },
         { src: "images/gallery/13.jpg", },
         { src: "images/gallery/14.jpg", },
-        //{ src: "images/gallery/15.jpg", },
+        { src: "images/gallery/15.jpg", },
         { src: "images/gallery/16.jpg", },
         { src: "images/gallery/17.jpg", },
         //{ src: "images/gallery/18.jpg", },
-        //{ src: "images/gallery/19.jpg", },
+        { src: "images/gallery/19.jpg", },
         { src: "images/gallery/20.jpg", },
         { src: "images/gallery/21.jpg", },
         { src: "images/gallery/22.jpg", },
@@ -558,7 +558,7 @@ function initGallery() {
         const img = sourceImages[i];
         
         const scale = (Math.random() * 0.2 + 0.85); 
-        const baseWidth = 300 * scale; 
+        const baseWidth = 200 * scale; 
         const ratio = (img.w > 0) ? (img.h / img.w) : 1; 
         const w = baseWidth;
         const h = baseWidth * ratio; 
@@ -571,7 +571,7 @@ function initGallery() {
 
         const itemHeight = h + 20; 
         const minTop = headerHeight;
-        const maxTop = 2800 - itemHeight - 20; 
+        const maxTop = 2500 - itemHeight - 20; 
         const searchRange = maxTop - minTop; 
 
         while (!success && attempts < 100) {
