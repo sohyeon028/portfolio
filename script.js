@@ -816,7 +816,7 @@ function initContactForm() {
                     createSenderChatRow(doc.data());
                 });
                 
-                chatWindow.scrollTop = chatWindow.scrollHeight;
+                chatWindow.scrollTop = 0;
             }, (error) => {
             });
     }
